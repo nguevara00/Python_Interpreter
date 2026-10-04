@@ -27,27 +27,14 @@ Statements *Parser::program() {
 }
 
 Statements *Parser::statements() {
-    // <statements> -> <statement> NEWLINE { <statement> NEWLINE }
+    // <statements> -> <statement> { <statement> }
     auto *parsedStatements = new Statements();
     parsedStatements->addStatement(statement());
-
-    Token newline = tokenizer.getToken();
-    if (!newline.isNewline()) {
-        delete parsedStatements;
-        die("Parser::statements", "expected NEWLINE after statement", newline);
-    }
-
     Token next = tokenizer.getToken();
+
     while (next.isIdentifier() || next.isKeyword()) {
         tokenizer.ungetToken();
         parsedStatements->addStatement(statement());
-
-        newline = tokenizer.getToken();
-        if (!newline.isNewline()) {
-            delete parsedStatements;
-            die("Parser::statements", "expected NEWLINE after statement", newline);
-        }
-
         next = tokenizer.getToken();
     }
 
@@ -56,25 +43,55 @@ Statements *Parser::statements() {
 }
 
 Statement *Parser::statement() {
-    // <statement> -> <for-statement>
-    //             | <assignment-statement>
-    //             | <print-statement>
+    /*
+    Token token = tokenizer.getToken();
+
+    if (token.isForKeyword()) {
+        tokenizer.ungetToken();
+        return compoundStatement();
+    }
+
+    die("Parser::statement", "expected a statement", token);
+
+    auto *parsedStatements = new Statements();
+    parsedStatements->addStatement(statement());
+
+    Token newline = tokenizer.getToken();
+        if (!newline.isNewline()) {
+            delete parsedStatements;
+            die("Parser::statements", "expected NEWLINE after statement", newline);
+        }
+    */
+}
+
+Statement *Parser::simpleStatement() {
     Token token = tokenizer.getToken();
 
     if (token.isIdentifier()) {
         tokenizer.ungetToken();
         return assignmentStatement();
     }
-    if (token.isForKeyword()) {
-        tokenizer.ungetToken();
-        return forStatement();
-    }
+    
     if (token.isPrintKeyword()) {
         tokenizer.ungetToken();
         return printStatement();
     }
 
     die("Parser::statement", "expected a statement", token);
+}
+
+Statement *Parser::compoundStatement(){
+    Token token = tokenizer.getToken();
+    if (token.isForKeyword()) {
+        tokenizer.ungetToken();
+        return forStatement();
+    }
+
+    die("Parser::statement", "expected a for statement", token);
+}
+
+Statements *Parser::suite(){
+    // <suite> -> NEWLINE INDENT <statements> DEDENT
 }
 
 AssignmentStatement *Parser::assignmentStatement() {

@@ -15,10 +15,14 @@ public:
     Statements *program();
     Statements *statements();
     Statement *statement();
+    Statement* simpleStatement();
     AssignmentStatement *assignmentStatement();
     PrintStatement *printStatement();
     ForStatement* forStatement();
+    Statement* compoundStatement();
+    Statements* suite();
 
+    ExprNode *rangeExpr();
     ExprNode *relExpr();
     ExprNode *relTerm();
     ExprNode *relPrimary();
