@@ -26,6 +26,7 @@ private:
     std::size_t columnNumber{1};
     bool lineContainsToken{false};
     int depthLevel{0};
+    int previousDepth{0};
 
     bool getCharacter(char &character);
     std::string readIdentifier(char firstCharacter);

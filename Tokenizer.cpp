@@ -75,9 +75,6 @@ Token Tokenizer::getToken() {
         return lastToken;
     }
 
-    // everytime we run isIndent and its true, we increased the depth level
-    // if we increase the depth level, we need to run the next statement
-    // if isIdent is false, create a dedent and subtract the depth level
 
     while (inputStream.peek() != std::char_traits<char>::eof()) {
         char character = static_cast<char>(inputStream.peek());
@@ -87,25 +84,31 @@ Token Tokenizer::getToken() {
         while (inputStream.peek() == std::isspace(static_cast<unsigned char>(character)) && !lineContainsToken) {
             getCharacter(character);
             ++spaces;
-            if (spaces == 4) {
-                ++depthLevel;
+            depthLevel = spaces/4;
+            
+            if (depthLevel >= previousDepth + 1) {
                 spaces = 0;
                 Token token;
                 token.setLocation(lineNumber, columnNumber);
                 token.markAsIndent();
                 tokens.push_back(token);
                 return lastToken = token;
-            }
+            } 
         }
-        
-        
 
-        // this has to go away eventually, but we still need a way to detect whitespaces
-        /* else if (isDiscardedWhitespace(character)) {
+        if (depthLevel < previousDepth) {
+                Token token;
+                token.setLocation(lineNumber,columnNumber);
+                token.markAsDedent();
+                tokens.push_back(token);
+                previousDepth = depthLevel;
+                return lastToken = token;
+            }
+
+        if (isDiscardedWhitespace(character)) {
             getCharacter(character);
             continue;
         }
-            */
 
         if (character == '\n') {
             const auto newlineLine = lineNumber;
@@ -118,6 +121,8 @@ Token Tokenizer::getToken() {
                 token.markAsNewline();
                 lineContainsToken = false;
                 tokens.push_back(token);
+                previousDepth = depthLevel;
+                depthLevel = 0;
                 return lastToken = token;
             }
 
