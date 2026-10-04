@@ -27,8 +27,8 @@ public:
     void markAsNewline() { _newline = true; }
 
     //new phase 2
-    void markAsIndent() {_indent == true; }
-    void markAsDedent() {_dedent == true; }
+    void markAsIndent() {_indent = true; }
+    void markAsDedent() {_dedent = true; }
 
     void setLocation(std::size_t line, std::size_t column) {
         _lineNumber = line;
@@ -73,6 +73,7 @@ public:
     [[nodiscard]] bool isKeyword() const { return _keyword != Keyword::none; }
     [[nodiscard]] bool isForKeyword() const { return _keyword == Keyword::forKeyword; }
     [[nodiscard]] bool isPrintKeyword() const { return _keyword == Keyword::printKeyword; }
+    
     //add functions
     [[nodiscard]] bool isInKeyword() const { return _keyword == Keyword::inKeyword; }
     [[nodiscard]] bool isRangeKeyword() const { return _keyword == Keyword::rangeKeyword; }
