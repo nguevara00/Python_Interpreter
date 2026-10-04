@@ -33,6 +33,7 @@ private:
     static bool isDigit(char character);
     static bool isIdentifierStart(char character);
     static bool isIdentifierPart(char character);
+    static bool isIndent(char character);
     static bool isDiscardedWhitespace(char character);
 };
 

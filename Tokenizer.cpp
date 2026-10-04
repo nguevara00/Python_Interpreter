@@ -18,6 +18,10 @@ bool Tokenizer::isIdentifierPart(char character) {
     return std::isalnum(static_cast<unsigned char>(character)) != 0 || character == '_';
 }
 
+bool Tokenizer::isIndent(char character){
+    //code goes here
+}
+
 bool Tokenizer::isDiscardedWhitespace(char character) {
     return character != '\n' && std::isspace(static_cast<unsigned char>(character)) != 0;
 }
@@ -78,27 +82,31 @@ Token Tokenizer::getToken() {
     while (inputStream.peek() != std::char_traits<char>::eof()) {
         char character = static_cast<char>(inputStream.peek());
 
-        //maybe the loop goes here
+
+        //this cannot continue
+        //current: if it is a whitespace thats NOT a newline, throw it away
+        //new : if it is a whitespace thats NOT a newline, but the only token seen on this line so far are NEWLINES or INDENTS,
+        //      count four spaces and make an indent token.
+        //      else, discard the space
 
 
-        // if the first character on the line is a spacebar
-        // check your indentation level
-        // if indentation level is zero, 
+        if (isIndent(character)) {
+            //make indent token
+            Token token;
+            token.setLocation(lineNumber, columnNumber);
+            token.markAsIndent();
+            lineContainsToken = true;
+            tokens.push_back(token);
+            return lastToken = token;
+            
+        }
 
-        //if the character on top of the stream is a space bar AND there have been no other tokens on this line AND there are tokens waiting later on the line
-        // count spaces until you get to four
-        // make an INDENT token
-        // keep counting spaces and making indent tokens until the next character is NOT a spacebar
-
-        // if the next token is a space bar, consume the character from the stream and keep going without making a token
-        if (isDiscardedWhitespace(character)) {
+        // this has to go away eventually, but we still need a way to detect whitespaces
+        else if (isDiscardedWhitespace(character)) {
             getCharacter(character);
             continue;
         }
 
-        // maybe the loop goes here
-
-        // if the next token is a newline
         if (character == '\n') {
             const auto newlineLine = lineNumber;
             const auto newlineColumn = columnNumber;
