@@ -43,7 +43,7 @@ Statements *Parser::statements() {
 }
 
 Statement *Parser::statement() {
-    /*
+    // statement -> simple statement newline | compound statement
     Token token = tokenizer.getToken();
 
     if (token.isForKeyword()) {
@@ -51,17 +51,15 @@ Statement *Parser::statement() {
         return compoundStatement();
     }
 
-    die("Parser::statement", "expected a statement", token);
-
-    auto *parsedStatements = new Statements();
-    parsedStatements->addStatement(statement());
-
+    Statement *simple = simpleStatement();
     Token newline = tokenizer.getToken();
-        if (!newline.isNewline()) {
-            delete parsedStatements;
-            die("Parser::statements", "expected NEWLINE after statement", newline);
-        }
-    */
+
+    if (!newline.isNewline()) {
+        delete simple;
+        die("Parser::statement", "expected NEWLINE after statement", newline);
+    }
+
+    return simple;
 }
 
 Statement *Parser::simpleStatement() {
