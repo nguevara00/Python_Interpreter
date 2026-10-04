@@ -78,11 +78,25 @@ Token Tokenizer::getToken() {
     while (inputStream.peek() != std::char_traits<char>::eof()) {
         char character = static_cast<char>(inputStream.peek());
 
+        //maybe the loop goes here
+
+
+        // if the first character on the line is a spacebar
+        // check your indentation level
+        // if indentation level is zero, 
+
+        //if the character on top of the stream is a space bar AND there have been no other tokens on this line AND there are tokens waiting later on the line
+        // count spaces until you get to four
+        // make an INDENT token
+        // keep counting spaces and making indent tokens until the next character is NOT a spacebar
+
         // if the next token is a space bar, consume the character from the stream and keep going without making a token
         if (isDiscardedWhitespace(character)) {
             getCharacter(character);
             continue;
         }
+
+        // maybe the loop goes here
 
         // if the next token is a newline
         if (character == '\n') {

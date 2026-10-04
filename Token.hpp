@@ -18,8 +18,17 @@ class Token {
 public:
     [[nodiscard]] bool isEof() const { return _eof; }
     [[nodiscard]] bool isNewline() const { return _newline; }
+    
+    //new phase 2
+    [[nodiscard]] bool isIndent() const { return _indent; }
+    [[nodiscard]] bool isDedent() const { return _dedent; }
+    
     void markAsEof() { _eof = true; }
     void markAsNewline() { _newline = true; }
+
+    //new phase 2
+    void markAsIndent() {_indent == true; }
+    void markAsDedent() {_dedent == true; }
 
     void setLocation(std::size_t line, std::size_t column) {
         _lineNumber = line;
@@ -83,6 +92,8 @@ private:
     Keyword _keyword{Keyword::none};
     bool _eof{false};
     bool _newline{false};
+    bool _indent{false};
+    bool _dedent{false};
     bool _isInteger{false};
     char _symbol{'\0'};
     std::string _multiCharSymbol{'\0'};
