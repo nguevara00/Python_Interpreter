@@ -9,7 +9,9 @@
 enum class Keyword {
     none,
     forKeyword,
-    printKeyword
+    printKeyword,
+    in,
+    range,
 };
 
 class Token {
@@ -49,6 +51,8 @@ public:
     [[nodiscard]] bool isLessThanOrEqualOperator() const { return _multiCharSymbol == "<="; }
     [[nodiscard]] bool isOpenBracket() const { return _symbol == '{'; }
     [[nodiscard]] bool isClosedBracket() const { return _symbol == '}'; }
+    [[nodiscard]] bool isColon() const { return _symbol == ':'; }
+    [[nodiscard]] bool isComma() const { return _symbol == ','; }
 
     void setIdentifier(std::string identifier) { _identifier = std::move(identifier); }
     [[nodiscard]] bool isIdentifier() const { return !_identifier.empty(); }

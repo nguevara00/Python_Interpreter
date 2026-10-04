@@ -49,6 +49,10 @@ void Token::print(std::ostream &output) const {
     output << " { ";
     else if (isClosedBracket())
     output << " } ";
+    else if (isColon())
+    output << " : ";
+    else if (isComma())
+    output << " , ";
     else
         output << "uninitialized token";
 }
