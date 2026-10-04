@@ -18,10 +18,6 @@ bool Tokenizer::isIdentifierPart(char character) {
     return std::isalnum(static_cast<unsigned char>(character)) != 0 || character == '_';
 }
 
-bool Tokenizer::isIndent(char character){
-    //code goes here
-}
-
 bool Tokenizer::isDiscardedWhitespace(char character) {
     return character != '\n' && std::isspace(static_cast<unsigned char>(character)) != 0;
 }
@@ -79,33 +75,37 @@ Token Tokenizer::getToken() {
         return lastToken;
     }
 
+    // everytime we run isIndent and its true, we increased the depth level
+    // if we increase the depth level, we need to run the next statement
+    // if isIdent is false, create a dedent and subtract the depth level
+
     while (inputStream.peek() != std::char_traits<char>::eof()) {
         char character = static_cast<char>(inputStream.peek());
 
+        int spaces = 0;
 
-        //this cannot continue
-        //current: if it is a whitespace thats NOT a newline, throw it away
-        //new : if it is a whitespace thats NOT a newline, but the only token seen on this line so far are NEWLINES or INDENTS,
-        //      count four spaces and make an indent token.
-        //      else, discard the space
-
-
-        if (isIndent(character)) {
-            //make indent token
-            Token token;
-            token.setLocation(lineNumber, columnNumber);
-            token.markAsIndent();
-            lineContainsToken = true;
-            tokens.push_back(token);
-            return lastToken = token;
-            
+        while (inputStream.peek() == std::isspace(static_cast<unsigned char>(character)) && !lineContainsToken) {
+            getCharacter(character);
+            ++spaces;
+            if (spaces == 4) {
+                ++depthLevel;
+                spaces = 0;
+                Token token;
+                token.setLocation(lineNumber, columnNumber);
+                token.markAsIndent();
+                tokens.push_back(token);
+                return lastToken = token;
+            }
         }
+        
+        
 
         // this has to go away eventually, but we still need a way to detect whitespaces
-        else if (isDiscardedWhitespace(character)) {
+        /* else if (isDiscardedWhitespace(character)) {
             getCharacter(character);
             continue;
         }
+            */
 
         if (character == '\n') {
             const auto newlineLine = lineNumber;
