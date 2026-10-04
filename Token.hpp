@@ -10,8 +10,8 @@ enum class Keyword {
     none,
     forKeyword,
     printKeyword,
-    in,
-    range,
+    inKeyword,
+    rangeKeyword,
 };
 
 class Token {
@@ -51,6 +51,8 @@ public:
     [[nodiscard]] bool isLessThanOrEqualOperator() const { return _multiCharSymbol == "<="; }
     [[nodiscard]] bool isOpenBracket() const { return _symbol == '{'; }
     [[nodiscard]] bool isClosedBracket() const { return _symbol == '}'; }
+    
+    //New phase 2 tokens
     [[nodiscard]] bool isColon() const { return _symbol == ':'; }
     [[nodiscard]] bool isComma() const { return _symbol == ','; }
 
@@ -62,6 +64,9 @@ public:
     [[nodiscard]] bool isKeyword() const { return _keyword != Keyword::none; }
     [[nodiscard]] bool isForKeyword() const { return _keyword == Keyword::forKeyword; }
     [[nodiscard]] bool isPrintKeyword() const { return _keyword == Keyword::printKeyword; }
+    //add functions
+    [[nodiscard]] bool isInKeyword() const { return _keyword == Keyword::inKeyword; }
+    [[nodiscard]] bool isRangeKeyword() const { return _keyword == Keyword::rangeKeyword; }
     [[nodiscard]] Keyword keyword() const { return _keyword; }
 
     void setIntegerValue(int value) {
