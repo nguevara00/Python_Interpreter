@@ -36,23 +36,23 @@ void Token::print(std::ostream &output) const {
     else if (isEqualityOperator())
         output << " == ";
     else if (isNotEqualOperator())
-    output << " != ";
+        output << " != ";
     else if (isGreaterThanOperator())
-    output << " > ";
+        output << " > ";
     else if (isGreaterThanOrEqualOperator())
-    output << " >= ";
+        output << " >= ";
     else if (isLessThanOperator())
-    output << " < ";
+        output << " < ";
     else if (isLessThanOrEqualOperator())
-    output << " <= ";
+        output << " <= ";
     else if (isOpenBracket())
-    output << " { ";
+        output << " { ";
     else if (isClosedBracket())
-    output << " } ";
+        output << " } ";
     else if (isColon())
-    output << " : ";
+        output << " : ";
     else if (isComma())
-    output << " , ";
+        output << " , ";
     else
         output << "uninitialized token";
 }

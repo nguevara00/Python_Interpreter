@@ -78,11 +78,13 @@ Token Tokenizer::getToken() {
     while (inputStream.peek() != std::char_traits<char>::eof()) {
         char character = static_cast<char>(inputStream.peek());
 
+        // if the next token is a space bar, consume the character from the stream and keep going without making a token
         if (isDiscardedWhitespace(character)) {
             getCharacter(character);
             continue;
         }
 
+        // if the next token is a newline
         if (character == '\n') {
             const auto newlineLine = lineNumber;
             const auto newlineColumn = columnNumber;
@@ -135,6 +137,10 @@ Token Tokenizer::getToken() {
                 token.setKeyword(Keyword::forKeyword);
             else if (identifier == "print")
                 token.setKeyword(Keyword::printKeyword);
+            else if (identifier == "range")
+                token.setKeyword(Keyword::rangeKeyword);
+            else if (identifier == "in")
+                token.setKeyword(Keyword::inKeyword);
             else
                 token.setIdentifier(std::move(identifier));
         } else {

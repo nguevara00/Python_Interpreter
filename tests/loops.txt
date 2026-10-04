@@ -1,6 +1,4 @@
-for (i = 0; i < 20; i = i + 1) {
-    print i
-}
+for(i=0;i<20;i=i+1){printi}
 
 parker = 6
 for (i = 0; i < parker; i = i + 1) {
