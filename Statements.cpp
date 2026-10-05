@@ -73,11 +73,14 @@ void ForStatement::evaluate(SymbolTable &symbolTable) const {
 
     EvaluatedRange evalRange = range_->evaluate(symbolTable);
 
-    int value = evalRange.start();
-    while (evalRange.shouldContinue(value)) {
-        symbolTable.setValueFor(variableName_, value);
-        suite_->evaluate(symbolTable);
-        value = value + evalRange.step();
+    int nextValue = evalRange.start();
+
+    if (evalRange.hasIteration()) {
+        while (evalRange.shouldContinue(nextValue)) {
+            symbolTable.setValueFor(variableName_, nextValue);
+            suite_->evaluate(symbolTable);
+            nextValue += evalRange.step();
+        }
     }
 }
 
@@ -121,7 +124,12 @@ bool EvaluatedRange::hasIteration() const{
 bool EvaluatedRange::shouldContinue(int nextValue) const{
     //EvaluatedRange::shouldContinue(nextValue) applies the same directional boundary test to the value supplied by the ForStatement. 
     //The start(), stop(), and step() functions return the corresponding concrete values.
-    return (nextValue < stop_);
+    if (step_ > 0) {
+        return (nextValue < stop_);
+    } else {
+        return (nextValue > stop_);
+    }
+
 }
 
 RangeExpression::RangeExpression(ExprNode* stop){
@@ -150,13 +158,18 @@ RangeExpression::~RangeExpression(){
 
 [[nodiscard]] EvaluatedRange RangeExpression::evaluate(const SymbolTable& symbolTable) const{
     int start = 0;
-    int stop = stopExpression->evaluate(symbolTable);
+    int stop = 0; 
     int step = 1;
     
-    if (startExpression != nullptr)
+    if (startExpression != nullptr) {
         start = startExpression->evaluate(symbolTable);
-    if (stepExpression != nullptr)
+    }
+
+    stop = stopExpression->evaluate(symbolTable);
+
+    if (stepExpression != nullptr){
         step = stepExpression->evaluate(symbolTable);
+    }
 
     EvaluatedRange range(start,stop,step);
     return range;
