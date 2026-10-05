@@ -101,12 +101,13 @@ Statements *Parser::suite(){
     if (!indentToken.isIndent()){
         die("Parser::suite", "expected an INDENT", indentToken);
     }
-    Statements *parsedStatements = new Statements();
+
+    Statements *parsedStatements = statements();
     
     Token dedentToken = tokenizer.getToken();
     if (!dedentToken.isDedent()) {
         delete parsedStatements;
-        die("Parser::suite", "expected an INDENT", indentToken);
+        die("Parser::suite", "expected an DEDENT", dedentToken);
     }
     // check for dedent, if no dedent die. 
     return parsedStatements;
@@ -153,8 +154,8 @@ RangeExpression *Parser::rangeExpression() {
     RangeExpression *range = rangeArguments();
 
     Token closedParen = tokenizer.getToken();
-    if (!openParen.isClosedParen()) {
-        die("Parser::rangeExpression", "expected '('", closedParen);
+    if (!closedParen.isClosedParen()) {
+        die("Parser::rangeExpression", "expected ')'", closedParen);
     }
 
     return range;
@@ -207,9 +208,9 @@ ForStatement *Parser::forStatement() {
         die("Parser::forStatement", "expected ' : ", colonToken);
     }
 
-    Statements *suite = suite();
+    Statements *statementsSuite = suite();
 
-    return new ForStatement(id.identifier(), range, suite);
+    return new ForStatement(id.identifier(), range, statementsSuite);
 }
 
 ExprNode *Parser::relExpr() {

@@ -67,7 +67,6 @@ ForStatement::~ForStatement() {
     // delete forStatementCompare;
     // delete forStatementIncr;
     // delete forLoopStatements;
-    delete variableName_;
     delete range_;
     delete suite_;
 };
@@ -88,7 +87,7 @@ ForStatement::~ForStatement() {
 
 void ForStatement::evaluate(SymbolTable &symbolTable) const {
 
-    EvaluatedRange *evalRange = range_->evaluate(symbolTable);
+    EvaluatedRange evalRange = range_->evaluate(symbolTable);
 
     int value = evalRange.start();
     while (evalRange.shouldContinue(value)) {

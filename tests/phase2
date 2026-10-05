@@ -1,5 +1,2 @@
-i = 5
-j = 2
-z = i + j
-print z
-
+for i in range(5):
+    print i

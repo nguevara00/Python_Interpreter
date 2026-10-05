@@ -75,6 +75,14 @@ Token Tokenizer::getToken() {
         return lastToken;
     }
 
+    if (inputStream.peek() != std::char_traits<char>::eof() && previousDepth > 0) {
+        Token token;
+        token.setLocation(lineNumber,columnNumber);
+        token.markAsDedent();
+        tokens.push_back(token);
+        previousDepth = depthLevel--;
+        return lastToken = token;
+    }
 
     while (inputStream.peek() != std::char_traits<char>::eof()) {
         int spaces = 0;
@@ -95,14 +103,14 @@ Token Tokenizer::getToken() {
             } 
         }
 
-        if (depthLevel < previousDepth && !lineContainsToken) {
+        if (depthLevel < previousDepth) {
                 Token token;
                 token.setLocation(lineNumber,columnNumber);
                 token.markAsDedent();
                 tokens.push_back(token);
-                previousDepth = depthLevel;
+                previousDepth = depthLevel--;
                 return lastToken = token;
-            }
+        }
 
         character = static_cast<char>(inputStream.peek());    
         if (isDiscardedWhitespace(character)) {
