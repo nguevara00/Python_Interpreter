@@ -174,13 +174,13 @@ RangeExpression *Parser::rangeArguments(){
     ExprNode *second = relExpr();
 
     Token secondComma = tokenizer.getToken();
-    if (!comma.isComma()) {
+    if (!secondComma.isComma()) {
         tokenizer.ungetToken();
-        return new RangeExpression(second, first);
+        return new RangeExpression(first, second);
     }
 
     ExprNode *third = relExpr();
-    return new RangeExpression(second, first, third);
+    return new RangeExpression(first, second, third);
 }
 
 ForStatement *Parser::forStatement() {

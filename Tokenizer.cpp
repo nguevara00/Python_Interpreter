@@ -75,18 +75,10 @@ Token Tokenizer::getToken() {
         return lastToken;
     }
 
-    if (inputStream.peek() == std::char_traits<char>::eof() && previousDepth > 0) {
-        Token token;
-        token.setLocation(lineNumber,columnNumber);
-        token.markAsDedent();
-        tokens.push_back(token);
-        previousDepth--;
-        return lastToken = token;
-    }
-
     while (inputStream.peek() != std::char_traits<char>::eof()) {
         int spaces = 0;
         char character = static_cast<char>(inputStream.peek());
+
         while (std::isspace(inputStream.peek()) && !lineContainsToken) {
             
             getCharacter(character);
@@ -112,7 +104,8 @@ Token Tokenizer::getToken() {
                 return lastToken = token;
         }
 
-        character = static_cast<char>(inputStream.peek());    
+        character = static_cast<char>(inputStream.peek());
+
         if (isDiscardedWhitespace(character)) {
             getCharacter(character);
             continue;
@@ -130,6 +123,7 @@ Token Tokenizer::getToken() {
                 lineContainsToken = false;
                 tokens.push_back(token);
                 previousDepth = depthLevel;
+                depthLevel = 0;
                 return lastToken = token;
             }
 
@@ -148,7 +142,14 @@ Token Tokenizer::getToken() {
             std::cerr << "Error while reading the input stream in Tokenizer.\n";
             std::exit(EXIT_FAILURE);
         }
-        token.markAsEof();
+
+        if (previousDepth > 0) {
+            token.markAsDedent();
+            previousDepth--;
+        } else {
+            token.markAsEof();
+        }
+
     } else {
         char character;
         std::string multiCharString = "\0";

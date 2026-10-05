@@ -63,27 +63,11 @@ ForStatement::ForStatement(std::string variable, RangeExpression *range, Stateme
     variableName_{variable}, range_{range}, suite_{suite} {}
 
 ForStatement::~ForStatement() {
-    // delete initializer;
-    // delete forStatementCompare;
-    // delete forStatementIncr;
-    // delete forLoopStatements;
     delete range_;
     delete suite_;
 };
 
-// When evaluated, a for statement must:
-//
-// Evaluate the initialization assignment once.
-// Evaluate the relational condition before every iteration.
-// Continue while the condition evaluates to a nonzero value.
-// Evaluate every statement in the loop body.
-// Evaluate the update assignment after each iteration.
 
-// initializer->evaluate(symbolTable);
-// while (forStatementCompare->evaluate(symbolTable)) {
-//         forLoopStatements->evaluate(symbolTable);
-//         forStatementIncr->evaluate(symbolTable);
-//     }
 
 void ForStatement::evaluate(SymbolTable &symbolTable) const {
 
@@ -141,24 +125,15 @@ bool EvaluatedRange::shouldContinue(int nextValue) const{
 }
 
 RangeExpression::RangeExpression(ExprNode* stop){
+    startExpression = nullptr;
     stopExpression = stop;
-
-    Token startToken;
-    startToken.setIntegerValue(0);
-    startExpression = new IntegerLiteral(startToken);
-
-    Token stepToken;
-    stepToken.setIntegerValue(1);
-    stepExpression = new IntegerLiteral(stepToken);
+    stepExpression = nullptr;
 }
 
 RangeExpression::RangeExpression(ExprNode* start, ExprNode* stop){
     startExpression = start;
     stopExpression = stop;
-
-    Token stepToken;
-    stepToken.setIntegerValue(1);
-    stepExpression = new IntegerLiteral(stepToken);
+    stepExpression = nullptr;
 }
 
 RangeExpression::RangeExpression(ExprNode* start,ExprNode* stop,ExprNode* step){
@@ -174,9 +149,15 @@ RangeExpression::~RangeExpression(){
 }
 
 [[nodiscard]] EvaluatedRange RangeExpression::evaluate(const SymbolTable& symbolTable) const{
-    int start = startExpression->evaluate(symbolTable);
+    int start = 0;
     int stop = stopExpression->evaluate(symbolTable);
-    int step = stepExpression->evaluate(symbolTable);
+    int step = 1;
+    
+    if (startExpression != nullptr)
+        start = startExpression->evaluate(symbolTable);
+    if (stepExpression != nullptr)
+        step = stepExpression->evaluate(symbolTable);
+
     EvaluatedRange range(start,stop,step);
     return range;
 }
@@ -184,9 +165,3 @@ RangeExpression::~RangeExpression(){
 void RangeExpression::print(std::ostream& output) const{
     //stuff
 }
-
-// private:
-//     ExprNode* startExpression;
-//     ExprNode* stopExpression;
-//     ExprNode* stepExpression;
-// };    

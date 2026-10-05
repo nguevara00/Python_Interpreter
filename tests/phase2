@@ -1,13 +1,8 @@
-for i in range(10):
-    for j in range(2):
-        print j
-        for k in range(2):
-            print k
-    for q in range(3):
-        print q
+for i in range(0,9):
+    print i
 
+for j in range(8):
+    print j
 
-
-
-
- 
+for k in range(0,7,1):
+    print k
