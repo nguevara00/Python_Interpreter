@@ -75,12 +75,12 @@ Token Tokenizer::getToken() {
         return lastToken;
     }
 
-    if (inputStream.peek() != std::char_traits<char>::eof() && previousDepth > 0) {
+    if (inputStream.peek() == std::char_traits<char>::eof() && previousDepth > 0) {
         Token token;
         token.setLocation(lineNumber,columnNumber);
         token.markAsDedent();
         tokens.push_back(token);
-        previousDepth = depthLevel--;
+        previousDepth--;
         return lastToken = token;
     }
 
@@ -108,7 +108,7 @@ Token Tokenizer::getToken() {
                 token.setLocation(lineNumber,columnNumber);
                 token.markAsDedent();
                 tokens.push_back(token);
-                previousDepth = depthLevel--;
+                previousDepth--;
                 return lastToken = token;
         }
 
@@ -117,7 +117,7 @@ Token Tokenizer::getToken() {
             getCharacter(character);
             continue;
         }
-
+        
         if (character == '\n') {
             const auto newlineLine = lineNumber;
             const auto newlineColumn = columnNumber;
@@ -130,7 +130,6 @@ Token Tokenizer::getToken() {
                 lineContainsToken = false;
                 tokens.push_back(token);
                 previousDepth = depthLevel;
-                depthLevel = 0;
                 return lastToken = token;
             }
 
