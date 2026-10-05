@@ -55,15 +55,21 @@ void PrintStatement::print() const {
 }
 
 // initializer, forStatementCompare, forStatementIncr, forloopStatements
-ForStatement::ForStatement(AssignmentStatement *initializer, ExprNode *forStatementCompare, AssignmentStatement *forStatementIncr, Statements *forLoopStatements) :
-    initializer{initializer}, forStatementCompare{forStatementCompare}, forStatementIncr{forStatementIncr}, forLoopStatements{forLoopStatements}
-{}
+// ForStatement::ForStatement(AssignmentStatement *initializer, ExprNode *forStatementCompare, AssignmentStatement *forStatementIncr, Statements *forLoopStatements) :
+//     initializer{initializer}, forStatementCompare{forStatementCompare}, forStatementIncr{forStatementIncr}, forLoopStatements{forLoopStatements}
+// {}
+
+ForStatement::ForStatement(std::string variable, RangeExpression *range, Statements *suite) :
+    variableName_{variable}, range_{range}, suite_{suite} {}
 
 ForStatement::~ForStatement() {
-    delete initializer;
-    delete forStatementCompare;
-    delete forStatementIncr;
-    delete forLoopStatements;
+    // delete initializer;
+    // delete forStatementCompare;
+    // delete forStatementIncr;
+    // delete forLoopStatements;
+    delete variableName_;
+    delete range_;
+    delete suite_;
 };
 
 // When evaluated, a for statement must:
@@ -74,12 +80,21 @@ ForStatement::~ForStatement() {
 // Evaluate every statement in the loop body.
 // Evaluate the update assignment after each iteration.
 
-void ForStatement::evaluate(SymbolTable &symbolTable) const {
-    initializer->evaluate(symbolTable);
+// initializer->evaluate(symbolTable);
+// while (forStatementCompare->evaluate(symbolTable)) {
+//         forLoopStatements->evaluate(symbolTable);
+//         forStatementIncr->evaluate(symbolTable);
+//     }
 
-    while (forStatementCompare->evaluate(symbolTable)) {
-        forLoopStatements->evaluate(symbolTable);
-        forStatementIncr->evaluate(symbolTable);
+void ForStatement::evaluate(SymbolTable &symbolTable) const {
+
+    EvaluatedRange *evalRange = range_->evaluate(symbolTable);
+
+    int value = evalRange.start();
+    while (evalRange.shouldContinue(value)) {
+        symbolTable.setValueFor(variableName_, value);
+        suite_->evaluate(symbolTable);
+        value = value + evalRange.step();
     }
 }
 

@@ -51,22 +51,6 @@ private:
     ExprNode *relExpr;
 };
 
-// for i in range(3):
-//     i = 100
-//AssignmentStatement *initializer, ExprNode *forStatementCompare, AssignmentStatement *forStatementIncr, Statements *forLoopStatements
-class ForStatement final : public Statement {
-public:
-    ForStatement();
-    ~ForStatement() override;
-    void evaluate(SymbolTable &symbolTable) const override;
-    void print() const override;
-private:
-    AssignmentStatement *initializer;
-    ExprNode *forStatementCompare;
-    AssignmentStatement *forStatementIncr;
-    Statements *forLoopStatements;
-};
-
 class EvaluatedRange {
 public:
     EvaluatedRange(int start, int stop, int step);
@@ -106,5 +90,26 @@ private:
     ExprNode* startExpression;
     ExprNode* stopExpression;
     ExprNode* stepExpression;
+};
+
+// for i in range(3):
+//     i = 100
+//AssignmentStatement *initializer, ExprNode *forStatementCompare, AssignmentStatement *forStatementIncr, Statements *forLoopStatements
+// return new ForStatement(id.identifier(), range, suite);
+
+class ForStatement final : public Statement {
+public:
+    ForStatement(std::string variable, RangeExpression *range, Statements *suite);
+    ~ForStatement() override;
+    void evaluate(SymbolTable &symbolTable) const override;
+    void print() const override;
+private:
+    // AssignmentStatement *initializer;
+    // ExprNode *forStatementCompare;
+    // AssignmentStatement *forStatementIncr;
+    // Statements *forLoopStatements;
+    std::string variableName_;
+    RangeExpression *range_;
+    Statements *suite_;
 };
 #endif // EXPRINTER_STATEMENTS_HPP

@@ -101,7 +101,7 @@ Statements *Parser::suite(){
     if (!indentToken.isIndent()){
         die("Parser::suite", "expected an INDENT", indentToken);
     }
-    Statements *parsedStatements = statements();
+    Statements *parsedStatements = new Statements();
     
     Token dedentToken = tokenizer.getToken();
     if (!dedentToken.isDedent()) {
@@ -207,54 +207,9 @@ ForStatement *Parser::forStatement() {
         die("Parser::forStatement", "expected ' : ", colonToken);
     }
 
-    Statements suite = suite();
+    Statements *suite = suite();
 
-    // return new AssignmentStatement(variable.identifier(), relExpr());
-    AssignmentStatement *variable = new AssignmentStatement(id.identifier(), );
-
-    return new ForStatement(variable, range, suite);
-
-    //if not suite die
-
-
-    // AssignmentStatement *initializer = assignmentStatement();
-
-
-    // ExprNode *forStatementCompare = relExpr();
-
-    // Token semiColon2 = tokenizer.getToken();
-    // if (!semiColon2.isSemicolon()){
-    //     die("Parser::forStatement", "expected ';'", semiColon2);
-    // }
-
-    // AssignmentStatement *forStatementIncr = assignmentStatement();
-
-    // Token closedParenthesis = tokenizer.getToken();
-    // if (!closedParenthesis.isCloseParen()){
-    //     die("Parser::forStatement", "expected ')'", closedParenthesis);
-    // }
-
-    // Token openBracket = tokenizer.getToken();
-    // if (!openBracket.isOpenBracket()) {
-    //     die("Parser::forStatement", "expected '{'", openBracket);
-    // }
-
-    // Token newLine = tokenizer.getToken();
-    // if (!newLine.isNewline()) {
-    //     die("Parser::forStatement", "expected 'NEWLINE'", newLine);
-    // }
-
-    // Statements *forloopStatements = statements();
-
-    // Token closedBracket = tokenizer.getToken();
-    // if (!closedBracket.isClosedBracket()) {
-    //     die("Parser::forStatement", "expected '}'", closedBracket);
-    // }
-
-    // // for ( int a = 0; i < 10 ; i++ ) { statements }
-
-
-    // return new ForStatement(initializer, forStatementCompare, forStatementIncr, forloopStatements);
+    return new ForStatement(id.identifier(), range, suite);
 }
 
 ExprNode *Parser::relExpr() {
