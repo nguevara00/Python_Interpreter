@@ -77,11 +77,10 @@ Token Tokenizer::getToken() {
 
 
     while (inputStream.peek() != std::char_traits<char>::eof()) {
-        char character = static_cast<char>(inputStream.peek());
-
         int spaces = 0;
-
-        while (inputStream.peek() == std::isspace(static_cast<unsigned char>(character)) && !lineContainsToken) {
+        char character = static_cast<char>(inputStream.peek());
+        while (std::isspace(inputStream.peek()) && !lineContainsToken) {
+            
             getCharacter(character);
             ++spaces;
             depthLevel = spaces/4;
@@ -96,7 +95,7 @@ Token Tokenizer::getToken() {
             } 
         }
 
-        if (depthLevel < previousDepth) {
+        if (depthLevel < previousDepth && !lineContainsToken) {
                 Token token;
                 token.setLocation(lineNumber,columnNumber);
                 token.markAsDedent();
@@ -105,6 +104,7 @@ Token Tokenizer::getToken() {
                 return lastToken = token;
             }
 
+        character = static_cast<char>(inputStream.peek());    
         if (isDiscardedWhitespace(character)) {
             getCharacter(character);
             continue;

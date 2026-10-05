@@ -15,6 +15,10 @@ void Token::print(std::ostream &output) const {
         output << "for";
     else if (isPrintKeyword())
         output << "print";
+    else if (isInKeyword())
+        output << "in";
+    else if (isRangeKeyword())
+        output << "range";
     else if (isOpenParen())
         output << '(';
     else if (isCloseParen())

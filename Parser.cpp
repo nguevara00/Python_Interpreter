@@ -51,6 +51,7 @@ Statement *Parser::statement() {
         return compoundStatement();
     }
 
+    tokenizer.ungetToken();
     Statement *simple = simpleStatement();
     Token newline = tokenizer.getToken();
 
@@ -78,6 +79,7 @@ Statement *Parser::simpleStatement() {
     die("Parser::statement", "expected a statement", token);
 }
 
+//not correct - skips an abstraction level. does  not support compound statements.
 Statement *Parser::compoundStatement(){
     Token token = tokenizer.getToken();
     if (token.isForKeyword()) {
@@ -90,6 +92,25 @@ Statement *Parser::compoundStatement(){
 
 Statements *Parser::suite(){
     // <suite> -> NEWLINE INDENT <statements> DEDENT
+    Token newLineToken = tokenizer.getToken();
+    if (!newLineToken.isNewline()){
+        die("Parser::suite", "expected a NEWLINE", newLineToken);
+    }
+
+    Token indentToken = tokenizer.getToken();
+    if (!indentToken.isIndent()){
+        die("Parser::suite", "expected an INDENT", indentToken);
+    }
+    Statements *parsedStatements = statements();
+    
+    Token dedentToken = tokenizer.getToken();
+    if (!dedentToken.isDedent()) {
+        delete parsedStatements;
+        die("Parser::suite", "expected an INDENT", indentToken);
+    }
+    // check for dedent, if no dedent die. 
+    return parsedStatements;
+
 }
 
 AssignmentStatement *Parser::assignmentStatement() {
@@ -116,60 +137,86 @@ PrintStatement *Parser::printStatement() {
 
     return new PrintStatement(relExpr());
 }
+ExprNode *Parser::rangeExpression(){
+    // range -> "range" "(" <range-arguments> ")" 
+}
 
+ExprNode *Parser::rangeArguments(){
+    // <range-arguments> -> <rel-expr> | <rel-expr> "," <rel-expr> | <rel-expr> "," <rel-expr> "," <rel-expr>
+    // return RangeExpression(relExpr());
+
+}
 ForStatement *Parser::forStatement() {
     // <for-statement> -> "for" ( <assign-statement> ; <rel-expr> ; <assign-statement> ) { NEWLINE <statements> }
-    Token keyword = tokenizer.getToken();
-    if (!keyword.isForKeyword()) {
-        die("Parser::printStatement", "expected 'for'", keyword);
-    }
-    Token parenthesis = tokenizer.getToken();
-    if (!parenthesis.isOpenParen()){
-        die("Parser::forStatement", "expected '('", parenthesis);
+    // new grammar:
+    // <for-statement> -> "for" <id> "in" <range> : <suite>
+    Token forToken = tokenizer.getToken();
+    if (!forToken.isForKeyword()) {
+        die("Parser::forStatement", "expected 'for'", forToken);
     }
 
-    AssignmentStatement *initializer = assignmentStatement();
-
-    Token semiColon = tokenizer.getToken();
-    if (!semiColon.isSemicolon()){
-        die("Parser::forStatement", "expected ';'", semiColon);
+    Token id = tokenizer.getToken();
+    if (!id.isIdentifier()) {
+        die("Parser::forStatement", "expected an identifier", id);
     }
 
-    ExprNode *forStatementCompare = relExpr();
-
-    Token semiColon2 = tokenizer.getToken();
-    if (!semiColon2.isSemicolon()){
-        die("Parser::forStatement", "expected ';'", semiColon2);
+    Token inToken = tokenizer.getToken();
+    if (!inToken.isForKeyword()) {
+        die("Parser::forStatement", "expected 'in'", inToken);
     }
 
-    AssignmentStatement *forStatementIncr = assignmentStatement();
-
-    Token closedParenthesis = tokenizer.getToken();
-    if (!closedParenthesis.isCloseParen()){
-        die("Parser::forStatement", "expected ')'", closedParenthesis);
+    Token rangeToken = tokenizer.getToken();
+    if (!rangeToken.isRangeKeyword()) {
+        die("Parser::forStatement", "expected 'range'", rangeToken);
     }
 
-    Token openBracket = tokenizer.getToken();
-    if (!openBracket.isOpenBracket()) {
-        die("Parser::forStatement", "expected '{'", openBracket);
+    Token colonToken = tokenizer.getToken();
+    if (!colonToken.isColon()) {
+        die("Parser::forStatement", "expected ' : ", colonToken);
     }
 
-    Token newLine = tokenizer.getToken();
-    if (!newLine.isNewline()) {
-        die("Parser::forStatement", "expected 'NEWLINE'", newLine);
-    }
-
-    Statements *forloopStatements = statements();
-
-    Token closedBracket = tokenizer.getToken();
-    if (!closedBracket.isClosedBracket()) {
-        die("Parser::forStatement", "expected '}'", closedBracket);
-    }
-
-    // for ( int a = 0; i < 10 ; i++ ) { statements }
+    Token suiteToken = tokenizer.getToken();
+    //if not suite die
 
 
-    return new ForStatement(initializer, forStatementCompare, forStatementIncr, forloopStatements);
+    // AssignmentStatement *initializer = assignmentStatement();
+
+
+    // ExprNode *forStatementCompare = relExpr();
+
+    // Token semiColon2 = tokenizer.getToken();
+    // if (!semiColon2.isSemicolon()){
+    //     die("Parser::forStatement", "expected ';'", semiColon2);
+    // }
+
+    // AssignmentStatement *forStatementIncr = assignmentStatement();
+
+    // Token closedParenthesis = tokenizer.getToken();
+    // if (!closedParenthesis.isCloseParen()){
+    //     die("Parser::forStatement", "expected ')'", closedParenthesis);
+    // }
+
+    // Token openBracket = tokenizer.getToken();
+    // if (!openBracket.isOpenBracket()) {
+    //     die("Parser::forStatement", "expected '{'", openBracket);
+    // }
+
+    // Token newLine = tokenizer.getToken();
+    // if (!newLine.isNewline()) {
+    //     die("Parser::forStatement", "expected 'NEWLINE'", newLine);
+    // }
+
+    // Statements *forloopStatements = statements();
+
+    // Token closedBracket = tokenizer.getToken();
+    // if (!closedBracket.isClosedBracket()) {
+    //     die("Parser::forStatement", "expected '}'", closedBracket);
+    // }
+
+    // // for ( int a = 0; i < 10 ; i++ ) { statements }
+
+
+    // return new ForStatement(initializer, forStatementCompare, forStatementIncr, forloopStatements);
 }
 
 ExprNode *Parser::relExpr() {
@@ -269,3 +316,4 @@ ExprNode *Parser::arithAtom() {
 
     die("Parser::arithAtom", "expected an identifier, integer, or '('", token);
 }
+

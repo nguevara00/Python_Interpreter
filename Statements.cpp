@@ -90,3 +90,95 @@ void ForStatement::print() const {
     // relExpr->print();
     // std::cout << '\n';
 }
+
+EvaluatedRange::EvaluatedRange(int start, int stop, int step) {
+    if (step = 0){
+        std::cout << "EvaluatedRange::Constructor - step must be non-zero, step was: " << step << std::endl;
+        std::exit(-1);
+    }
+    start_ = start;
+    stop_ = stop;
+    step_ = step;
+}
+
+int EvaluatedRange::start() const{
+    return start_;
+}
+
+int EvaluatedRange::stop() const{
+    return stop_;
+}
+
+int EvaluatedRange::step() const{
+    return step_;
+}
+
+bool EvaluatedRange::hasIteration() const{
+    //EvaluatedRange::hasIteration() determines whether the start value belongs to the range.
+    //For a positive step, it returns whether start < stop. For a negative step, it returns whether start > stop.
+    if (step_ > 0){
+        return start_ < stop_;
+    } else {
+        return start_ > stop_;
+    }
+}
+
+bool EvaluatedRange::shouldContinue(int nextValue) const{
+    //EvaluatedRange::shouldContinue(nextValue) applies the same directional boundary test to the value supplied by the ForStatement. 
+    //The start(), stop(), and step() functions return the corresponding concrete values.
+    return (nextValue < stop_);
+}
+
+explicit RangeExpression::RangeExpression(ExprNode* stop){
+    stopExpression = stop;
+
+    Token startToken;
+    startToken.setIntegerValue(0);
+    startExpression = new IntegerLiteral(startToken);
+
+    Token stepToken;
+    stepToken.setIntegerValue(1);
+    stepExpression = new IntegerLiteral(stepToken);
+}
+
+RangeExpression::RangeExpression(ExprNode* start, ExprNode* stop){
+    startExpression = start;
+    stopExpression = stop;
+
+    Token stepToken;
+    stepToken.setIntegerValue(1);
+    stepExpression = new IntegerLiteral(stepToken);
+}
+
+RangeExpression::RangeExpression(ExprNode* start,ExprNode* stop,ExprNode* step){
+    startExpression = start;
+    stopExpression = stop;
+    stepExpression = step;
+}
+
+RangeExpression::~RangeExpression(){
+    delete startExpression;
+    delete stopExpression;
+    delete stepExpression;
+}
+
+RangeExpression::RangeExpression(const RangeExpression&) = delete;
+RangeExpression& RangeExpression::operator=(const RangeExpression&) = delete;
+
+[[nodiscard]] EvaluatedRange RangeExpression::evaluate(const SymbolTable& symbolTable) const{
+    int start = startExpression->evaluate(symbolTable);
+    int stop = stopExpression->evaluate(symbolTable);
+    int step = stepExpression->evaluate(symbolTable);
+    EvaluatedRange range(start,stop,step);
+    return range;
+}
+
+void RangeExpression::print(std::ostream& output) const{
+    //stuff
+}
+
+// private:
+//     ExprNode* startExpression;
+//     ExprNode* stopExpression;
+//     ExprNode* stepExpression;
+// };    

@@ -22,7 +22,8 @@ public:
     Statement* compoundStatement();
     Statements* suite();
 
-    ExprNode *rangeExpr();
+    ExprNode *rangeArguments();
+    ExprNode *rangeExpression();
     ExprNode *relExpr();
     ExprNode *relTerm();
     ExprNode *relPrimary();
@@ -34,9 +35,7 @@ public:
 private:
     Tokenizer &tokenizer;
 
-    [[noreturn]] void die(const std::string &where,
-                          const std::string &message,
-                          const Token &token) const;
+    [[noreturn]] void die(const std::string &where, const std::string &message, const Token &token) const;
 };
 
 #endif // EXPRINTER_PARSER_HPP
