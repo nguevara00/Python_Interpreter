@@ -183,9 +183,8 @@ RangeExpression *Parser::rangeArguments(){
 }
 
 ForStatement *Parser::forStatement() {
-    // <for-statement> -> "for" ( <assign-statement> ; <rel-expr> ; <assign-statement> ) { NEWLINE <statements> }
-    // new grammar:
     // <for-statement> -> "for" <id> "in" <range> : <suite>
+
     Token forToken = tokenizer.getToken();
     if (!forToken.isForKeyword()) {
         die("Parser::forStatement", "expected 'for'", forToken);
@@ -197,21 +196,24 @@ ForStatement *Parser::forStatement() {
     }
 
     Token inToken = tokenizer.getToken();
-    if (!inToken.isForKeyword()) {
+    if (!inToken.isInKeyword()) {
         die("Parser::forStatement", "expected 'in'", inToken);
     }
 
-    Token rangeToken = tokenizer.getToken();
-    if (!rangeToken.isRangeKeyword()) {
-        die("Parser::forStatement", "expected 'range'", rangeToken);
-    }
+    RangeExpression *range = rangeExpression();
 
     Token colonToken = tokenizer.getToken();
     if (!colonToken.isColon()) {
         die("Parser::forStatement", "expected ' : ", colonToken);
     }
 
-    Token suiteToken = tokenizer.getToken();
+    Statements suite = suite();
+
+    // return new AssignmentStatement(variable.identifier(), relExpr());
+    AssignmentStatement *variable = new AssignmentStatement(id.identifier(), );
+
+    return new ForStatement(variable, range, suite);
+
     //if not suite die
 
 

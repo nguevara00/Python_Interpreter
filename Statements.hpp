@@ -51,9 +51,12 @@ private:
     ExprNode *relExpr;
 };
 
+// for i in range(3):
+//     i = 100
+//AssignmentStatement *initializer, ExprNode *forStatementCompare, AssignmentStatement *forStatementIncr, Statements *forLoopStatements
 class ForStatement final : public Statement {
 public:
-    ForStatement(AssignmentStatement *initializer, ExprNode *forStatementCompare, AssignmentStatement *forStatementIncr, Statements *forLoopStatements);
+    ForStatement();
     ~ForStatement() override;
     void evaluate(SymbolTable &symbolTable) const override;
     void print() const override;
@@ -95,9 +98,7 @@ public:
     RangeExpression(const RangeExpression&) = delete;
     RangeExpression& operator=(const RangeExpression&) = delete;
 
-    [[nodiscard]] EvaluatedRange evaluate(
-        const SymbolTable& symbolTable
-    ) const;
+    [[nodiscard]] EvaluatedRange evaluate(const SymbolTable& symbolTable) const;
 
     void print(std::ostream& output) const;
 

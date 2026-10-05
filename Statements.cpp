@@ -23,10 +23,7 @@ void Statements::evaluate(SymbolTable &symbolTable) const {
         statement->evaluate(symbolTable);
 }
 
-AssignmentStatement::AssignmentStatement(
-    std::string variableName,
-    ExprNode *expression)
-    : variableName{std::move(variableName)}, expression{expression} {}
+AssignmentStatement::AssignmentStatement(std::string variableName, ExprNode *expression): variableName{std::move(variableName)}, expression{expression} {}
 
 AssignmentStatement::~AssignmentStatement() {
     delete expression;
