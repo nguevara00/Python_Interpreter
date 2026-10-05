@@ -137,15 +137,51 @@ PrintStatement *Parser::printStatement() {
 
     return new PrintStatement(relExpr());
 }
-ExprNode *Parser::rangeExpression(){
-    // range -> "range" "(" <range-arguments> ")" 
+
+RangeExpression *Parser::rangeExpression() {
+    // <range> -> "range" "(" <range-arguments> ")"
+    Token keyword = tokenizer.getToken();
+    if (!keyword.isRangeKeyword()) {
+        die("Parser::rangeExpression", "expected 'range'", keyword);
+    }
+
+    Token openParen = tokenizer.getToken();
+    if (!openParen.isOpenParen()) {
+        die("Parser::rangeExpression", "expected '('", openParen);
+    }
+
+    RangeExpression *range = rangeArguments();
+
+    Token closedParen = tokenizer.getToken();
+    if (!openParen.isClosedParen()) {
+        die("Parser::rangeExpression", "expected '('", closedParen);
+    }
+
+    return range;
 }
 
-ExprNode *Parser::rangeArguments(){
+RangeExpression *Parser::rangeArguments(){
     // <range-arguments> -> <rel-expr> | <rel-expr> "," <rel-expr> | <rel-expr> "," <rel-expr> "," <rel-expr>
-    // return RangeExpression(relExpr());
+    ExprNode *first = relExpr();
 
+    Token comma = tokenizer.getToken();
+    if (!comma.isComma()) {
+        tokenizer.ungetToken();
+        return new RangeExpression(first);
+    }
+
+    ExprNode *second = relExpr();
+
+    Token secondComma = tokenizer.getToken();
+    if (!comma.isComma()) {
+        tokenizer.ungetToken();
+        return new RangeExpression(second, first);
+    }
+
+    ExprNode *third = relExpr();
+    return new RangeExpression(second, first, third);
 }
+
 ForStatement *Parser::forStatement() {
     // <for-statement> -> "for" ( <assign-statement> ; <rel-expr> ; <assign-statement> ) { NEWLINE <statements> }
     // new grammar:
@@ -308,9 +344,9 @@ ExprNode *Parser::arithAtom() {
         return new Variable(token);
     if (token.isOpenParen()) {
         ExprNode *expression = relExpr();
-        Token closeParen = tokenizer.getToken();
-        if (!closeParen.isCloseParen())
-            die("Parser::arithAtom", "expected ')'", closeParen);
+        Token closedParen = tokenizer.getToken();
+        if (!closedParen.isClosedParen())
+            die("Parser::arithAtom", "expected ')'", closedParen);
         return expression;
     }
 

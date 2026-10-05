@@ -21,7 +21,7 @@ void Token::print(std::ostream &output) const {
         output << "range";
     else if (isOpenParen())
         output << '(';
-    else if (isCloseParen())
+    else if (isClosedParen())
         output << ')';
     else if (isAssignmentOperator())
         output << " = ";

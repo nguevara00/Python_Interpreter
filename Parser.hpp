@@ -22,8 +22,8 @@ public:
     Statement* compoundStatement();
     Statements* suite();
 
-    ExprNode *rangeArguments();
-    ExprNode *rangeExpression();
+    RangeExpression *rangeArguments();
+    RangeExpression *rangeExpression();
     ExprNode *relExpr();
     ExprNode *relTerm();
     ExprNode *relPrimary();

@@ -42,7 +42,7 @@ public:
     [[nodiscard]] char symbol() const { return _symbol; }
 
     [[nodiscard]] bool isOpenParen() const { return _symbol == '('; }
-    [[nodiscard]] bool isCloseParen() const { return _symbol == ')'; }
+    [[nodiscard]] bool isClosedParen() const { return _symbol == ')'; }
     [[nodiscard]] bool isSemicolon() const { return _symbol == ';'; }
     [[nodiscard]] bool isAssignmentOperator() const { return _symbol == '='; }
     [[nodiscard]] bool isMultiplicationOperator() const { return _symbol == '*'; }

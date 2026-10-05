@@ -92,7 +92,7 @@ void ForStatement::print() const {
 }
 
 EvaluatedRange::EvaluatedRange(int start, int stop, int step) {
-    if (step = 0){
+    if (step == 0){
         std::cout << "EvaluatedRange::Constructor - step must be non-zero, step was: " << step << std::endl;
         std::exit(-1);
     }
@@ -129,7 +129,7 @@ bool EvaluatedRange::shouldContinue(int nextValue) const{
     return (nextValue < stop_);
 }
 
-explicit RangeExpression::RangeExpression(ExprNode* stop){
+RangeExpression::RangeExpression(ExprNode* stop){
     stopExpression = stop;
 
     Token startToken;
@@ -161,9 +161,6 @@ RangeExpression::~RangeExpression(){
     delete stopExpression;
     delete stepExpression;
 }
-
-RangeExpression::RangeExpression(const RangeExpression&) = delete;
-RangeExpression& RangeExpression::operator=(const RangeExpression&) = delete;
 
 [[nodiscard]] EvaluatedRange RangeExpression::evaluate(const SymbolTable& symbolTable) const{
     int start = startExpression->evaluate(symbolTable);
