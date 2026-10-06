@@ -91,6 +91,7 @@ Token Tokenizer::getToken() {
         while (std::isspace(inputStream.peek())) { // needs to change to
             
             getCharacter(character);
+            //at this point, we have consumed the space character. instream.peek() will now look at the next thing in the stream.
             ++spaces;
             // depthLevel = spaces/4;
 
