@@ -69,6 +69,15 @@ int Tokenizer::readInteger(char firstDigit) {
 
 Tokenizer::Tokenizer(std::ifstream &stream) : inputStream{stream} {}
 
+/*
+ * Look at the spaces in a newline
+ * Count spaces until we reach a character
+ *      if the number of spaces is greater than the previous token
+ *          push an indent and mark the spaces
+ *      else, the number of space is less than the previous token, and equal to the previous indent level
+ *          pop the indent off the stack and push a dedent onto a dedent stack
+ */
+
 Token Tokenizer::getToken() {
     if (ungottenToken) {
         ungottenToken = false;
@@ -79,16 +88,18 @@ Token Tokenizer::getToken() {
         int spaces = 0;
         char character = static_cast<char>(inputStream.peek());
 
-        while (std::isspace(inputStream.peek()) && !lineContainsToken) {
+        while (std::isspace(inputStream.peek())) { // needs to change to
             
             getCharacter(character);
             ++spaces;
-            depthLevel = spaces/4;
-            
-            if (depthLevel >= previousDepth + 1) {
+            // depthLevel = spaces/4;
+
+            //
+            if (depthLevel >= previousDepth + 1) { // if something is on the stack
                 spaces = 0;
                 Token token;
                 token.setLocation(lineNumber, columnNumber);
+                token.markIndentSpaces(spaces); // new
                 token.markAsIndent();
                 tokens.push_back(token);
                 return lastToken = token;

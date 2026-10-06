@@ -86,6 +86,9 @@ public:
     [[nodiscard]] bool isInteger() const { return _isInteger; }
     [[nodiscard]] int integerValue() const { return _integerValue; }
 
+    [[nodiscard]] int getIndentSpaces() const { return _indentSpaces; }
+    void markIndentSpaces(int& spaces) { _indentSpaces = spaces; }
+
     void print(std::ostream &output) const;
 
 private:
@@ -101,6 +104,7 @@ private:
     int _integerValue{0};
     std::size_t _lineNumber{0};
     std::size_t _columnNumber{0};
+    int _indentSpaces{0};
 };
 
 #endif // ALEXICALANALYZER_TOKEN_HPP
