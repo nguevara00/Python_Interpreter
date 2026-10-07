@@ -70,12 +70,19 @@ int Tokenizer::readInteger(char firstDigit) {
 Tokenizer::Tokenizer(std::ifstream &stream) : inputStream{stream} {}
 
 /*
- * Look at the spaces in a newline
- * Count spaces until we reach a character
- *      if the number of spaces is greater than the previous token
- *          push an indent and mark the spaces
- *      else, the number of space is less than the previous token, and equal to the previous indent level
- *          pop the indent off the stack and push a dedent onto a dedent stack
+ * Make a std::stack<int>
+ * Look at the spaces in a newline, count spaces until we reach a character
+ *      if the number of spaces is greater than the number on top of the stack
+ *          push the #spaces onto the stack
+ *          generate indent token
+ *      if the number of spaces is the same as the top of the stack
+ *          continue
+ *      else, the number of space is less than the top of the stack
+ *          pop the stack       
+ *          if the number of spaces is equal to the top of the stack
+ *              create a dedent token
+ *          else : exit, program error
+ *          
  */
 
 Token Tokenizer::getToken() {
