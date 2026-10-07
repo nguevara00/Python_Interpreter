@@ -71,18 +71,22 @@ Tokenizer::Tokenizer(std::ifstream &stream) : inputStream{stream} {}
 
 /*
  * Make a std::stack<int>
+ * push 0 onto the stack
  * Look at the spaces in a newline, count spaces until we reach a character
  *      if the number of spaces is greater than the number on top of the stack
  *          push the #spaces onto the stack
  *          generate indent token
  *      if the number of spaces is the same as the top of the stack
  *          continue
- *      else, the number of space is less than the top of the stack
- *          pop the stack       
- *          if the number of spaces is equal to the top of the stack
+ *      if number of spaces is less than the top of the stack
+ *              pop the stack
  *              create a dedent token
- *          else : exit, program error
+ *              if the number of spaces is equal to the top of the stack
+ *                  continue
+ *              else : exit, program error
+ * **this doesnt work for lines with multiple dedents, still need to figure that out**
  *          
+
  */
 
 Token Tokenizer::getToken() {
