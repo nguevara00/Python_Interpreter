@@ -54,11 +54,6 @@ void PrintStatement::print() const {
     // std::cout << '\n';
 }
 
-// initializer, forStatementCompare, forStatementIncr, forloopStatements
-// ForStatement::ForStatement(AssignmentStatement *initializer, ExprNode *forStatementCompare, AssignmentStatement *forStatementIncr, Statements *forLoopStatements) :
-//     initializer{initializer}, forStatementCompare{forStatementCompare}, forStatementIncr{forStatementIncr}, forLoopStatements{forLoopStatements}
-// {}
-
 ForStatement::ForStatement(std::string variable, RangeExpression *range, Statements *suite) :
     variableName_{variable}, range_{range}, suite_{suite} {}
 

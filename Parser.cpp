@@ -79,7 +79,6 @@ Statement *Parser::simpleStatement() {
     die("Parser::statement", "expected a statement", token);
 }
 
-//not correct - skips an abstraction level. does  not support compound statements.
 Statement *Parser::compoundStatement(){
     Token token = tokenizer.getToken();
     if (token.isForKeyword()) {

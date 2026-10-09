@@ -92,11 +92,6 @@ private:
     ExprNode* stepExpression;
 };
 
-// for i in range(3):
-//     i = 100
-//AssignmentStatement *initializer, ExprNode *forStatementCompare, AssignmentStatement *forStatementIncr, Statements *forLoopStatements
-// return new ForStatement(id.identifier(), range, suite);
-
 class ForStatement final : public Statement {
 public:
     ForStatement(std::string variable, RangeExpression *range, Statements *suite);
@@ -104,10 +99,6 @@ public:
     void evaluate(SymbolTable &symbolTable) const override;
     void print() const override;
 private:
-    // AssignmentStatement *initializer;
-    // ExprNode *forStatementCompare;
-    // AssignmentStatement *forStatementIncr;
-    // Statements *forLoopStatements;
     std::string variableName_;
     RangeExpression *range_;
     Statements *suite_;
