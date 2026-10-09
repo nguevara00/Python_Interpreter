@@ -98,42 +98,23 @@ Token Tokenizer::getToken() {
     while (inputStream.peek() != std::char_traits<char>::eof()) {
         char character = static_cast<char>(inputStream.peek());
 
-        // So we are going to count the leading spaces an then skip any other whitespace, my tab checker isnt working,
-        if (lineStart) { // the next char begins on a new line so no indents yet
+        if (lineStart) { 
             int spaces = 0;
-            while (inputStream.peek() == ' ') {
+            while (inputStream.peek() == ' ' || inputStream.peek() == '\t') {
+                if (inputStream.peek() == '\t') {
+                    std::cerr << "Indentation error at line " << lineNumber << ": tab found in leading indentation\n";
+                    std::exit(EXIT_FAILURE);
+                }
                 getCharacter(character);
                 ++spaces;
             }
 
-            bool foundTab = false;
-            while (inputStream.peek() != std::char_traits<char>::eof() && isDiscardedWhitespace(static_cast<char>(inputStream.peek()))) {
-                if (inputStream.peek() == '\t') {
-                    foundTab = true;
-                }
-                getCharacter(character);
-            }
-
             lineStart = false;
-
-            if (inputStream.peek() == '\n' || inputStream.peek() == std::char_traits<char>::eof()) {
-                continue;
-            }
-
-            if (foundTab) {
-                std::cerr << "Indentation error at line " << lineNumber << ": tab found instead of an INDENT.\n";
-                std::exit(EXIT_FAILURE);
-            }
-
             currentIndent = spaces;
             checkIndent = true;
             continue;
         }
 
-        // So checkIndent is the bool in our private Token class now
-        // We set the spaces variable to the currentIndent and checkIndent is true since it found a char on the line
-        // When we compare currentIndent > indentStack.top() it checks if we need to either push a new indent OR pop a level and return the dedent token
-        // if the spaces on the new line are equal then checkIndent is just going to continue to make the normal tokens
         if (checkIndent) {
             if (currentIndent > indentStack.top()) {
                 indentStack.push(currentIndent);
@@ -163,7 +144,6 @@ Token Tokenizer::getToken() {
             checkIndent = false;
         }
 
-        // Skips the whitespaces
         if (isDiscardedWhitespace(character)) {
             getCharacter(character);
             continue;
@@ -173,9 +153,9 @@ Token Tokenizer::getToken() {
             const auto newlineLine = lineNumber;
             const auto newlineColumn = columnNumber;
             getCharacter(character);
-            lineStart = true;   // the next character begins a new line
+            lineStart = true;
 
-            if (lineContainsToken) { // checks if a token has been actually made on the line we are looking at
+            if (lineContainsToken) {
                 Token token;
                 token.setLocation(newlineLine, newlineColumn);
                 token.markAsNewline();
