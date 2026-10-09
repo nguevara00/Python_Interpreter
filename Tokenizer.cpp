@@ -67,7 +67,7 @@ int Tokenizer::readInteger(char firstDigit) {
     return value;
 }
 
-Tokenizer::Tokenizer(std::ifstream &stream) : inputStream{stream} {}
+Tokenizer::Tokenizer(std::ifstream &stream) : inputStream{stream} { indentStack.push(0); }
 
 /*
  * Make a std::stack<int>
@@ -96,48 +96,78 @@ Token Tokenizer::getToken() {
     }
 
     while (inputStream.peek() != std::char_traits<char>::eof()) {
-        int spaces = 0;
         char character = static_cast<char>(inputStream.peek());
 
-        while (std::isspace(inputStream.peek())) { // needs to change to
-            
-            getCharacter(character);
-            //at this point, we have consumed the space character. instream.peek() will now look at the next thing in the stream.
-            ++spaces;
-            // depthLevel = spaces/4;
+        if (lineStart) {
+            int spaces = 0;
+            while (inputStream.peek() == ' ') {
+                getCharacter(character);
+                ++spaces;
+            }
 
-            //
-            if (depthLevel >= previousDepth + 1) { // if something is on the stack
-                spaces = 0;
+            bool foundTab = false;
+            while (inputStream.peek() != std::char_traits<char>::eof() && isDiscardedWhitespace(static_cast<char>(inputStream.peek()))) {
+                if (inputStream.peek() == '\t') {
+                    foundTab = true;
+                }
+                getCharacter(character);
+            }
+
+            lineStart = false;
+
+            if (inputStream.peek() == '\n' || inputStream.peek() == std::char_traits<char>::eof()) {
+                continue;
+            }
+
+            if (foundTab) {
+                std::cerr << "Indentation error at line " << lineNumber << ": tab found instead of an INDENT.\n";
+                std::exit(EXIT_FAILURE);
+            }
+
+            currentIndent = spaces;
+            checkIndent = true;
+            continue;
+        }
+
+        if (checkIndent) {
+            if (currentIndent > indentStack.top()) {
+                indentStack.push(currentIndent);
+                checkIndent = false;
                 Token token;
                 token.setLocation(lineNumber, columnNumber);
-                token.markIndentSpaces(spaces); // new
                 token.markAsIndent();
                 tokens.push_back(token);
                 return lastToken = token;
-            } 
-        }
+            }
 
-        if (depthLevel < previousDepth) {
+            if (currentIndent < indentStack.top()) {
+                indentStack.pop();
+
+                if (currentIndent > indentStack.top()) {
+                    std::cerr << "Indentation error at line " << lineNumber << ": dedent does not match any outer indentation level.\n";
+                    std::exit(EXIT_FAILURE);
+                }
+
                 Token token;
-                token.setLocation(lineNumber,columnNumber);
+                token.setLocation(lineNumber, columnNumber);
                 token.markAsDedent();
                 tokens.push_back(token);
-                previousDepth--;
                 return lastToken = token;
-        }
+            }
 
-        character = static_cast<char>(inputStream.peek());
+            checkIndent = false;
+        }
 
         if (isDiscardedWhitespace(character)) {
             getCharacter(character);
             continue;
         }
-        
+
         if (character == '\n') {
             const auto newlineLine = lineNumber;
             const auto newlineColumn = columnNumber;
             getCharacter(character);
+            lineStart = true;   // the next character begins a new line
 
             if (lineContainsToken) {
                 Token token;
@@ -145,12 +175,9 @@ Token Tokenizer::getToken() {
                 token.markAsNewline();
                 lineContainsToken = false;
                 tokens.push_back(token);
-                previousDepth = depthLevel;
-                depthLevel = 0;
                 return lastToken = token;
             }
 
-            // Newlines on blank or whitespace-only lines are insignificant.
             continue;
         }
 
@@ -166,9 +193,12 @@ Token Tokenizer::getToken() {
             std::exit(EXIT_FAILURE);
         }
 
-        if (previousDepth > 0) {
+       if (lineContainsToken) {
+            lineContainsToken = false;
+            token.markAsNewline();
+        } else if (indentStack.size() > 1) {
+            indentStack.pop();
             token.markAsDedent();
-            previousDepth--;
         } else {
             token.markAsEof();
         }

@@ -6,6 +6,7 @@
 #include <iosfwd>
 #include <string>
 #include <vector>
+#include <stack>
 
 #include "Token.hpp"
 
@@ -25,8 +26,15 @@ private:
     std::size_t lineNumber{1};
     std::size_t columnNumber{1};
     bool lineContainsToken{false};
-    int depthLevel{0};
-    int previousDepth{0};
+
+    bool lineStart{true};
+    int currentIndent{0};
+    bool checkIndent{false};
+    std::stack<int> indentStack{};
+    
+    // removing these after implementing the stacks
+    // int depthLevel{0};
+    // int previousDepth{0};
 
     bool getCharacter(char &character);
     std::string readIdentifier(char firstCharacter);

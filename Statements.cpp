@@ -176,5 +176,15 @@ RangeExpression::~RangeExpression(){
 }
 
 void RangeExpression::print(std::ostream& output) const{
-    //stuff
+    output << "range(";
+    if (startExpression != nullptr) {
+        startExpression->print();
+        output << ", ";
+    }
+    stopExpression->print();
+    if (stepExpression != nullptr) {
+        output << ", ";
+        stepExpression->print();
+    }
+    output << ')';
 }
