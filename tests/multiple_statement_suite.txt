@@ -2,7 +2,3 @@ for i in range(4):
     q = 2 * i
     print i
     print q
-
-for i in range(3):
-    j = 67
-    print j - i

@@ -205,7 +205,7 @@ ForStatement *Parser::forStatement() {
 
     Token colonToken = tokenizer.getToken();
     if (!colonToken.isColon()) {
-        die("Parser::forStatement", "expected ' : ", colonToken);
+        die("Parser::forStatement", "expected ':' ", colonToken);
     }
 
     Statements *statementsSuite = suite();

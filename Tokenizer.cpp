@@ -100,6 +100,8 @@ Token Tokenizer::getToken() {
 
         if (lineStart) { 
             int spaces = 0;
+
+            //leading whitespace detection will now also detect tab characters in addition to spaces.
             while (inputStream.peek() == ' ' || inputStream.peek() == '\t') {
                 if (inputStream.peek() == '\t') {
                     std::cerr << "Indentation error at line " << lineNumber << ": tab found in leading indentation\n";
@@ -107,6 +109,12 @@ Token Tokenizer::getToken() {
                 }
                 getCharacter(character);
                 ++spaces;
+            }
+
+            //this was added to fix a bug. if a line had blank spaces and nothing else, the program was treating it as an indentation level
+            if (inputStream.peek() == '\n' || inputStream.peek() == std::char_traits<char>::eof())  {
+                lineStart = false;
+                continue;
             }
 
             lineStart = false;
