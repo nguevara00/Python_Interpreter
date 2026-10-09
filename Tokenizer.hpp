@@ -29,9 +29,9 @@ private:
 
     bool lineStart{true};
     int currentIndent{0};
-    bool checkIndent{false};
-    std::stack<int> indentStack{};
-    
+    bool checkIndent{false}; // this is the bool thats going to compare our current indent on the stack, so if its less than itll be a dedent
+    std::stack<int> indentStack{}; // stacks all of the current indents we have
+
     // removing these after implementing the stacks
     // int depthLevel{0};
     // int previousDepth{0};

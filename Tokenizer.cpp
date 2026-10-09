@@ -70,7 +70,7 @@ int Tokenizer::readInteger(char firstDigit) {
 Tokenizer::Tokenizer(std::ifstream &stream) : inputStream{stream} { indentStack.push(0); }
 
 /*
- * Make a std::stack<int>
+    * Make a std::stack<int>
  * push 0 onto the stack
  * Look at the spaces in a newline, count spaces until we reach a character
  *      if the number of spaces is greater than the number on top of the stack
@@ -98,7 +98,8 @@ Token Tokenizer::getToken() {
     while (inputStream.peek() != std::char_traits<char>::eof()) {
         char character = static_cast<char>(inputStream.peek());
 
-        if (lineStart) {
+        // So we are going to count the leading spaces an then skip any other whitespace, my tab checker isnt working,
+        if (lineStart) { // the next char begins on a new line so no indents yet
             int spaces = 0;
             while (inputStream.peek() == ' ') {
                 getCharacter(character);
@@ -129,6 +130,10 @@ Token Tokenizer::getToken() {
             continue;
         }
 
+        // So checkIndent is the bool in our private Token class now
+        // We set the spaces variable to the currentIndent and checkIndent is true since it found a char on the line
+        // When we compare currentIndent > indentStack.top() it checks if we need to either push a new indent OR pop a level and return the dedent token
+        // if the spaces on the new line are equal then checkIndent is just going to continue to make the normal tokens
         if (checkIndent) {
             if (currentIndent > indentStack.top()) {
                 indentStack.push(currentIndent);
@@ -158,6 +163,7 @@ Token Tokenizer::getToken() {
             checkIndent = false;
         }
 
+        // Skips the whitespaces
         if (isDiscardedWhitespace(character)) {
             getCharacter(character);
             continue;
@@ -169,7 +175,7 @@ Token Tokenizer::getToken() {
             getCharacter(character);
             lineStart = true;   // the next character begins a new line
 
-            if (lineContainsToken) {
+            if (lineContainsToken) { // checks if a token has been actually made on the line we are looking at
                 Token token;
                 token.setLocation(newlineLine, newlineColumn);
                 token.markAsNewline();
