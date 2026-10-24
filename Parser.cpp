@@ -310,3 +310,17 @@ ExprNode *Parser::arithAtom() {
     die("Parser::arithAtom", "expected an identifier, integer, or '('", token);
 }
 
+// change arith atom <arith-atom> -> <id> | <literal> | <string-conversion> | '(' <rel-expr> ')
+
+// <string-converstion> -> "str" '(' <rel-expr> ')'
+
+// <literal> -> <integer> | <double> | <boolean> | <string>
+
+// <double> -> <digits> "." <digits>
+
+// <boolean> -> "True" | "False"
+
+// <string> -> <single-quoted-string> | <double-quoted-string>
+
+// <mult-op> -> "*" | "/" | "//" | "%"
+
