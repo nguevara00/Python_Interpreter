@@ -19,6 +19,12 @@ void Token::print(std::ostream &output) const {
         output << "in";
     else if (isRangeKeyword())
         output << "range";
+    else if (isTrueKeyword())
+        output << " TRUE ";
+    else if (isFalseKeyword())
+        output << " FALSE ";
+    else if (isStrKeyword())
+        output << " STR ";    
     else if (isOpenParen())
         output << '(';
     else if (isClosedParen())
@@ -33,6 +39,8 @@ void Token::print(std::ostream &output) const {
         output << " + ";
     else if (isSubtractionOperator())
         output << " - ";
+    else if (isFloorDivisionOperator())
+        output << " // ";
     else if (isModuloOperator())
         output << " % ";
     else if (isDivisionOperator())

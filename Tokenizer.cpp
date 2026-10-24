@@ -184,8 +184,8 @@ Token Tokenizer::getToken() {
 
         if (isDigit(character)) {
             token.setIntegerValue(readInteger(character));
-        } else if (character == '!' || character == '=' || character == '+' || character == '-' || character == '*' || character == '/' || character == '%' || character == ';' || character == ':' || character == '(' || character == ')' || character == '{' || character == '}' || character == '>' || character == '<' || character == ':' || character == ',') {
-                    if ((character == '=' || character == '<' || character == '>' || character == '!') && inputStream.peek() == '=') {
+        } else if (character == '.' || character == '!' || character == '=' || character == '+' || character == '-' || character == '*' || character == '/' || character == '%' || character == ';' || character == ':' || character == '(' || character == ')' || character == '{' || character == '}' || character == '>' || character == '<' || character == ':' || character == ',') {
+                    if (((character == '=' || character == '<' || character == '>' || character == '!') && inputStream.peek() == '=') || (character == '/' && inputStream.peek() == '/')){
                         multiCharString += character;
                         getCharacter(character);
                         multiCharString += character;
@@ -203,6 +203,12 @@ Token Tokenizer::getToken() {
                 token.setKeyword(Keyword::rangeKeyword);
             else if (identifier == "in")
                 token.setKeyword(Keyword::inKeyword);
+            else if (identifier == "str")
+                token.setKeyword(Keyword::strKeyword);
+            else if (identifier == "TRUE")
+                token.setKeyword(Keyword::trueKeyword);
+            else if (identifier == "FALSE")
+                token.setKeyword(Keyword::falseKeyword);
             else
                 token.setIdentifier(std::move(identifier));
         } else {

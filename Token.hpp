@@ -5,6 +5,7 @@
 #include <iosfwd>
 #include <string>
 #include <utility>
+#include <cstdint>
 
 enum class Keyword {
     none,
@@ -12,6 +13,9 @@ enum class Keyword {
     printKeyword,
     inKeyword,
     rangeKeyword,
+    trueKeyword,
+    falseKeyword,
+    strKeyword
 };
 
 class Token {
@@ -50,6 +54,7 @@ public:
     [[nodiscard]] bool isSubtractionOperator() const { return _symbol == '-'; }
     [[nodiscard]] bool isModuloOperator() const { return _symbol == '%'; }
     [[nodiscard]] bool isDivisionOperator() const { return _symbol == '/'; }
+    [[nodiscard]] bool isFloorDivisionOperator() const { return _multiCharSymbol == "//"; }
 
     // New Relational Operators
     [[nodiscard]] bool isEqualityOperator() const { return _multiCharSymbol == "=="; }
@@ -65,6 +70,11 @@ public:
     [[nodiscard]] bool isColon() const { return _symbol == ':'; }
     [[nodiscard]] bool isComma() const { return _symbol == ','; }
 
+    //New phase 3 tokens
+
+
+    
+
     void setIdentifier(std::string identifier) { _identifier = std::move(identifier); }
     [[nodiscard]] bool isIdentifier() const { return !_identifier.empty(); }
     [[nodiscard]] const std::string &identifier() const { return _identifier; }
@@ -74,16 +84,22 @@ public:
     [[nodiscard]] bool isForKeyword() const { return _keyword == Keyword::forKeyword; }
     [[nodiscard]] bool isPrintKeyword() const { return _keyword == Keyword::printKeyword; }
     
-    //add functions
     [[nodiscard]] bool isInKeyword() const { return _keyword == Keyword::inKeyword; }
     [[nodiscard]] bool isRangeKeyword() const { return _keyword == Keyword::rangeKeyword; }
+    [[nodiscard]] bool isTrueKeyword() const { return _keyword == Keyword::trueKeyword; }
+    [[nodiscard]] bool isFalseKeyword() const { return _keyword == Keyword::falseKeyword; }
+    [[nodiscard]] bool isStrKeyword() const { return _keyword == Keyword::strKeyword; }
     [[nodiscard]] Keyword keyword() const { return _keyword; }
 
-    void setIntegerValue(int value) {
+    void setIntegerValue(std::int64_t value) {
         _integerValue = value;
         _isInteger = true;
     }
     [[nodiscard]] bool isInteger() const { return _isInteger; }
+    [[nodiscard]] bool isString() const { return _isString; }
+    [[nodiscard]] bool isDouble() const { return _isDouble; }
+    [[nodiscard]] bool isBoolean() const { return _isBoolean; }
+
     [[nodiscard]] int integerValue() const { return _integerValue; }
 
     [[nodiscard]] int getIndentSpaces() const { return _indentSpaces; }
@@ -95,13 +111,23 @@ private:
     std::string _identifier{};
     Keyword _keyword{Keyword::none};
     bool _eof{false};
+    bool _isBoolean{false};
     bool _newline{false};
     bool _indent{false};
     bool _dedent{false};
     bool _isInteger{false};
+    bool _isString{false};
+    bool _isDouble{false};
+
     char _symbol{'\0'};
     std::string _multiCharSymbol{'\0'};
-    int _integerValue{0};
+
+    //types
+    std::int64_t _integerValue{0};
+    std::string _strValue{'\0'};
+    double _doubleValue{0};
+    bool _boolValue{false};
+
     std::size_t _lineNumber{0};
     std::size_t _columnNumber{0};
     int _indentSpaces{0};
