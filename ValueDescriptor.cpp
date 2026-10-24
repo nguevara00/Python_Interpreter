@@ -1,90 +1,105 @@
-#ifndef VALUE_DESCRIPTOR_HPP
-#define VALUE_DESCRIPTOR_HPP
-
+#include "ValueDescriptor.hpp"
 #include <cstdint>
 #include <string>
 
-//The descriptors do not provide mutators. Once created, a descriptor continues to represent the same value. An assignment changes a variable by replacing the descriptor stored for that variable.
+    //IntegerValueDescriptor
+    IntegerValueDescriptor::IntegerValueDescriptor(std::int64_t value){
+        integerValue = value;
+    }
+
+    ValueDescriptor::Type IntegerValueDescriptor::type() const{
+        return ValueDescriptor::Type::integer;
+    }
+
+    std::string IntegerValueDescriptor::typeName() const{
+        return "integer";
+    }
+
+    std::string IntegerValueDescriptor::toString() const{
+        return std::to_string(integerValue);
+    }
+
+    ValueDescriptor* IntegerValueDescriptor::clone() const{
+        return new IntegerValueDescriptor(integerValue);
+    }
+
+    std::int64_t IntegerValueDescriptor::value() const{
+        return integerValue;
+    }
 
 
-class ValueDescriptor {
-public:
-    enum class Type {
-        integer,
-        doubleValue,
-        boolean,
-        string
-    };
-    //virtual destructor ensures that deleting a derived descriptor through a ValueDescriptor* invokes the appropriate destructor
-    virtual ~ValueDescriptor() = default;
+    //DoubleValueDescriptor
+    DoubleValueDescriptor::DoubleValueDescriptor(double value){
+        doubleValue = value;
+    }
 
-    //Returns a value that the evaluator can use when it checks operand types
-    [[nodiscard]] virtual Type type() const = 0;
+    ValueDescriptor::Type DoubleValueDescriptor::type() const{
+        return ValueDescriptor::Type::doubleValue;
+    }
 
-    //returns a readable data type name for diagnostic messages
-    [[nodiscard]] virtual std::string typeName() const = 0;
+    std::string DoubleValueDescriptor::typeName() const{
+        return "double";
+    }
 
-    //returns the representation used by print and by the the str convention
-    [[nodiscard]] virtual std::string toString() const = 0;
+    std::string DoubleValueDescriptor::toString() const{
+        return std::to_string(doubleValue);
+    }
 
-    //dynamically allocates and returns a copy of the descriptor. The caller owns the returned pointer
-    [[nodiscard]] virtual ValueDescriptor *clone() const = 0;
-};
+    ValueDescriptor* DoubleValueDescriptor::clone() const{
+        return new DoubleValueDescriptor(doubleValue);
+    }
 
-class IntegerValueDescriptor final : public ValueDescriptor {
-public:
-    explicit IntegerValueDescriptor(std::int64_t value);
+    double DoubleValueDescriptor::value() const{
+        return doubleValue;
+    }
 
-    [[nodiscard]] Type type() const override;
-    [[nodiscard]] std::string typeName() const override;
-    [[nodiscard]] std::string toString() const override;
-    [[nodiscard]] ValueDescriptor *clone() const override;
-    [[nodiscard]] std::int64_t value() const;
 
-private:
-    std::int64_t integerValue;
-};
+    //BooleanValueDescriptor
+    BooleanValueDescriptor::BooleanValueDescriptor(bool value){
+        booleanValue = value;
+    }
 
-class DoubleValueDescriptor final : public ValueDescriptor {
-public:
-    explicit DoubleValueDescriptor(double value);
+    ValueDescriptor::Type BooleanValueDescriptor::type() const {
+        return ValueDescriptor::Type::boolean;
+    }
 
-    [[nodiscard]] Type type() const override;
-    [[nodiscard]] std::string typeName() const override;
-    [[nodiscard]] std::string toString() const override;
-    [[nodiscard]] ValueDescriptor *clone() const override;
-    [[nodiscard]] double value() const;
+    std::string BooleanValueDescriptor::typeName() const{
+        return "boolean";
+    }
 
-private:
-    double doubleValue;
-};
+    std::string BooleanValueDescriptor::toString() const{
+        return std::to_string(booleanValue);
+    }
 
-class BooleanValueDescriptor final : public ValueDescriptor {
-public:
-    explicit BooleanValueDescriptor(bool value);
+    ValueDescriptor* BooleanValueDescriptor::clone() const{
+        return new BooleanValueDescriptor(booleanValue);
+    }
+    bool BooleanValueDescriptor::value() const{
+        return booleanValue;
+    }
 
-    [[nodiscard]] Type type() const override;
-    [[nodiscard]] std::string typeName() const override;
-    [[nodiscard]] std::string toString() const override;
-    [[nodiscard]] ValueDescriptor *clone() const override;
-    [[nodiscard]] bool value() const;
 
-private:
-    bool booleanValue;
-};
+    //StringValueDescriptor
+    StringValueDescriptor::StringValueDescriptor(std::string value){
+        stringValue = value;
+    }
 
-class StringValueDescriptor final : public ValueDescriptor {
-public:
-    explicit StringValueDescriptor(std::string value);
+    ValueDescriptor::Type StringValueDescriptor::type() const{
+        return ValueDescriptor::Type::string;
+    }
 
-    [[nodiscard]] Type type() const override;
-    [[nodiscard]] std::string typeName() const override;
-    [[nodiscard]] std::string toString() const override;
-    [[nodiscard]] ValueDescriptor *clone() const override;
-    [[nodiscard]] const std::string &value() const;
+    std::string StringValueDescriptor::typeName() const{
+        return "string";
+    }
 
-private:
-    std::string stringValue;
-};
+    std::string StringValueDescriptor::toString() const{
+        return stringValue;
+    }
 
-#endif
+    ValueDescriptor* StringValueDescriptor::clone() const{
+        return new StringValueDescriptor(stringValue);
+    }
+
+    const std::string& StringValueDescriptor::value() const{
+        return stringValue;
+    }
