@@ -13,6 +13,7 @@ Token.o: Token.cpp Token.hpp
 Tokenizer.o: Tokenizer.cpp Tokenizer.hpp Token.hpp
 Expr.o: Expr.cpp Expr.hpp Token.hpp SymbolTable.hpp
 SymbolTable.o: SymbolTable.cpp SymbolTable.hpp
+ValueDescriptor.o: ValueDescriptor.cpp ValueDescriptor.hpp
 Parser.o: Parser.cpp Parser.hpp Token.hpp Tokenizer.hpp Expr.hpp Statements.hpp
 Statements.o: Statements.cpp Statements.hpp Expr.hpp SymbolTable.hpp
 main.o: main.cpp Parser.hpp Tokenizer.hpp SymbolTable.hpp
