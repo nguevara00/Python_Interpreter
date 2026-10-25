@@ -1,4 +1,11 @@
-a = "apple"
-b = "boy"
-
-c = a + b
+greeting = "hello world"
+spaces = "   spaced out   "
+apostrophe = "That's the way it's suppose to be done."
+quoted = 'We are finally at "Interpreter phase 3!"'
+mixed = "We are in the 'phase 3 section of our project'"
+print greeting
+print "[" + spaces + "]"
+print apostrophe
+print quoted
+print mixed
+print greeting + " " + apostrophe

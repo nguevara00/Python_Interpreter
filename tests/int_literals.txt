@@ -1,0 +1,14 @@
+zero = 0
+small = 42
+big = 1024
+nearMax = 9223372036854775806
+maxValue = 9223372036854775807
+negMax = -9223372036854775807
+print zero
+print small
+print big
+print nearMax
+print maxValue
+print negMax
+print maxValue - 1
+print -zero

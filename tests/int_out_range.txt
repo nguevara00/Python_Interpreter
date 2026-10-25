@@ -1,0 +1,4 @@
+valid = 9223372036854775807
+print valid
+tooBig = 9223372036854775808
+print tooBig
