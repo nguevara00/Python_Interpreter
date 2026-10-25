@@ -187,17 +187,20 @@ Token Tokenizer::getToken() {
 
             if (inputStream.peek() == '.'){
                 getCharacter(character);
-                std::string resultString;
-                resultString = std::to_string(numberValue);
-                resultString += character;
+                std::string decimalDigits;
 
-                getCharacter(character);
-                int64_t decimalValue = readInteger(character);
-                std::string decimalString = std::to_string(decimalValue);
-                resultString += decimalString;
-                double doubleResult = std::stod(resultString);
-                std::cout << doubleResult;
-                token.setDoubleValue(doubleResult);
+                while (inputStream.peek() != std::char_traits<char>::eof()){
+                    char nextCharacter = static_cast<char>(inputStream.peek());
+                    if (!isDigit(nextCharacter)){
+                        break;
+                    }
+                    getCharacter(nextCharacter);
+                    decimalDigits += nextCharacter;
+                }
+
+
+                std::string resultString = std::to_string(numberValue) + '.' + decimalDigits;
+                token.setDoubleValue(std::stod(resultString));
             } else{
                 token.setIntegerValue(numberValue);
             }
@@ -211,6 +214,7 @@ Token Tokenizer::getToken() {
                         token.setSymbol(character);
                     }
         } else if (character == '\"'){
+            getCharacter(character);
             std::string double_quoted_string{character};
             while (inputStream.peek() != '\"') {
                 getCharacter(character);
@@ -219,6 +223,7 @@ Token Tokenizer::getToken() {
             token.setStringValue(double_quoted_string);
             getCharacter(character);
         } else if (character == '\''){
+            getCharacter(character);
             std::string single_quoted_string{character};
             while (inputStream.peek() != '\'') {
                 getCharacter(character);
@@ -238,6 +243,7 @@ Token Tokenizer::getToken() {
                 token.setKeyword(Keyword::inKeyword);
             else if (identifier == "str")
                 token.setKeyword(Keyword::strKeyword);
+                
             else if (identifier == "True")
                 token.setBooleanValue(bool(true));
             else if (identifier == "False")

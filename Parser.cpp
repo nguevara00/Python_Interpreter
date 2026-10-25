@@ -301,17 +301,20 @@ ExprNode *Parser::arithAtom() {
     }
 
     if (token.isInteger() || token.isDouble() || token.isString() || token.isBoolean()) {
-        literal();
+        tokenizer.ungetToken();
+        return literal();
     }
     if (token.isStrKeyword()){
-        stringConversion();
+        tokenizer.ungetToken();
+        return stringConversion();
     }
     
     if (token.isOpenParen()) {
         ExprNode *expression = relExpr();
         Token closedParen = tokenizer.getToken();
-        if (!closedParen.isClosedParen())
+        if (!closedParen.isClosedParen()) {
             die("Parser::arithAtom", "expected ')'", closedParen);
+        }
         return expression;
     }
 

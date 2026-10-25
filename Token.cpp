@@ -19,10 +19,8 @@ void Token::print(std::ostream &output) const {
         output << "in";
     else if (isRangeKeyword())
         output << "range";
-    else if (isBoolean() == true)
-        output << " TRUE ";
-    else if (isBoolean() == false)
-        output << " FALSE ";
+    else if (isBoolean())
+        output << _boolValue;
     else if (isStrKeyword())
         output << " STR ";    
     else if (isOpenParen())
@@ -69,6 +67,10 @@ void Token::print(std::ostream &output) const {
         output << ':';
     else if (isComma())
         output << ',';
+    else if (isDouble())
+        output << _doubleValue;
+    else if (isString())
+        output << _stringValue;
     else
         output << "uninitialized token";
 }

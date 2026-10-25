@@ -1,6 +1,7 @@
 #include "ValueDescriptor.hpp"
 #include <cstdint>
 #include <string>
+#include <sstream>
 
     //IntegerValueDescriptor
     IntegerValueDescriptor::IntegerValueDescriptor(std::int64_t value){
@@ -42,7 +43,9 @@
     }
 
     std::string DoubleValueDescriptor::toString() const{
-        return std::to_string(doubleValue);
+        std::ostringstream stringOutput;
+        stringOutput << doubleValue;
+        return stringOutput.str();
     }
 
     ValueDescriptor* DoubleValueDescriptor::clone() const{
@@ -68,7 +71,7 @@
     }
 
     std::string BooleanValueDescriptor::toString() const{
-        return std::to_string(booleanValue);
+        return booleanValue ? "True" : "False";
     }
 
     ValueDescriptor* BooleanValueDescriptor::clone() const{
