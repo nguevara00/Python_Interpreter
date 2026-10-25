@@ -1,0 +1,20 @@
+a = 0.5
+b = 3.14
+c = 25.0
+d = 1.2500
+e = 0.05
+f = 3.14159265
+g = 123456.789
+h = 1234567.0
+k = 0.00001
+print a
+print b
+print c
+print d
+print e
+print f
+print g
+print h
+print k
+print -2.5
+print +0.75

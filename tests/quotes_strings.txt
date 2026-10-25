@@ -1,0 +1,13 @@
+single = 'Interpreter Phase 3 single quotes.'
+double = "Interpreter Phase 3 double quotes."
+empty = ""
+emptySingle = ''
+print single
+print double
+print empty
+print emptySingle
+print single == double
+print single != double
+print "[" + empty + "]"
+print "[" + emptySingle + "]"
+print empty == emptySingle
