@@ -46,7 +46,9 @@ PrintStatement::~PrintStatement() {
 };
 
 void PrintStatement::evaluate(SymbolTable &symbolTable) const {
-    std::cout << (relExpr->evaluate(symbolTable))->toString() << std::endl;
+    ValueDescriptor* value = (relExpr->evaluate(symbolTable));
+    std::cout << value->toString() << std::endl;
+    delete value;
 }
 
 void PrintStatement::print() const {
@@ -153,7 +155,7 @@ RangeExpression::~RangeExpression(){
     delete stepExpression;
 }
 
-[[nodiscard]] EvaluatedRange RangeExpression::evaluate(const SymbolTable& symbolTable) const{
+EvaluatedRange RangeExpression::evaluate(const SymbolTable& symbolTable) const{
     int64_t start = 0;
     int64_t stop = 0; 
     int64_t step = 1;

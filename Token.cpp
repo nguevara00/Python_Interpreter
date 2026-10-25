@@ -19,9 +19,9 @@ void Token::print(std::ostream &output) const {
         output << "in";
     else if (isRangeKeyword())
         output << "range";
-    else if (isTrueKeyword())
+    else if (isBoolean() == true)
         output << " TRUE ";
-    else if (isFalseKeyword())
+    else if (isBoolean() == false)
         output << " FALSE ";
     else if (isStrKeyword())
         output << " STR ";    

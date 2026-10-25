@@ -292,13 +292,21 @@ ExprNode *Parser::arithPrimary() {
 }
 
 ExprNode *Parser::arithAtom() {
-    // <arith-atom> -> <id> | <integer> | '(' <rel-expr> ')'
-    Token token = tokenizer.getToken();
 
-    if (token.isInteger())
-        return new IntegerLiteral(token);
-    if (token.isIdentifier())
+    // NEW : <arith-atom> -> <id> | <literal> | <string-conversion> | '(' <rel-expr> ')
+    Token token = tokenizer.getToken();
+    
+    if (token.isIdentifier()) {
         return new Variable(token);
+    }
+
+    if (token.isInteger() || token.isDouble() || token.isString() || token.isBoolean()) {
+        literal();
+    }
+    if (token.isStrKeyword()){
+        stringConversion();
+    }
+    
     if (token.isOpenParen()) {
         ExprNode *expression = relExpr();
         Token closedParen = tokenizer.getToken();
@@ -307,20 +315,58 @@ ExprNode *Parser::arithAtom() {
         return expression;
     }
 
-    die("Parser::arithAtom", "expected an identifier, integer, or '('", token);
+    die("Parser::arithAtom", "expected an identifier, literal, str conversion, or '('", token);
 }
 
-// change arith atom <arith-atom> -> <id> | <literal> | <string-conversion> | '(' <rel-expr> ')
+ExprNode *Parser::literal(){
+    // <literal> -> <integer> | <double> | <boolean> | <string>
 
-// <string-converstion> -> "str" '(' <rel-expr> ')'
+    Token token = tokenizer.getToken();
+    if (token.isInteger())
+        return new IntegerLiteral(token);
 
-// <literal> -> <integer> | <double> | <boolean> | <string>
+    if (token.isDouble()) {
+        return new DoubleLiteral(token);
+    }
 
-// <double> -> <digits> "." <digits>
+    if (token.isBoolean()) {
+        return new BooleanLiteral(token);
+       
+    }
+    if (token.isString()) {
+        return new StringLiteral(token);
+    }
 
-// <boolean> -> "True" | "False"
+    die("Parser::literal", "expected a literal", token);
 
-// <string> -> <single-quoted-string> | <double-quoted-string>
 
-// <mult-op> -> "*" | "/" | "//" | "%"
+}
+
+ExprNode *Parser::stringConversion(){
+    // <string-converstion> -> "str" '(' <rel-expr> ')'
+    Token strToken = tokenizer.getToken();
+    
+    if (!strToken.isStrKeyword()) {
+        die("Parser::strConversion", "expected 'str'", strToken);
+    }
+    Token openToken = tokenizer.getToken(); 
+
+
+    if (openToken.isOpenParen()) {
+        ExprNode *expression = relExpr();
+        Token closedParen = tokenizer.getToken();
+        if (!closedParen.isClosedParen())
+            die("Parser::strConversion", "expected ')'", closedParen);
+        return expression;
+    }
+    tokenizer.ungetToken();
+    die("Parser::strConversion", "expected '('", openToken);
+}
+
+
+
+
+
+
+
 

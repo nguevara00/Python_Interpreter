@@ -13,8 +13,6 @@ enum class Keyword {
     printKeyword,
     inKeyword,
     rangeKeyword,
-    trueKeyword,
-    falseKeyword,
     strKeyword
 };
 
@@ -86,8 +84,6 @@ public:
     
     [[nodiscard]] bool isInKeyword() const { return _keyword == Keyword::inKeyword; }
     [[nodiscard]] bool isRangeKeyword() const { return _keyword == Keyword::rangeKeyword; }
-    [[nodiscard]] bool isTrueKeyword() const { return _keyword == Keyword::trueKeyword; }
-    [[nodiscard]] bool isFalseKeyword() const { return _keyword == Keyword::falseKeyword; }
     [[nodiscard]] bool isStrKeyword() const { return _keyword == Keyword::strKeyword; }
     [[nodiscard]] Keyword keyword() const { return _keyword; }
 
@@ -95,12 +91,31 @@ public:
         _integerValue = value;
         _isInteger = true;
     }
+
+    void setDoubleValue(double value){
+        _doubleValue = value;
+        _isDouble = true;
+    }
+
+
+    void setStringValue(std::string value){
+        _stringValue = value;
+        _isString = true;
+    }
+
+    void setBooleanValue(bool value){
+        _boolValue = value;
+        _isBoolean = true;
+    }
+
+
+
     [[nodiscard]] bool isInteger() const { return _isInteger; }
     [[nodiscard]] bool isString() const { return _isString; }
     [[nodiscard]] bool isDouble() const { return _isDouble; }
     [[nodiscard]] bool isBoolean() const { return _isBoolean; }
 
-    [[nodiscard]] int integerValue() const { return _integerValue; }
+    [[nodiscard]] int64_t integerValue() const { return _integerValue; }
     [[nodiscard]] double doubleValue() const { return _doubleValue; }
     [[nodiscard]] std::string stringValue() const { return _stringValue; }
     [[nodiscard]] bool booleanValue() const { return _boolValue; }

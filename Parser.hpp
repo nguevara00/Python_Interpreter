@@ -31,6 +31,9 @@ public:
     ExprNode *arithTerm();
     ExprNode *arithPrimary();
     ExprNode *arithAtom();
+    ExprNode *literal();
+    ExprNode *stringConversion();
+
 
 private:
     Tokenizer &tokenizer;

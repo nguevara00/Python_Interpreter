@@ -183,10 +183,25 @@ Token Tokenizer::getToken() {
         getCharacter(character);
 
         if (isDigit(character)) {
-            token.setIntegerValue(readInteger(character));
-        } 
-        
-        else if (character == '.' || character == '!' || character == '=' || character == '+' || character == '-' || character == '*' || character == '/' || character == '%' || character == ';' || character == ':' || character == '(' || character == ')' || character == '{' || character == '}' || character == '>' || character == '<' || character == ':' || character == ',') {
+            int64_t numberValue = readInteger(character);
+
+            if (inputStream.peek() == '.'){
+                getCharacter(character);
+                std::string resultString;
+                resultString = std::to_string(numberValue);
+                resultString += character;
+
+                getCharacter(character);
+                int64_t decimalValue = readInteger(character);
+                std::string decimalString = std::to_string(decimalValue);
+                resultString += decimalString;
+                double doubleResult = std::stod(resultString);
+                std::cout << doubleResult;
+                token.setDoubleValue(doubleResult);
+            } else{
+                token.setIntegerValue(numberValue);
+            }
+        } else if (character == '!' || character == '=' || character == '+' || character == '-' || character == '*' || character == '/' || character == '%' || character == ';' || character == ':' || character == '(' || character == ')' || character == '{' || character == '}' || character == '>' || character == '<' || character == ':' || character == ',') {
                     if (((character == '=' || character == '<' || character == '>' || character == '!') && inputStream.peek() == '=') || (character == '/' && inputStream.peek() == '/')){
                         multiCharString += character;
                         getCharacter(character);
@@ -195,6 +210,22 @@ Token Tokenizer::getToken() {
                     } else {
                         token.setSymbol(character);
                     }
+        } else if (character == '\"'){
+            std::string double_quoted_string{character};
+            while (inputStream.peek() != '\"') {
+                getCharacter(character);
+                double_quoted_string += character;
+            }
+            token.setStringValue(double_quoted_string);
+            getCharacter(character);
+        } else if (character == '\''){
+            std::string single_quoted_string{character};
+            while (inputStream.peek() != '\'') {
+                getCharacter(character);
+                single_quoted_string += character;
+            }
+            token.setStringValue(single_quoted_string);
+            getCharacter(character);
         } else if (isIdentifierStart(character)) {
             std::string identifier = readIdentifier(character);
             if (identifier == "for")
@@ -207,10 +238,10 @@ Token Tokenizer::getToken() {
                 token.setKeyword(Keyword::inKeyword);
             else if (identifier == "str")
                 token.setKeyword(Keyword::strKeyword);
-            else if (identifier == "TRUE")
-                token.setKeyword(Keyword::trueKeyword);
-            else if (identifier == "FALSE")
-                token.setKeyword(Keyword::falseKeyword);
+            else if (identifier == "True")
+                token.setBooleanValue(bool(true));
+            else if (identifier == "False")
+                token.setBooleanValue(bool(false));
             else
                 token.setIdentifier(std::move(identifier));
         } else {
