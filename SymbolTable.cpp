@@ -4,6 +4,11 @@
 #include "SymbolTable.hpp"
 
 void SymbolTable::setValueFor(const std::string &variableName, ValueDescriptor* value) {
+    auto found = values.find(variableName);
+
+    if (found != values.end()){
+        delete found->second;
+    }
     values[variableName] = value;
 }
 
@@ -20,5 +25,11 @@ ValueDescriptor* SymbolTable::getValueFor(const std::string &variableName) const
 
 void SymbolTable::print() const {
     for (const auto &[variable, value] : values)
-        std::cout << variable << " = " << value << '\n';
+        std::cout << variable << " = " << value->toString() << '\n';
+}
+
+SymbolTable::~SymbolTable(){
+    for (const auto&[variable, value] : values) {
+        delete value;
+    }
 }

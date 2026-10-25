@@ -1,7 +1,7 @@
 CXX = c++
 CXXFLAGS = -g -std=c++20 -Wall -Wextra -Wpedantic
 TARGET = interpreter.x
-OBJECTS = Token.o Tokenizer.o Parser.o Expr.o SymbolTable.o Statements.o main.o
+OBJECTS = Token.o Tokenizer.o Parser.o Expr.o SymbolTable.o Statements.o main.o ValueDescriptor.o
 
 $(TARGET): $(OBJECTS)
 	$(CXX) $(CXXFLAGS) -o $@ $(OBJECTS)

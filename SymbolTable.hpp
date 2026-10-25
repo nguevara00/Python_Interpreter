@@ -12,6 +12,8 @@ public:
     [[nodiscard]] ValueDescriptor* getValueFor(const std::string &variableName) const;
     void print() const;
 
+    SymbolTable() = default;
+    ~SymbolTable();
     SymbolTable(const SymbolTable &) = delete;
     SymbolTable &operator=(const SymbolTable &) = delete;
     SymbolTable(SymbolTable &&) = delete;

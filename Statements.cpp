@@ -46,7 +46,7 @@ PrintStatement::~PrintStatement() {
 };
 
 void PrintStatement::evaluate(SymbolTable &symbolTable) const {
-    std::cout << relExpr->evaluate(symbolTable) << std::endl;
+    std::cout << (relExpr->evaluate(symbolTable))->toString() << std::endl;
 }
 
 void PrintStatement::print() const {
@@ -62,17 +62,18 @@ ForStatement::~ForStatement() {
     delete suite_;
 };
 
-
+//this is the problem
 
 void ForStatement::evaluate(SymbolTable &symbolTable) const {
 
     EvaluatedRange evalRange = range_->evaluate(symbolTable);
 
-    int nextValue = evalRange.start();
-    IntegerValueDescriptor* nextValueDescriptor = new IntegerValueDescriptor(nextValue);
+    int64_t nextValue = evalRange.start();
+    
 
     if (evalRange.hasIteration()) {
         while (evalRange.shouldContinue(nextValue)) {
+            IntegerValueDescriptor* nextValueDescriptor = new IntegerValueDescriptor(nextValue);
             symbolTable.setValueFor(variableName_, nextValueDescriptor);
             suite_->evaluate(symbolTable);
             nextValue += evalRange.step();
