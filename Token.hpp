@@ -40,7 +40,7 @@ public:
     [[nodiscard]] std::size_t columnNumber() const { return _columnNumber; }
 
     void setSymbol(char symbol) { _symbol = symbol; }
-    void setMultiCharSymbol(std::string& multiCharSymbol) { _multiCharSymbol = multiCharSymbol; }
+    void setMultiCharSymbol(const std::string& multiCharSymbol) { _multiCharSymbol = multiCharSymbol; }
     [[nodiscard]] char symbol() const { return _symbol; }
 
     [[nodiscard]] bool isOpenParen() const { return _symbol == '('; }
@@ -138,11 +138,11 @@ private:
     bool _isDouble{false};
 
     char _symbol{'\0'};
-    std::string _multiCharSymbol{'\0'};
+    std::string _multiCharSymbol{};
 
     //types
     std::int64_t _integerValue{0};
-    std::string _stringValue{'\0'};
+    std::string _stringValue{};
     double _doubleValue{0};
     bool _boolValue{false};
 

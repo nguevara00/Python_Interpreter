@@ -271,7 +271,8 @@ ExprNode *Parser::arithTerm() {
 
     while (token.isMultiplicationOperator() ||
            token.isDivisionOperator() ||
-           token.isModuloOperator()) {
+           token.isModuloOperator() ||
+           token.isFloorDivisionOperator()) {
         ExprNode *right = arithPrimary();
         left = new BinaryExprNode(token, left, right);
         token = tokenizer.getToken();
@@ -352,15 +353,15 @@ ExprNode *Parser::stringConversion(){
     if (!strToken.isStrKeyword()) {
         die("Parser::strConversion", "expected 'str'", strToken);
     }
+
     Token openToken = tokenizer.getToken(); 
-
-
     if (openToken.isOpenParen()) {
         ExprNode *expression = relExpr();
         Token closedParen = tokenizer.getToken();
         if (!closedParen.isClosedParen())
             die("Parser::strConversion", "expected ')'", closedParen);
-        return expression;
+
+        return new StringConversionExpression(strToken, expression);
     }
     tokenizer.ungetToken();
     die("Parser::strConversion", "expected '('", openToken);

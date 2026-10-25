@@ -20,7 +20,7 @@ public:
     SymbolTable &operator=(SymbolTable &&) = delete;
 
 private:
-    std::map<std::string, ValueDescriptor*> values; // please check to make sure this needs to be a pointer and not an object. "descriptor remains owned by the symboltable"
+    std::map<std::string, ValueDescriptor*> values;
 };
 
 #endif // EXPRINTER_SYMBOLTABLE_HPP

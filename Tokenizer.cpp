@@ -179,7 +179,7 @@ Token Tokenizer::getToken() {
 
     } else {
         char character;
-        std::string multiCharString = "\0";
+        std::string multiCharString;
         getCharacter(character);
 
         if (isDigit(character)) {
@@ -198,13 +198,17 @@ Token Tokenizer::getToken() {
                     decimalDigits += nextCharacter;
                 }
 
+                if (decimalDigits.empty()) {
+                    std::cerr << "Expected digits after decimal point at line " << lineNumber << ", column " << columnNumber << ".\n";
+                    std::exit(EXIT_FAILURE);
+                }
 
                 std::string resultString = std::to_string(numberValue) + '.' + decimalDigits;
                 token.setDoubleValue(std::stod(resultString));
             } else{
                 token.setIntegerValue(numberValue);
             }
-        } else if (character == '!' || character == '=' || character == '+' || character == '-' || character == '*' || character == '/' || character == '%' || character == ';' || character == ':' || character == '(' || character == ')' || character == '{' || character == '}' || character == '>' || character == '<' || character == ':' || character == ',') {
+        } else if (character == '!' || character == '=' || character == '+' || character == '-' || character == '*' || character == '/' || character == '%' || character == ';' || character == ':' || character == '(' || character == ')' || character == '{' || character == '}' || character == '>' || character == '<' || character == ',') {
                     if (((character == '=' || character == '<' || character == '>' || character == '!') && inputStream.peek() == '=') || (character == '/' && inputStream.peek() == '/')){
                         multiCharString += character;
                         getCharacter(character);
@@ -214,23 +218,47 @@ Token Tokenizer::getToken() {
                         token.setSymbol(character);
                     }
         } else if (character == '\"'){
-            getCharacter(character);
-            std::string double_quoted_string{character};
-            while (inputStream.peek() != '\"') {
+            std::string double_quoted_string;
+            while (inputStream.peek() != std::char_traits<char>::eof() && inputStream.peek() != '\"') {
+                
+                //checks for invalid characters in strings
+                int nextValue = inputStream.peek();
+                if (nextValue <32 || nextValue > 126 || nextValue == '\\'){
+                    std::cerr << "Invalid character in string at line " << lineNumber << ", column " << columnNumber << ".\n";
+                    std::exit(EXIT_FAILURE);
+                }
+                
                 getCharacter(character);
                 double_quoted_string += character;
             }
+
+            if (inputStream.peek() == std::char_traits<char>::eof()) {
+                std::cerr << "Unterminated string literal at line " << lineNumber << ", column " << columnNumber << ".\n";
+                std::exit(EXIT_FAILURE);
+            }
+            getCharacter(character);
             token.setStringValue(double_quoted_string);
-            getCharacter(character);
+            
         } else if (character == '\''){
-            getCharacter(character);
-            std::string single_quoted_string{character};
-            while (inputStream.peek() != '\'') {
+            std::string single_quoted_string;
+            while (inputStream.peek() != std::char_traits<char>::eof() && inputStream.peek() != '\'') {
+                //checks for invalid characters in strings
+                int nextValue = inputStream.peek();
+                if (nextValue <32 || nextValue > 126 || nextValue == '\\'){
+                    std::cerr << "Invalid character in string at line " << lineNumber << ", column " << columnNumber << ".\n";
+                    std::exit(EXIT_FAILURE);
+                }    
+
                 getCharacter(character);
                 single_quoted_string += character;
             }
-            token.setStringValue(single_quoted_string);
+            if (inputStream.peek() == std::char_traits<char>::eof()) {
+                std::cerr << "Unterminated string literal at line " << lineNumber << ", column " << columnNumber << ".\n";
+                std::exit(EXIT_FAILURE);
+            }
             getCharacter(character);
+            token.setStringValue(single_quoted_string);
+            
         } else if (isIdentifierStart(character)) {
             std::string identifier = readIdentifier(character);
             if (identifier == "for")

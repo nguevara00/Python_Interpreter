@@ -85,4 +85,15 @@ public:
     [[nodiscard]] ValueDescriptor* evaluate(const SymbolTable &symbolTable) const override;
 };
 
-#endif // EXPRINTER_EXPR_HPP
+class StringConversionExpression final : public ExprNode {
+public:
+    StringConversionExpression(Token token, ExprNode* expression);
+    ~StringConversionExpression() override;
+
+    void print() const override;
+    [[nodiscard]] ValueDescriptor* evaluate(const SymbolTable &symbolTable) const override;
+private:
+    ExprNode* _expression;
+};
+
+#endif

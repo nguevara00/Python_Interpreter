@@ -1,6 +1,8 @@
 #include <iostream>
 #include <string>
 #include <utility>
+#include <cstdint>
+#include <stdexcept>
 
 #include "Statements.hpp"
 
@@ -51,9 +53,11 @@ void PrintStatement::evaluate(SymbolTable &symbolTable) const {
     delete value;
 }
 
+//restored print function
 void PrintStatement::print() const {
-    // relExpr->print();
-    // std::cout << '\n';
+    std::cout << "print ";
+    relExpr->print();
+    std::cout << '\n';
 }
 
 ForStatement::ForStatement(std::string variable, RangeExpression *range, Statements *suite) :
@@ -64,14 +68,11 @@ ForStatement::~ForStatement() {
     delete suite_;
 };
 
-//this is the problem
-
 void ForStatement::evaluate(SymbolTable &symbolTable) const {
 
     EvaluatedRange evalRange = range_->evaluate(symbolTable);
 
     int64_t nextValue = evalRange.start();
-    
 
     if (evalRange.hasIteration()) {
         while (evalRange.shouldContinue(nextValue)) {
@@ -83,30 +84,33 @@ void ForStatement::evaluate(SymbolTable &symbolTable) const {
     }
 }
 
+//fixed forstatementprint to match other print statements
 void ForStatement::print() const {
-    // relExpr->print();
-    // std::cout << '\n';
+    std::cout << "for " << variableName_ << " in ";
+    range_->print(std::cout);
+    std::cout << ":\n";
+    suite_->print();
 }
 
-EvaluatedRange::EvaluatedRange(int start, int stop, int step) {
+EvaluatedRange::EvaluatedRange(int64_t start, int64_t stop, int64_t step) {
     if (step == 0){
         std::cout << "EvaluatedRange::Constructor - step must be non-zero, step was: " << step << std::endl;
-        std::exit(-1);
+        throw std::runtime_error("range step cannot be zero");
     }
     start_ = start;
     stop_ = stop;
     step_ = step;
 }
 
-int EvaluatedRange::start() const{
+int64_t EvaluatedRange::start() const{
     return start_;
 }
 
-int EvaluatedRange::stop() const{
+int64_t EvaluatedRange::stop() const{
     return stop_;
 }
 
-int EvaluatedRange::step() const{
+int64_t EvaluatedRange::step() const{
     return step_;
 }
 
@@ -120,7 +124,7 @@ bool EvaluatedRange::hasIteration() const{
     }
 }
 
-bool EvaluatedRange::shouldContinue(int nextValue) const{
+bool EvaluatedRange::shouldContinue(int64_t nextValue) const{
     //EvaluatedRange::shouldContinue(nextValue) applies the same directional boundary test to the value supplied by the ForStatement. 
     //The start(), stop(), and step() functions return the corresponding concrete values.
     if (step_ > 0) {
@@ -161,17 +165,40 @@ EvaluatedRange RangeExpression::evaluate(const SymbolTable& symbolTable) const{
     int64_t step = 1;
     
     if (startExpression != nullptr) {
-        start = static_cast<IntegerValueDescriptor*>(startExpression->evaluate(symbolTable))->value();
+        ValueDescriptor* value = startExpression->evaluate(symbolTable);
+
+        if (value->type() != ValueDescriptor::Type::integer){
+            std::string type = value->typeName();
+            delete value;
+            throw std::runtime_error("range start must be integer, is " + type);
+        }
+
+        start = static_cast<IntegerValueDescriptor*>(value)->value();\
+        delete value;
     }
 
-    stop = static_cast<IntegerValueDescriptor*>(stopExpression->evaluate(symbolTable))->value();
+    ValueDescriptor* value = stopExpression->evaluate(symbolTable);
+    if (value->type() != ValueDescriptor::Type::integer){
+        std::string type = value->typeName();
+        delete value;
+        throw std::runtime_error("range stop must be integer, is " + type);
+    }
+
+    stop = static_cast<IntegerValueDescriptor*>(value)->value();
+    delete value;
 
     if (stepExpression != nullptr){
-        step = static_cast<IntegerValueDescriptor*>(stepExpression->evaluate(symbolTable))->value();
+        ValueDescriptor* value = stepExpression->evaluate(symbolTable);
+        if (value->type() != ValueDescriptor::Type::integer){
+            std::string type = value->typeName();
+            delete value;
+            throw std::runtime_error("range step must be integer, is " + type);
+        }
+        step = static_cast<IntegerValueDescriptor*>(value)->value();
+        delete value;
     }
 
-    EvaluatedRange range(start,stop,step);
-    return range;
+    return EvaluatedRange(start,stop,step);
 }
 
 void RangeExpression::print(std::ostream& output) const{

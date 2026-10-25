@@ -1,2 +1,2 @@
 count = 12
-message = "count = " + count
+message = "count = " + str(count)

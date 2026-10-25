@@ -3,7 +3,7 @@
 
 #include <string>
 #include <vector>
-
+#include <cstdint>
 #include "Expr.hpp"
 #include "SymbolTable.hpp"
 
@@ -53,14 +53,14 @@ private:
 
 class EvaluatedRange {
 public:
-    EvaluatedRange(int start, int stop, int step);
+    EvaluatedRange(int64_t start, int64_t stop, int64_t step);
 
-    [[nodiscard]] int start() const;
-    [[nodiscard]] int stop() const;
-    [[nodiscard]] int step() const;
+    [[nodiscard]] int64_t start() const;
+    [[nodiscard]] int64_t stop() const;
+    [[nodiscard]] int64_t step() const;
 
     [[nodiscard]] bool hasIteration() const;
-    [[nodiscard]] bool shouldContinue(int nextValue) const;
+    [[nodiscard]] bool shouldContinue(int64_t nextValue) const;
 
 private:
     int64_t start_;

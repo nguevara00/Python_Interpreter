@@ -20,7 +20,7 @@ void Token::print(std::ostream &output) const {
     else if (isRangeKeyword())
         output << "range";
     else if (isBoolean())
-        output << _boolValue;
+        output << (_boolValue ? "True" : "False");
     else if (isStrKeyword())
         output << " STR ";    
     else if (isOpenParen())
