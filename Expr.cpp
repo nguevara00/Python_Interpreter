@@ -92,34 +92,12 @@ ValueDescriptor* BinaryExprNode::evaluate(const SymbolTable &symbolTable) const 
         leftDoubleNum = static_cast<const IntegerValueDescriptor*>(leftValue)->value();
         bothDoubles = true;
     }
+
     //both will be doubles
     if (leftDoubleRightInt){
         rightDoubleNum = static_cast<const IntegerValueDescriptor*>(rightValue)->value();
         bothDoubles = true;
     }
-
-    /*
-    
-    //both will be strings
-    if (leftIntRightString){
-        leftStringActual = static_cast<const IntegerValueDescriptor*>(leftValue)->toString();
-        bothStrings = true;
-    }
-    if (rightIntLeftString){
-        rightStringActual = static_cast<const IntegerValueDescriptor*>(rightValue)->toString();
-        bothStrings = true;
-    }
-    
-    if (leftDoubleRightString){
-        leftStringActual = static_cast<const DoubleValueDescriptor*>(leftValue)->toString();
-        bothStrings = true;
-    }
-    if (rightDoubleLeftString){
-        rightStringActual = static_cast<const DoubleValueDescriptor*>(rightValue)->toString();
-        bothStrings = true;
-    }
-    */
-
 
     if (token().isAdditionOperator()) {
         if (bothInts){
@@ -130,6 +108,7 @@ ValueDescriptor* BinaryExprNode::evaluate(const SymbolTable &symbolTable) const 
             return new StringValueDescriptor(leftStringActual + rightStringActual);
         } else if (leftString || rightString){
             throw std::runtime_error("add number and string at line " + std::to_string(token().lineNumber()) + ", column " + std::to_string(token().columnNumber())); 
+        }
     }
 
     if (token().isSubtractionOperator() && !bothStrings){
@@ -342,7 +321,9 @@ ValueDescriptor* BinaryExprNode::evaluate(const SymbolTable &symbolTable) const 
         }
         return new BooleanValueDescriptor(booleanResult);
     }
-
+    delete leftOperand;
+    delete rightOperand;
+    
     throw std::logic_error("unsupported infix operator");
 }
 
@@ -416,5 +397,5 @@ void Variable::print() const {
 }
 
 ValueDescriptor* Variable::evaluate(const SymbolTable &symbolTable) const {
-    (symbolTable.getValueFor(token().identifier()));
+   return (symbolTable.getValueFor(token().identifier()))->clone();
 }

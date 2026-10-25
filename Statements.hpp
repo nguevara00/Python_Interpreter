@@ -63,9 +63,9 @@ public:
     [[nodiscard]] bool shouldContinue(int nextValue) const;
 
 private:
-    int start_;
-    int stop_;
-    int step_;
+    int64_t start_;
+    int64_t stop_;
+    int64_t step_;
 };
 
 class RangeExpression {
