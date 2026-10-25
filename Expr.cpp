@@ -42,10 +42,7 @@ ValueDescriptor* BinaryExprNode::evaluate(const SymbolTable &symbolTable) const 
 
     const bool leftIntRightDouble = leftInt && rightDouble;
     const bool leftDoubleRightInt = leftDouble && rightInt;
-    const bool leftIntRightString = leftInt && rightString;
-    const bool rightIntLeftString = leftString && rightInt;
-    const bool leftDoubleRightString = leftDouble && rightString;
-    const bool rightDoubleLeftString = leftString && rightDouble;
+
 
     int64_t leftNum = 0;
     if (leftInt){
@@ -323,7 +320,7 @@ ValueDescriptor* BinaryExprNode::evaluate(const SymbolTable &symbolTable) const 
     }
     delete leftOperand;
     delete rightOperand;
-    
+
     throw std::logic_error("unsupported infix operator");
 }
 
@@ -333,6 +330,8 @@ void BinaryExprNode::print() const {
     token().print(std::cout);
     rightOperand->print();
     std::cout << ')';
+    //delete rightOperand;
+    //delete leftOperand;
 }
 
 UnaryExprNode::UnaryExprNode(Token token, ExprNode *operand)
@@ -386,8 +385,41 @@ void IntegerLiteral::print() const {
 }
 
 ValueDescriptor* IntegerLiteral::evaluate(const SymbolTable &) const {
-    // creates a new descriptor 
     return new IntegerValueDescriptor(token().integerValue());
+}
+
+//double
+DoubleLiteral::DoubleLiteral(Token token) : ExprNode{std::move(token)} {}
+
+void DoubleLiteral::print() const {
+    token().print(std::cout);
+}
+
+ValueDescriptor* DoubleLiteral::evaluate(const SymbolTable &) const {
+
+    return new DoubleValueDescriptor(token().doubleValue());
+}
+
+//string
+StringLiteral::StringLiteral(Token token) : ExprNode{std::move(token)} {}
+
+void StringLiteral::print() const {
+    token().print(std::cout);
+}
+
+ValueDescriptor* StringLiteral::evaluate(const SymbolTable &) const {
+    return new StringValueDescriptor(token().stringValue());
+}
+
+//boolean
+BooleanLiteral::BooleanLiteral(Token token) : ExprNode{std::move(token)} {}
+
+void BooleanLiteral::print() const {
+    token().print(std::cout);
+}
+
+ValueDescriptor* BooleanLiteral::evaluate(const SymbolTable &) const {
+    return new BooleanValueDescriptor(token().booleanValue());
 }
 
 Variable::Variable(Token token) : ExprNode{std::move(token)} {}

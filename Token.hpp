@@ -101,6 +101,9 @@ public:
     [[nodiscard]] bool isBoolean() const { return _isBoolean; }
 
     [[nodiscard]] int integerValue() const { return _integerValue; }
+    [[nodiscard]] double doubleValue() const { return _doubleValue; }
+    [[nodiscard]] std::string stringValue() const { return _stringValue; }
+    [[nodiscard]] bool booleanValue() const { return _boolValue; }
 
     [[nodiscard]] int getIndentSpaces() const { return _indentSpaces; }
     void markIndentSpaces(int& spaces) { _indentSpaces = spaces; }
@@ -124,7 +127,7 @@ private:
 
     //types
     std::int64_t _integerValue{0};
-    std::string _strValue{'\0'};
+    std::string _stringValue{'\0'};
     double _doubleValue{0};
     bool _boolValue{false};
 

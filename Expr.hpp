@@ -51,6 +51,32 @@ public:
     [[nodiscard]] ValueDescriptor* evaluate(const SymbolTable &symbolTable) const override;
 };
 
+class DoubleLiteral final : public ExprNode {
+public:
+    explicit DoubleLiteral(Token token);
+
+    void print() const override;
+    [[nodiscard]] ValueDescriptor* evaluate(const SymbolTable &symbolTable) const override;
+};
+
+class StringLiteral final : public ExprNode {
+public:
+    explicit StringLiteral(Token token);
+
+    void print() const override;
+    [[nodiscard]] ValueDescriptor* evaluate(const SymbolTable &symbolTable) const override;
+};
+
+class BooleanLiteral final : public ExprNode {
+public:
+    explicit BooleanLiteral(Token token);
+
+    void print() const override;
+    [[nodiscard]] ValueDescriptor* evaluate(const SymbolTable &symbolTable) const override;
+};
+
+
+
 class Variable final : public ExprNode {
 public:
     explicit Variable(Token token);

@@ -69,10 +69,11 @@ void ForStatement::evaluate(SymbolTable &symbolTable) const {
     EvaluatedRange evalRange = range_->evaluate(symbolTable);
 
     int nextValue = evalRange.start();
+    IntegerValueDescriptor* nextValueDescriptor = new IntegerValueDescriptor(nextValue);
 
     if (evalRange.hasIteration()) {
         while (evalRange.shouldContinue(nextValue)) {
-            symbolTable.setValueFor(variableName_, nextValue);
+            symbolTable.setValueFor(variableName_, nextValueDescriptor);
             suite_->evaluate(symbolTable);
             nextValue += evalRange.step();
         }
@@ -152,18 +153,18 @@ RangeExpression::~RangeExpression(){
 }
 
 [[nodiscard]] EvaluatedRange RangeExpression::evaluate(const SymbolTable& symbolTable) const{
-    int start = 0;
-    int stop = 0; 
-    int step = 1;
+    int64_t start = 0;
+    int64_t stop = 0; 
+    int64_t step = 1;
     
     if (startExpression != nullptr) {
-        start = startExpression->evaluate(symbolTable);
+        start = static_cast<IntegerValueDescriptor*>(startExpression->evaluate(symbolTable))->value();
     }
 
-    stop = stopExpression->evaluate(symbolTable);
+    stop = static_cast<IntegerValueDescriptor*>(stopExpression->evaluate(symbolTable))->value();
 
     if (stepExpression != nullptr){
-        step = stepExpression->evaluate(symbolTable);
+        step = static_cast<IntegerValueDescriptor*>(stepExpression->evaluate(symbolTable))->value();
     }
 
     EvaluatedRange range(start,stop,step);
