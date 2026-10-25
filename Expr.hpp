@@ -3,6 +3,7 @@
 
 #include "SymbolTable.hpp"
 #include "Token.hpp"
+#include "ValueDescriptor.hpp"
 
 class ExprNode {
 public:
@@ -11,7 +12,7 @@ public:
 
     [[nodiscard]] const Token &token() const;
     virtual void print() const = 0;
-    [[nodiscard]] virtual int evaluate(const SymbolTable &symbolTable) const = 0;
+    [[nodiscard]] virtual ValueDescriptor* evaluate(const SymbolTable &symbolTable) const = 0;
 
 private:
     Token expressionToken;
@@ -23,7 +24,7 @@ public:
     ~BinaryExprNode() override;
 
     void print() const override;
-    [[nodiscard]] int evaluate(const SymbolTable &symbolTable) const override;
+    [[nodiscard]] ValueDescriptor* evaluate(const SymbolTable &symbolTable) const override;
 
 private:
     ExprNode *leftOperand;
@@ -36,7 +37,7 @@ public:
     ~UnaryExprNode() override;
 
     void print() const override;
-    [[nodiscard]] int evaluate(const SymbolTable &symbolTable) const override;
+    [[nodiscard]] ValueDescriptor* evaluate(const SymbolTable &symbolTable) const override;
 
 private:
     ExprNode *expression;
@@ -47,7 +48,7 @@ public:
     explicit IntegerLiteral(Token token);
 
     void print() const override;
-    [[nodiscard]] int evaluate(const SymbolTable &symbolTable) const override;
+    [[nodiscard]] ValueDescriptor* evaluate(const SymbolTable &symbolTable) const override;
 };
 
 class Variable final : public ExprNode {
@@ -55,7 +56,7 @@ public:
     explicit Variable(Token token);
 
     void print() const override;
-    [[nodiscard]] int evaluate(const SymbolTable &symbolTable) const override;
+    [[nodiscard]] ValueDescriptor* evaluate(const SymbolTable &symbolTable) const override;
 };
 
 #endif // EXPRINTER_EXPR_HPP

@@ -47,15 +47,15 @@ std::string Tokenizer::readIdentifier(char firstCharacter) {
     return identifier;
 }
 
-int Tokenizer::readInteger(char firstDigit) {
-    int value = firstDigit - '0';
+std::int64_t Tokenizer::readInteger(char firstDigit) {
+    std::int64_t value = firstDigit - '0';
     while (inputStream.peek() != std::char_traits<char>::eof()) {
         char character = static_cast<char>(inputStream.peek());
         if (!isDigit(character))
             break;
 
         const int digit = character - '0';
-        if (value > (std::numeric_limits<int>::max() - digit) / 10) {
+        if (value > (std::numeric_limits<std::int64_t>::max() - digit) / 10) {
             std::cerr << "Integer literal is too large at line " << lineNumber
                       << ", column " << columnNumber << ".\n";
             std::exit(EXIT_FAILURE);
@@ -184,7 +184,9 @@ Token Tokenizer::getToken() {
 
         if (isDigit(character)) {
             token.setIntegerValue(readInteger(character));
-        } else if (character == '.' || character == '!' || character == '=' || character == '+' || character == '-' || character == '*' || character == '/' || character == '%' || character == ';' || character == ':' || character == '(' || character == ')' || character == '{' || character == '}' || character == '>' || character == '<' || character == ':' || character == ',') {
+        } 
+        
+        else if (character == '.' || character == '!' || character == '=' || character == '+' || character == '-' || character == '*' || character == '/' || character == '%' || character == ';' || character == ':' || character == '(' || character == ')' || character == '{' || character == '}' || character == '>' || character == '<' || character == ':' || character == ',') {
                     if (((character == '=' || character == '<' || character == '>' || character == '!') && inputStream.peek() == '=') || (character == '/' && inputStream.peek() == '/')){
                         multiCharString += character;
                         getCharacter(character);

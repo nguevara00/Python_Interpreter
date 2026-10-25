@@ -15,6 +15,7 @@ public:
         boolean,
         string
     };
+
     //virtual destructor ensures that deleting a derived descriptor through a ValueDescriptor* invokes the appropriate destructor
     virtual ~ValueDescriptor() = default;
 

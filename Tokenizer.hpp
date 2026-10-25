@@ -34,7 +34,7 @@ private:
 
     bool getCharacter(char &character);
     std::string readIdentifier(char firstCharacter);
-    int readInteger(char firstDigit);
+    std::int64_t readInteger(char firstDigit);
 
     static bool isDigit(char character);
     static bool isIdentifierStart(char character);
