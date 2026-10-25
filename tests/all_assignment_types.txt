@@ -1,0 +1,16 @@
+integerValue = 42
+doubleValue = 2.5
+trueValue = True
+falseValue = False
+stringValue = "CS 460"
+emptyValue = ''
+print integerValue
+print doubleValue
+print trueValue
+print falseValue
+print stringValue
+print "[" + emptyValue + "]"
+copyInteger = integerValue
+copyString = stringValue
+print copyInteger
+print copyString

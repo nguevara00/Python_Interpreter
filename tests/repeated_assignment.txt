@@ -1,0 +1,17 @@
+x = 1
+print x
+x = 2
+print x
+x = x + 10
+print x
+x = x * 2
+print x
+count = 0
+count = count + 1
+count = count + 1
+count = count + 1
+print count
+name = "a"
+name = name + "b"
+name = name + "c"
+print name

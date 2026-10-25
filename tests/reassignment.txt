@@ -1,0 +1,14 @@
+value = 10
+print value
+value = "ten"
+print value
+value = False
+print value
+value = 10.5
+print value
+value = value * 2
+print value
+value = str(value)
+print value + "!"
+value = 7 == 7
+print value
