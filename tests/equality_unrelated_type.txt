@@ -1,0 +1,15 @@
+print 4 == "four"
+print 4 != "four"
+print True == 1
+print True != 1
+print False == 0
+print 1.0 == True
+print "True" == True
+print "4" == 4
+print "" == False
+print 0 == ""
+n = 4
+s = "4"
+print n == s
+print n != s
+print str(n) == s

@@ -1,0 +1,16 @@
+i = 5
+d = 2.5
+print +i
+print -i
+print +d
+print -d
+print -(-i)
+print -(-d)
+print -0
+print -0.0
+print +(-3)
+print -(i + 2)
+print -d * 2
+neg = -i
+print neg
+print -neg

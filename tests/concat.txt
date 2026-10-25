@@ -1,0 +1,14 @@
+course = "CS " + "460"
+print course
+print "Hello" + ", " + "World"
+print "" + "only"
+print "only" + ''
+print 'single' + "double"
+first = "Concatenation"
+second = first + " success."
+print second
+print "count = " + str(4)
+print "pi = " + str(3.14)
+print "flag = " + str(True)
+print str(1) + str(2)
+print ("a" + "b") + ("c" + "d")

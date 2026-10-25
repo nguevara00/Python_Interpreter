@@ -1,0 +1,23 @@
+i = 42
+d = 2.5
+t = True
+f = False
+s = "hello"
+e = ""
+print str(i)
+print str(d)
+print str(t)
+print str(f)
+print str(s)
+print "[" + str(e) + "]"
+print str(-7)
+print str(0.125)
+print str(1 + 2)
+print str(5 / 2)
+print str(3 == 3)
+print str(str(10))
+converted = str(i)
+print converted + "!"
+print str(i) == "42"
+print str(d) == "2.5"
+print str(t) == "True"

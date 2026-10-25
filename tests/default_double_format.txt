@@ -1,0 +1,25 @@
+print 1.5
+print 1.2500
+print 25.0
+print 0.1
+print 0.1 + 0.2
+print 3.14159265358979
+print 2.718281828
+print 100000.0
+print 999999.0
+print 1000000.0
+print 123456789.0
+print 0.001
+print 0.0001
+print 0.00001
+print 0.000012345
+print 1.0 / 3.0
+print 2.0 / 3.0
+print 10.0 / 4.0
+print -0.5
+print -1234567.0
+print 1.0 / 1000000.0
+x = 1234567.0
+print x
+print str(x)
+print str(x) == "1.23457e+06"

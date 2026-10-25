@@ -1,0 +1,17 @@
+count = 12
+ratio = 0.75
+ready = True
+done = False
+label = "CS 460"
+print count
+print ratio
+print ready
+print done
+print label
+print -count
+print count * ratio
+print count > 10
+print label + " rocks"
+print 'single quoted'
+print 1000000
+print 2.0
