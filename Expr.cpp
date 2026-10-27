@@ -189,7 +189,7 @@ ValueDescriptor* BinaryExprNode::evaluate(const SymbolTable &symbolTable) const 
     }
 
     if (token().isNotEqualOperator()) {
-        bool booleanResult = false;
+        bool booleanResult = true;
 
         if (bothInts) {
             booleanResult = leftNum != rightNum;
