@@ -1,0 +1,7 @@
+a = "string"
+b = False
+c = 1
+
+
+f = b > c
+d = a > c

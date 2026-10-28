@@ -98,7 +98,7 @@ ValueDescriptor* BinaryExprNode::evaluate(const SymbolTable &symbolTable) const 
             return new StringValueDescriptor(leftStringActual + rightStringActual);
         }
 
-        throw std::runtime_error("operator + cannot be applied to " + leftTypeName + "and " + rightTypeName + "at " + location);
+        throw std::runtime_error("operator + cannot be applied to " + leftTypeName + " and " + rightTypeName + "at " + location);
     }
 
     if (token().isSubtractionOperator() && !bothStrings){
@@ -108,7 +108,7 @@ ValueDescriptor* BinaryExprNode::evaluate(const SymbolTable &symbolTable) const 
         if (bothDoubles){
             return new DoubleValueDescriptor(leftDoubleNum - rightDoubleNum);
         }
-        throw std::runtime_error("operator - cannot be applied to " + leftTypeName + "and " + rightTypeName + "at " + location);
+        throw std::runtime_error("operator - cannot be applied to " + leftTypeName + " and " + rightTypeName + "at " + location);
     }
 
     if (token().isMultiplicationOperator() && !bothStrings){
@@ -118,13 +118,13 @@ ValueDescriptor* BinaryExprNode::evaluate(const SymbolTable &symbolTable) const 
         if (bothDoubles) {
             return new DoubleValueDescriptor(leftDoubleNum * rightDoubleNum);
         }
-        throw std::runtime_error("operator * cannot be applied to " + leftTypeName + "and " + rightTypeName + "at " + location);
+        throw std::runtime_error("operator * cannot be applied to " + leftTypeName + " and " + rightTypeName + "at " + location);
 
     }
 
     if (token().isDivisionOperator()) {
         if (!bothInts && !bothDoubles){
-            throw std::runtime_error("division with non-numeric operands " + leftTypeName + "and " + rightTypeName + location);  
+            throw std::runtime_error("division with non-numeric operands " + leftTypeName + " and " + rightTypeName + location);  
         }
         if (rightDoubleNum == 0){
             throw std::runtime_error("division by zero at line " + location);   
@@ -135,7 +135,7 @@ ValueDescriptor* BinaryExprNode::evaluate(const SymbolTable &symbolTable) const 
 
     if (token().isModuloOperator()){
         if (!bothInts) {
-            throw std::runtime_error("modulo with non-integer operands" + leftTypeName + "and " + rightTypeName + location);   
+            throw std::runtime_error("modulo with non-integer operands" + leftTypeName + " and " + rightTypeName + location);   
         }
         if (rightNum == 0){
             throw std::runtime_error("modulo by zero " + location);  

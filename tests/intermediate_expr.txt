@@ -1,0 +1,1 @@
+a = str(False == str(False))
