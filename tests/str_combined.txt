@@ -1,0 +1,6 @@
+apple = "apple"
+b = True
+c = 1
+
+d = apple + str(b) + str(c)
+print d

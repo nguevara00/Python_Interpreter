@@ -1,0 +1,16 @@
+a = 1
+b = 2
+c = -1
+
+print a == a 
+print a > b
+print a > c
+print c < b
+
+d = "string"
+e = "strung"
+f = "strang"
+
+print d < e
+print f < d
+print d >= f
