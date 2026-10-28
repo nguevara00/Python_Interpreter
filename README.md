@@ -10,8 +10,8 @@ The project was entirely pair-programmed
 Meeting Times:  
 
 Phase 1:  
-Sun 9/20 1:00pm - 9:30pm (Discord)  
-Mon 9/21 11am - 12pm (Discord)
+Sun 9/20 1:00pm - 9:30pm (Discord) implementation 
+Mon 9/21 11am - 12pm (Discord) writing tests and fixing bugs
 
 Phase 2:  
 Sun 10/4 11a-7pm (Discord) main implementation  
@@ -20,6 +20,8 @@ Thurs 10/8 9p - 12a (Discord) writing tests and fixing bugs
 
 Phase 3:  
 Sat 10/24 2pm-12am (Discord) implementation
+Sun 10/25 10a-12p writing tests and fixing bugs (Parker)
+Tues 10/27 9p-11p writing tests and fixing bugs (Nick)
 
 Github Repository
 =================
