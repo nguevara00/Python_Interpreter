@@ -367,6 +367,19 @@ ExprNode *Parser::stringConversion(){
     die("Parser::strConversion", "expected '('", openToken);
 }
 
+/*
+<simple-statement> -> <assignment-statement> | <print-statement> | <append-statement>
+
+<compound-statement> -> <for-statement> | <if-statement> | <while-statement>
+
+<if-statement> -> "if" <rel-expr> ":" <suite> { "elif" <rel-expr> ":" <suite> } [ "else" ":" <suite> ]
+
+<while-statement> -> "while" <rel-expr> ":" <suite>
+
+<append-statement> -> "append" "(" <rel-expr> "," <rel-expr> ")"
+
+*/
+
 
 
 
