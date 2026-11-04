@@ -276,7 +276,7 @@ IfStatement* Parser::ifStatement(){
         conditions.push_back(relExpr());
         colonToken = tokenizer.getToken();
         if (!colonToken.isColon()){
-            die("Parser::ifStatement", "expected ':'", ifToken);
+            die("Parser::ifStatement", "expected ':'", colonToken);
         }
         suites.push_back(suite());
         elifToken = tokenizer.getToken();
@@ -286,7 +286,7 @@ IfStatement* Parser::ifStatement(){
     if (elifToken.isElseKeyword()){
         colonToken = tokenizer.getToken();
         if (!colonToken.isColon()){
-            die("Parser::ifStatement", "expected ':'", ifToken);
+            die("Parser::ifStatement", "expected ':'", colonToken);
         }
         elseSuite = suite();
     } else {
