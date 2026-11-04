@@ -293,7 +293,7 @@ IfStatement* Parser::ifStatement(){
         tokenizer.ungetToken();
     }
 
-    return new IfStatement(std::move(conditions), std::move(suites), elseSuite);
+    return new IfStatement(conditions, suites, elseSuite);
 }
 
 WhileStatement* Parser::whileStatement(){
@@ -453,17 +453,9 @@ ExprNode *Parser::stringConversion(){
     die("Parser::strConversion", "expected '('", openToken);
 }
 
-/*
-<simple-statement> -> <assignment-statement> | <print-statement> | <append-statement>
+// NOT YET IMPLEMENTED
+// <while-statement> -> "while" <rel-expr> ":" <suite> 
 
-<compound-statement> -> <for-statement> | <if-statement> | <while-statement>
-
-<if-statement> -> "if" <rel-expr> ":" <suite> { "elif" <rel-expr> ":" <suite> } [ "else" ":" <suite> ]
-
-<while-statement> -> "while" <rel-expr> ":" <suite>
-
-
-*/
 
 
 

@@ -215,7 +215,7 @@ void RangeExpression::print(std::ostream& output) const{
     output << ')';
 }
 
-IfStatement::IfStatement(std::vector<ExprNode*> conditions, std::vector<Statements*> suites, Statements* elseSuite) : conditions_{std::move(conditions)}, suites_{std::move(suites)}, elseSuite_{elseSuite}{}
+IfStatement::IfStatement(std::vector<ExprNode*> conditions, std::vector<Statements*> suites, Statements* elseSuite) : conditions_{conditions}, suites_{suites}, elseSuite_{elseSuite}{}
 IfStatement::~IfStatement(){
     for (ExprNode* condition: conditions_){
         delete condition;
