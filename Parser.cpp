@@ -46,7 +46,7 @@ Statement *Parser::statement() {
     // statement -> simple statement newline | compound statement
     Token token = tokenizer.getToken();
 
-    if (token.isForKeyword()) {
+    if (token.isForKeyword() || token.isIfKeyword() || token.isWhileKeyword()) {
         tokenizer.ungetToken();
         return compoundStatement();
     }
@@ -64,6 +64,7 @@ Statement *Parser::statement() {
 }
 
 Statement *Parser::simpleStatement() {
+    // <simple-statement> -> <assignment-statement> | <print-statement> | <append-statement>
     Token token = tokenizer.getToken();
 
     if (token.isIdentifier()) {
@@ -76,14 +77,29 @@ Statement *Parser::simpleStatement() {
         return printStatement();
     }
 
+    if (token.isAppendKeyword()){
+        tokenizer.ungetToken();
+        return appendStatement();
+    }
+
     die("Parser::statement", "expected a statement", token);
 }
 
 Statement *Parser::compoundStatement(){
+    // <compound-statement> -> <for-statement> | <if-statement> | <while-statement>
+
     Token token = tokenizer.getToken();
     if (token.isForKeyword()) {
         tokenizer.ungetToken();
         return forStatement();
+    }
+    if (token.isIfKeyword()){
+        tokenizer.ungetToken();
+        return ifStatement();
+    }
+    if (token.isWhileKeyword()){
+        tokenizer.ungetToken();
+        return whileStatement();
     }
 
     die("Parser::statement", "expected a for statement", token);
@@ -138,6 +154,29 @@ PrintStatement *Parser::printStatement() {
     return new PrintStatement(relExpr());
 }
 
+AppendStatement* Parser::appendStatement(){
+    //<append-statement> -> "append" "(" <rel-expr> "," <rel-expr> ")"
+    Token keyword = tokenizer.getToken();
+    if (!keyword.isAppendKeyword()) {
+        die("Parser::appendStatement", "expected 'append'", keyword);
+    }
+    Token openParen = tokenizer.getToken();
+    if (!openParen.isOpenParen()){
+        die("Parser::appendStatement", "expected '('", openParen);
+    }
+    ExprNode* first = relExpr();
+    Token comma = tokenizer.getToken();
+    if (!comma.isComma()) {
+        tokenizer.ungetToken();
+        die("Parser:appendStatement", "expected ','", comma);
+    }
+    ExprNode* second = relExpr();
+    Token closedParen = tokenizer.getToken();
+    if (!closedParen.isClosedParen()) {
+        die("Parser::rangeExpression", "expected ')'", closedParen);
+    }
+    return new AppendStatement(first,second);
+}
 RangeExpression *Parser::rangeExpression() {
     // <range> -> "range" "(" <range-arguments> ")"
     Token keyword = tokenizer.getToken();
@@ -210,6 +249,55 @@ ForStatement *Parser::forStatement() {
     Statements *statementsSuite = suite();
 
     return new ForStatement(id.identifier(), range, statementsSuite);
+}
+
+IfStatement* Parser::ifStatement(){
+    //<if-statement> -> "if" <rel-expr> ":" <suite> { "elif" <rel-expr> ":" <suite> } [ "else" ":" <suite> ]
+    
+    Token ifToken = tokenizer.getToken();
+    if (!ifToken.isIfKeyword()){
+        die("Parser::ifStatement", "expected 'if'", ifToken);
+    }
+
+    std::vector<ExprNode*> conditions;
+    std::vector<Statements*> suites;
+
+    conditions.push_back(relExpr());
+
+    Token colonToken = tokenizer.getToken();
+    if (!colonToken.isColon()){
+        die("Parser::ifStatement", "expected ':'", ifToken);
+    }
+    
+    suites.push_back(suite());
+
+    Token elifToken = tokenizer.getToken();
+    while (elifToken.isElifKeyword()){
+        conditions.push_back(relExpr());
+        colonToken = tokenizer.getToken();
+        if (!colonToken.isColon()){
+            die("Parser::ifStatement", "expected ':'", ifToken);
+        }
+        suites.push_back(suite());
+        elifToken = tokenizer.getToken();
+    }
+
+    Statements* elseSuite = nullptr;
+    if (elifToken.isElseKeyword()){
+        colonToken = tokenizer.getToken();
+        if (!colonToken.isColon()){
+            die("Parser::ifStatement", "expected ':'", ifToken);
+        }
+        elseSuite = suite();
+    } else {
+        tokenizer.ungetToken();
+    }
+
+    return new IfStatement(std::move(conditions), std::move(suites), elseSuite);
+}
+
+WhileStatement* Parser::whileStatement(){
+    //<while-statement> -> "while" <rel-expr> ":" <suite>
 }
 
 ExprNode *Parser::relExpr() {
@@ -342,8 +430,6 @@ ExprNode *Parser::literal(){
     }
 
     die("Parser::literal", "expected a literal", token);
-
-
 }
 
 ExprNode *Parser::stringConversion(){
@@ -376,7 +462,6 @@ ExprNode *Parser::stringConversion(){
 
 <while-statement> -> "while" <rel-expr> ":" <suite>
 
-<append-statement> -> "append" "(" <rel-expr> "," <rel-expr> ")"
 
 */
 

@@ -1,0 +1,13 @@
+condition = False
+
+if condition:
+    print str("If condition true!")
+else:
+    print str("If condition false!")
+
+condition2 = True
+
+if condition2:
+    print str("If condition2 true!")
+else:
+    print str("If condition2 false!")

@@ -13,7 +13,12 @@ enum class Keyword {
     printKeyword,
     inKeyword,
     rangeKeyword,
-    strKeyword
+    strKeyword,
+    appendKeyword,
+    ifKeyword,
+    whileKeyword,
+    elifKeyword,
+    elseKeyword
 };
 
 class Token {
@@ -54,7 +59,6 @@ public:
     [[nodiscard]] bool isDivisionOperator() const { return _symbol == '/'; }
     [[nodiscard]] bool isFloorDivisionOperator() const { return _multiCharSymbol == "//"; }
 
-    // New Relational Operators
     [[nodiscard]] bool isEqualityOperator() const { return _multiCharSymbol == "=="; }
     [[nodiscard]] bool isNotEqualOperator() const { return _multiCharSymbol == "!="; }
     [[nodiscard]] bool isGreaterThanOperator() const { return _symbol == '>'; }
@@ -64,12 +68,8 @@ public:
     [[nodiscard]] bool isOpenBracket() const { return _symbol == '{'; }
     [[nodiscard]] bool isClosedBracket() const { return _symbol == '}'; }
     
-    //New phase 2 tokens
     [[nodiscard]] bool isColon() const { return _symbol == ':'; }
     [[nodiscard]] bool isComma() const { return _symbol == ','; }
-
-    //New phase 3 tokens
-
 
     
 
@@ -85,6 +85,13 @@ public:
     [[nodiscard]] bool isInKeyword() const { return _keyword == Keyword::inKeyword; }
     [[nodiscard]] bool isRangeKeyword() const { return _keyword == Keyword::rangeKeyword; }
     [[nodiscard]] bool isStrKeyword() const { return _keyword == Keyword::strKeyword; }
+
+    [[nodiscard]] bool isAppendKeyword() const { return _keyword == Keyword::appendKeyword; }
+    [[nodiscard]] bool isIfKeyword() const { return _keyword == Keyword::ifKeyword; }
+    [[nodiscard]] bool isWhileKeyword() const { return _keyword == Keyword::whileKeyword; }
+    [[nodiscard]] bool isElifKeyword() const { return _keyword == Keyword::elifKeyword; }
+    [[nodiscard]] bool isElseKeyword() const { return _keyword == Keyword::elseKeyword; }
+
     [[nodiscard]] Keyword keyword() const { return _keyword; }
 
     void setIntegerValue(std::int64_t value) {
@@ -107,8 +114,6 @@ public:
         _boolValue = value;
         _isBoolean = true;
     }
-
-
 
     [[nodiscard]] bool isInteger() const { return _isInteger; }
     [[nodiscard]] bool isString() const { return _isString; }

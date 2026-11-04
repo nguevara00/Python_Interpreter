@@ -1,0 +1,13 @@
+ifCondition = False
+elifCondition1 = False
+elifCondition2 = False
+elifCondition3 = True
+
+if ifCondition:
+    print str("if trigger")
+elif elifCondition1:
+    print str("elif 1 trigger")
+elif elifCondition2:
+    print str("elif 2 trigger")
+elif elifCondition3:
+    print str("elif 3 trigger")

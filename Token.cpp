@@ -22,7 +22,17 @@ void Token::print(std::ostream &output) const {
     else if (isBoolean())
         output << (_boolValue ? "True" : "False");
     else if (isStrKeyword())
-        output << " STR ";    
+        output << " STR ";  
+    else if (isAppendKeyword())
+        output << "append";
+    else if (isIfKeyword())
+        output << "if";
+    else if (isWhileKeyword())
+        output << "while";  
+    else if (isElifKeyword())
+        output << "elif";
+    else if (isElseKeyword())
+        output << "else";
     else if (isOpenParen())
         output << '(';
     else if (isClosedParen())

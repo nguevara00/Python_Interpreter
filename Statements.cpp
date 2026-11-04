@@ -214,3 +214,71 @@ void RangeExpression::print(std::ostream& output) const{
     }
     output << ')';
 }
+
+IfStatement::IfStatement(std::vector<ExprNode*> conditions, std::vector<Statements*> suites, Statements* elseSuite) : conditions_{std::move(conditions)}, suites_{std::move(suites)}, elseSuite_{elseSuite}{}
+IfStatement::~IfStatement(){
+    for (ExprNode* condition: conditions_){
+        delete condition;
+    }
+    for (Statements* suite : suites_){
+        delete suite;
+    }
+    delete elseSuite_;
+}
+void IfStatement::evaluate(SymbolTable &symbolTable) const {
+    for (std::size_t i = 0; i < conditions_.size(); ++i){
+        ValueDescriptor *value = conditions_[i]->evaluate(symbolTable);
+
+        if (value->type() != ValueDescriptor::Type::boolean){
+            std::string type = value->typeName();
+            delete value;
+            throw std::runtime_error("if condition must be boolean, is" + type);
+        }
+
+        bool condition = static_cast<BooleanValueDescriptor*>(value)->value();
+        delete value;
+        if (condition) {
+            suites_[i]->evaluate(symbolTable);
+            return;
+        }
+    }
+    if (elseSuite_ != nullptr){
+        elseSuite_ -> evaluate(symbolTable);
+    }
+}
+void IfStatement::print() const {
+    for (std::size_t i = 0; i < conditions_.size(); ++i){
+        if (i == 0){
+            std::cout << "if ";
+        }
+        else{
+            std::cout << "elif ";
+        }
+
+        conditions_[i]->print();
+        std::cout << ":\n";
+        suites_[i]->print();
+    }
+    if (elseSuite_ != nullptr){
+        std::cout << "else:\n";
+        elseSuite_->print();
+    }
+}
+
+AppendStatement::AppendStatement(ExprNode* first, ExprNode* second) : _first{first}, _second{second}{}
+
+AppendStatement::~AppendStatement() {
+    delete _first;
+    delete _second;
+}
+
+void AppendStatement::evaluate(SymbolTable &symbolTable) const {
+    //tbd
+}
+
+void AppendStatement::print() const {
+    std::cout << "append(";
+    _first->print();
+    std::cout << ":\n";
+    _second->print();
+}

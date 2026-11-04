@@ -18,7 +18,10 @@ public:
     Statement* simpleStatement();
     AssignmentStatement *assignmentStatement();
     PrintStatement *printStatement();
+    AppendStatement* appendStatement();
     ForStatement* forStatement();
+    IfStatement* ifStatement();
+    WhileStatement* whileStatement();
     Statement* compoundStatement();
     Statements* suite();
 

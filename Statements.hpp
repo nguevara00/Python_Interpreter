@@ -51,6 +51,17 @@ private:
     ExprNode *relExpr;
 };
 
+class AppendStatement final : public Statement {
+public:
+    AppendStatement(ExprNode* first, ExprNode* second);
+    ~AppendStatement() override;
+    void evaluate(SymbolTable &symbolTable) const override;
+    void print() const override;
+private:
+    ExprNode* _first;
+    ExprNode* _second;
+};
+
 class EvaluatedRange {
 public:
     EvaluatedRange(int64_t start, int64_t stop, int64_t step);
@@ -102,5 +113,21 @@ private:
     std::string variableName_;
     RangeExpression *range_;
     Statements *suite_;
+};
+
+class IfStatement final : public Statement {
+public:
+    IfStatement(std::vector<ExprNode*> conditions, std::vector<Statements*> suites, Statements* elseSuite);
+    ~IfStatement() override;
+    void evaluate(SymbolTable &symbolTable) const override;
+    void print() const override;
+private:
+    std::vector<ExprNode*> conditions_;
+    std::vector<Statements*> suites_;
+    Statements* elseSuite_;
+};
+
+class WhileStatement final : public Statement {
+    Statements* suite_;
 };
 #endif // EXPRINTER_STATEMENTS_HPP

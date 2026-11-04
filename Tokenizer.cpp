@@ -271,7 +271,16 @@ Token Tokenizer::getToken() {
                 token.setKeyword(Keyword::inKeyword);
             else if (identifier == "str")
                 token.setKeyword(Keyword::strKeyword);
-                
+            else if (identifier == "if")
+                token.setKeyword(Keyword::ifKeyword);
+            else if (identifier == "elif")
+                token.setKeyword(Keyword::elifKeyword);
+            else if (identifier == "else")
+                token.setKeyword(Keyword::elseKeyword);
+            else if (identifier == "while")
+                token.setKeyword(Keyword::whileKeyword);
+            else if (identifier == "append")
+                token.setKeyword(Keyword::appendKeyword);    
             else if (identifier == "True")
                 token.setBooleanValue(bool(true));
             else if (identifier == "False")
