@@ -5,12 +5,12 @@ Nick Guevara
 
 Contributions
 =============
-The project was entirely pair-programmed
+The project was pair-programmed together, except where noted below.  
 
 Meeting Times:  
 
 Phase 1:  
-Sun 9/20 1:00pm - 9:30pm (Discord) implementation 
+Sun 9/20 1:00pm - 9:30pm (Discord) implementation  
 Mon 9/21 11am - 12pm (Discord) writing tests and fixing bugs
 
 Phase 2:  
@@ -19,9 +19,13 @@ Tues 10/6 1:30p - 3p (in person on campus) rewriting logic for indentation detec
 Thurs 10/8 9p - 12a (Discord) writing tests and fixing bugs  
 
 Phase 3:  
-Sat 10/24 2pm-12am (Discord) implementation
-Sun 10/25 10a-12p writing tests and fixing bugs (Parker)
-Tues 10/27 9p-11p writing tests and fixing bugs (Nick)
+Sat 10/24 2pm-12am (Discord) implementation  
+Sun 10/25 10a-12p writing tests and fixing bugs (Parker)  
+Tues 10/27 9p-11p writing tests and fixing bugs (Nick)  
+
+Phase 4:  
+Tues 11/4 10pm-1am implemented Feature 1 - Conditional Statements (Nick)  
+
 
 Github Repository
 =================
