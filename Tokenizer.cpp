@@ -280,7 +280,13 @@ Token Tokenizer::getToken() {
             else if (identifier == "while")
                 token.setKeyword(Keyword::whileKeyword);
             else if (identifier == "append")
-                token.setKeyword(Keyword::appendKeyword);    
+                token.setKeyword(Keyword::appendKeyword);   
+            else if (identifier == "input")
+                token.setKeyword(Keyword::inputKeyword);
+            else if (identifier == "int")
+                token.setKeyword(Keyword::intKeyword);
+            else if (identifier == "float")
+                token.setKeyword(Keyword::floatKeyword); 
             else if (identifier == "True")
                 token.setBooleanValue(bool(true));
             else if (identifier == "False")

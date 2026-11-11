@@ -33,6 +33,18 @@ void Token::print(std::ostream &output) const {
         output << "elif";
     else if (isElseKeyword())
         output << "else";
+    else if (isInputKeyword())
+        output << "input";
+    else if (isIntKeyword())
+        output << "int";
+    else if (isFloatKeyword())
+        output << "float";
+    else if (isLenKeyword())
+        output << "len";
+    else if (isSplitKeyword())
+        output << "split";
+    else if (isPopKeyword())
+        output << "pop";
     else if (isOpenParen())
         output << '(';
     else if (isClosedParen())

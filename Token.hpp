@@ -18,7 +18,13 @@ enum class Keyword {
     ifKeyword,
     whileKeyword,
     elifKeyword,
-    elseKeyword
+    elseKeyword,
+    inputKeyword,
+    intKeyword,
+    floatKeyword,
+    lenKeyword,
+    splitKeyword,
+    popKeyword
 };
 
 class Token {
@@ -26,14 +32,12 @@ public:
     [[nodiscard]] bool isEof() const { return _eof; }
     [[nodiscard]] bool isNewline() const { return _newline; }
     
-    //new phase 2
     [[nodiscard]] bool isIndent() const { return _indent; }
     [[nodiscard]] bool isDedent() const { return _dedent; }
     
     void markAsEof() { _eof = true; }
     void markAsNewline() { _newline = true; }
 
-    //new phase 2
     void markAsIndent() {_indent = true; }
     void markAsDedent() {_dedent = true; }
 
@@ -91,6 +95,13 @@ public:
     [[nodiscard]] bool isWhileKeyword() const { return _keyword == Keyword::whileKeyword; }
     [[nodiscard]] bool isElifKeyword() const { return _keyword == Keyword::elifKeyword; }
     [[nodiscard]] bool isElseKeyword() const { return _keyword == Keyword::elseKeyword; }
+
+    [[nodiscard]] bool isInputKeyword() const {return _keyword == Keyword::inputKeyword; }
+    [[nodiscard]] bool isIntKeyword() const {return _keyword == Keyword::intKeyword; }
+    [[nodiscard]] bool isFloatKeyword() const {return _keyword == Keyword::floatKeyword; }
+    [[nodiscard]] bool isLenKeyword() const {return _keyword == Keyword::lenKeyword; }
+    [[nodiscard]] bool isSplitKeyword() const {return _keyword == Keyword::splitKeyword; }
+    [[nodiscard]] bool isPopKeyword() const {return _keyword == Keyword::popKeyword; }
 
     [[nodiscard]] Keyword keyword() const { return _keyword; }
 

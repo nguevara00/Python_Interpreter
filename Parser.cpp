@@ -394,7 +394,8 @@ ExprNode *Parser::arithPrimary() {
 
 ExprNode *Parser::arithAtom() {
 
-    // NEW : <arith-atom> -> <id> | <literal> | <string-conversion> | '(' <rel-expr> ')
+    // <arith-atom> -> <id> | <literal> | <list-literal> | "input" "(" ")" | "int" "(" <rel-expr> ")" | "float" "(" <rel-expr> ")" 
+    // | "str" "(" <rel-expr> ")" | "len" "(" <rel-expr> ")" | "split" "(" <rel-expr> ")" | "pop" "(" <rel-expr> ")" | "(" <rel-expr> ")""
     Token token = tokenizer.getToken();
     
     if (token.isIdentifier()) {
@@ -405,6 +406,44 @@ ExprNode *Parser::arithAtom() {
         tokenizer.ungetToken();
         return literal();
     }
+
+    //handle list literal here
+
+    //input
+    if (token.isInputKeyword()){
+        tokenizer.ungetToken();
+        return input();
+    } 
+
+    //int
+    if (token.isIntKeyword()){
+        tokenizer.ungetToken();
+        return intConversion();
+    }
+    //float
+    if (token.isFloatKeyword()){
+        tokenizer.ungetToken();
+        return floatConversion();
+    }
+
+    //len
+    if (token.isLenKeyword()){
+        tokenizer.ungetToken();
+        return len();
+    }
+
+    //split
+    if (token.isSplitKeyword()){
+        tokenizer.ungetToken();
+        return split();
+    }
+
+    //pop
+    if (token.isPopKeyword()){
+        tokenizer.ungetToken();
+        return pop();
+    }
+
     if (token.isStrKeyword()){
         tokenizer.ungetToken();
         return stringConversion();
@@ -419,7 +458,7 @@ ExprNode *Parser::arithAtom() {
         return expression;
     }
 
-    die("Parser::arithAtom", "expected an identifier, literal, str conversion, or '('", token);
+    die("Parser::arithAtom", "expected an identifier, literal, conversion, or '('", token);
 }
 
 ExprNode *Parser::literal(){
@@ -464,6 +503,18 @@ ExprNode *Parser::stringConversion(){
     tokenizer.ungetToken();
     die("Parser::strConversion", "expected '('", openToken);
 }
+
+ExprNode* Parser::intConversion(){}
+
+ExprNode* Parser::floatConversion(){}
+
+ExprNode* Parser::input(){}
+
+ExprNode* Parser::len(){}
+
+ExprNode* Parser::split(){}
+
+ExprNode* Parser::pop(){}
 
 
 
