@@ -128,6 +128,15 @@ private:
 };
 
 class WhileStatement final : public Statement {
+public:
+    WhileStatement(ExprNode* whileCondition, Statements* whileSuite);
+    ~WhileStatement() override;
+    void evaluate(SymbolTable &symbolTable) const override;
+    void print() const override;
+private:
+    ExprNode* whileCondition_;
     Statements* suite_;
+    
 };
+
 #endif // EXPRINTER_STATEMENTS_HPP

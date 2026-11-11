@@ -298,6 +298,18 @@ IfStatement* Parser::ifStatement(){
 
 WhileStatement* Parser::whileStatement(){
     //<while-statement> -> "while" <rel-expr> ":" <suite>
+    Token whileToken = tokenizer.getToken();
+    if (!whileToken.isWhileKeyword()){
+        die("Parser::whileStatement", "expected 'while'", whileToken);
+    }
+    ExprNode* whileCondition = relExpr();
+
+    Token colonToken = tokenizer.getToken();
+    if (!colonToken.isColon()){
+        die("Parser::whileStatement", "expected ':'", colonToken);
+    }
+    Statements* whileSuite = suite();
+    return new WhileStatement(whileCondition,whileSuite);
 }
 
 ExprNode *Parser::relExpr() {
@@ -453,8 +465,6 @@ ExprNode *Parser::stringConversion(){
     die("Parser::strConversion", "expected '('", openToken);
 }
 
-// NOT YET IMPLEMENTED
-// <while-statement> -> "while" <rel-expr> ":" <suite> 
 
 
 

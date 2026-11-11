@@ -282,3 +282,37 @@ void AppendStatement::print() const {
     std::cout << ":\n";
     _second->print();
 }
+
+WhileStatement::WhileStatement(ExprNode* whileCondition, Statements* whileSuite) : whileCondition_{whileCondition}, suite_{whileSuite}{}
+
+WhileStatement::~WhileStatement(){
+    delete whileCondition_;
+    delete suite_;
+}
+
+void WhileStatement::evaluate(SymbolTable &symbolTable) const {
+    while (true){
+
+        ValueDescriptor *value = whileCondition_->evaluate(symbolTable);
+        if (value->type() != ValueDescriptor::Type::boolean){
+            delete value;
+            throw std::runtime_error("WhileStatement::evaluate While condition must be a boolean");
+        }
+
+        BooleanValueDescriptor* whileCondition = static_cast<BooleanValueDescriptor*>(value);
+        if (!whileCondition->value()){
+            delete value;
+            break;
+        }
+
+        delete value;
+        suite_->evaluate(symbolTable);   
+    }
+}
+
+void WhileStatement::print() const {
+    std::cout << "while "; 
+    whileCondition_->print();
+    std::cout << ":\n";
+    suite_->print(); 
+}
