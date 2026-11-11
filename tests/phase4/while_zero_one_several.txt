@@ -1,6 +1,6 @@
-counter = 0
+aCounter = 0
 print(str("aCounter should update 10 times and print 10 times (aCounter should contain 10)"))
-while counter < 10:
+while aCounter < 10:
     counter = counter + 1
     print(counter)
 
