@@ -86,6 +86,9 @@ void Token::print(std::ostream &output) const {
     else if (isClosedBrace())
         output << " } ";
     else if (isOpenBracket())
+        output << " [ ";
+    else if (isClosedBracket())
+        output << " ] ";
     else if (isColon())
         output << ':';
     else if (isComma())

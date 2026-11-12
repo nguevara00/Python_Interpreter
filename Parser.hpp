@@ -35,6 +35,7 @@ public:
     ExprNode *arithPrimary();
     ExprNode *arithAtom();
     ExprNode *literal();
+    ExprNode *listLiteral();
     ExprNode *stringConversion();
     ExprNode *intConversion();
     ExprNode *floatConversion();
