@@ -567,7 +567,7 @@ void ListLiteral::print() const {
 }
 
 ValueDescriptor* ListLiteral::evaluate(const SymbolTable &symbolTable) const {
-    ListObject *list = new ListObject();
+    ListObject* list = new ListObject();
 
     for (ExprNode* expression : _expressions) {
         ValueDescriptor* listElement = expression->evaluate(symbolTable);
@@ -578,66 +578,106 @@ ValueDescriptor* ListLiteral::evaluate(const SymbolTable &symbolTable) const {
     return new ListValueDescriptor(list);
 }
 
-/*
 //LenExpression
-StringConversionExpression::StringConversionExpression(Token token, ExprNode* expression) : ExprNode{std::move(token)}, _expression{expression}{}
+LenExpression::LenExpression(Token token, ExprNode* expression) : ExprNode{std::move(token)}, _expression{expression}{}
 
-StringConversionExpression::~StringConversionExpression(){
+LenExpression::~LenExpression(){
     delete _expression;
 }
 
-void StringConversionExpression::print() const {
-    std::cout << "str(";
+void LenExpression::print() const {
+    std::cout << "len(";
     _expression->print();
     std::cout << ")";
 }
 
-ValueDescriptor* StringConversionExpression::evaluate(const SymbolTable &symbolTable) const {
+ValueDescriptor* LenExpression::evaluate(const SymbolTable &symbolTable) const {
     ValueDescriptor* value = _expression->evaluate(symbolTable);
-    std::string result = value->toString();
+    int64_t result = 0;
+
+    if (value->type() == ValueDescriptor::Type::string) {
+        result = static_cast<StringValueDescriptor*>(value)->value().size();
+    }
+
+    if (value->type() == ValueDescriptor::Type::list) {
+        result =  static_cast<std::int64_t>(static_cast<ListValueDescriptor*>(value)->object()->size());
+    }
     
     delete value;
-    return new StringValueDescriptor(result);
+    return new IntegerValueDescriptor(result);
 }
 
 //SplitExpression
-StringConversionExpression::StringConversionExpression(Token token, ExprNode* expression) : ExprNode{std::move(token)}, _expression{expression}{}
+SplitExpression::SplitExpression(Token token, ExprNode* expression) : ExprNode{std::move(token)}, _expression{expression}{}
 
-StringConversionExpression::~StringConversionExpression(){
+SplitExpression::~SplitExpression(){
     delete _expression;
 }
 
-void StringConversionExpression::print() const {
-    std::cout << "str(";
+void SplitExpression::print() const {
+    std::cout << "split(";
     _expression->print();
     std::cout << ")";
 }
 
-ValueDescriptor* StringConversionExpression::evaluate(const SymbolTable &symbolTable) const {
-    ValueDescriptor* value = _expression->evaluate(symbolTable);
-    std::string result = value->toString();
-    
-    delete value;
-    return new StringValueDescriptor(result);
+ValueDescriptor* SplitExpression::evaluate(const SymbolTable &symbolTable) const {
+    ValueDescriptor *value = _expression->evaluate(symbolTable);
+    if (value->type() != ValueDescriptor::Type::string) {
+        std::string valueType = value->typeName();
+        delete value;
+        throw std::runtime_error("split requires a string not a " + valueType);
+    }
+
+    ListObject* list = new ListObject(ListElementType::string);
+    std::string line = static_cast<StringValueDescriptor*>(value)->value();
+    std::string word;
+    // the deer     jumped  over the      moon
+    for (char character : line) {
+        if (character == ' ') {
+            if (!word.empty()) {
+                list->append(new StringValueDescriptor(word));
+                word.clear();
+            } else {
+                continue;
+            }
+        } else {
+            word += character;
+        }
+    }
+
+    return new ListValueDescriptor(list);
 }
 //popExpression
-StringConversionExpression::StringConversionExpression(Token token, ExprNode* expression) : ExprNode{std::move(token)}, _expression{expression}{}
+PopExpression::PopExpression(Token token, ExprNode* expression) : ExprNode{std::move(token)}, _expression{expression}{}
 
-StringConversionExpression::~StringConversionExpression(){
+PopExpression::~PopExpression(){
     delete _expression;
 }
 
-void StringConversionExpression::print() const {
-    std::cout << "str(";
+void PopExpression::print() const {
+    std::cout << "pop(";
     _expression->print();
     std::cout << ")";
 }
 
-ValueDescriptor* StringConversionExpression::evaluate(const SymbolTable &symbolTable) const {
+ValueDescriptor* PopExpression::evaluate(const SymbolTable &symbolTable) const {
     ValueDescriptor* value = _expression->evaluate(symbolTable);
-    std::string result = value->toString();
-    
+
+    if (value->type() != ValueDescriptor::Type::list) {
+        std::string valueType = value->typeName();
+        delete value;
+        throw std::runtime_error("pop requires a list not a " + valueType);
+    }
+
+    ListObject* list = static_cast<ListValueDescriptor*>(value)->object();
+
+    if (list->size() == 0) {
+        delete value;
+        throw std::runtime_error("Pop called on an empty list");
+    }
+
+    ValueDescriptor* lastElement = list->pop();
     delete value;
-    return new StringValueDescriptor(result);
+
+    return lastElement;
 }
-*/

@@ -16,8 +16,7 @@ enum class ListElementType {
 
 class ListObject {
 public:
-    explicit ListObject(
-        ListElementType initialType = ListElementType::unset);
+    explicit ListObject(ListElementType initialType = ListElementType::unset);
     ~ListObject();
 
     ListObject(const ListObject &) = delete;

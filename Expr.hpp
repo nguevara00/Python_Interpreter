@@ -138,7 +138,7 @@ private:
     std::vector<ExprNode*> _expressions;
 };
 
-/*
+
 class LenExpression final : public ExprNode {
 public:
     LenExpression(Token token, ExprNode* expression);
@@ -171,6 +171,6 @@ public:
 private:
     ExprNode* _expression;
 };
-*/
+
 
 #endif

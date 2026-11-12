@@ -160,22 +160,28 @@ AppendStatement* Parser::appendStatement(){
     if (!keyword.isAppendKeyword()) {
         die("Parser::appendStatement", "expected 'append'", keyword);
     }
+
     Token openParen = tokenizer.getToken();
     if (!openParen.isOpenParen()){
         die("Parser::appendStatement", "expected '('", openParen);
     }
+
     ExprNode* first = relExpr();
+
     Token comma = tokenizer.getToken();
     if (!comma.isComma()) {
         tokenizer.ungetToken();
         die("Parser:appendStatement", "expected ','", comma);
     }
+
     ExprNode* second = relExpr();
+
     Token closedParen = tokenizer.getToken();
     if (!closedParen.isClosedParen()) {
         die("Parser::rangeExpression", "expected ')'", closedParen);
     }
-    return new AppendStatement(first,second);
+
+    return new AppendStatement(first, second);
 }
 RangeExpression *Parser::rangeExpression() {
     // <range> -> "range" "(" <range-arguments> ")"
@@ -428,7 +434,6 @@ ExprNode *Parser::arithAtom() {
         return floatConversion();
     }
 
-    /*
     //len
     if (token.isLenKeyword()){
         tokenizer.ungetToken();
@@ -446,7 +451,6 @@ ExprNode *Parser::arithAtom() {
         tokenizer.ungetToken();
         return pop();
     }
-    */
 
     if (token.isStrKeyword()){
         tokenizer.ungetToken();
@@ -539,8 +543,6 @@ ExprNode *Parser::stringConversion(){
     die("Parser::strConversion", "expected '('", openToken);
 }
 
-
-
 ExprNode* Parser::intConversion(){
 //<int-converstion> -> "int" "(" <rel-expr> ")"
     Token intToken = tokenizer.getToken();
@@ -602,16 +604,16 @@ ExprNode* Parser::input(){
 
     return new InputExpression(inputToken);
     }
-/*
+
 ExprNode* Parser::len(){
 //<len> -> "len" "(" <rel-expr> ")"
     Token lenToken = tokenizer.getToken();
-    
+
     if (!lenToken.isLenKeyword()) {
         die("Parser::len", "expected 'len'", lenToken);
     }
 
-    Token openToken = tokenizer.getToken(); 
+    Token openToken = tokenizer.getToken();
     if (openToken.isOpenParen()) {
         ExprNode *expression = relExpr();
         Token closedParen = tokenizer.getToken();
@@ -627,12 +629,12 @@ ExprNode* Parser::len(){
 ExprNode* Parser::split(){
 //<split> -> "split" "(" <rel-expr> ")"
     Token splitToken = tokenizer.getToken();
-    
+
     if (!splitToken.isSplitKeyword()) {
         die("Parser::split", "expected 'split'", splitToken);
     }
 
-    Token openToken = tokenizer.getToken(); 
+    Token openToken = tokenizer.getToken();
     if (openToken.isOpenParen()) {
         ExprNode *expression = relExpr();
         Token closedParen = tokenizer.getToken();
@@ -650,12 +652,12 @@ ExprNode* Parser::split(){
 ExprNode* Parser::pop(){
 //<pop> -> "pop" "(" <rel-expr> ")"
     Token popToken = tokenizer.getToken();
-    
+
     if (!popToken.isPopKeyword()) {
         die("Parser::pop", "expected 'pop'", popToken);
     }
 
-    Token openToken = tokenizer.getToken(); 
+    Token openToken = tokenizer.getToken();
     if (openToken.isOpenParen()) {
         ExprNode *expression = relExpr();
         Token closedParen = tokenizer.getToken();
@@ -667,4 +669,3 @@ ExprNode* Parser::pop(){
     tokenizer.ungetToken();
     die("Parser::pop", "expected '('", openToken);
 }
-    */

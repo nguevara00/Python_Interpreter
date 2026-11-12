@@ -1,8 +1,9 @@
 #include "ListObject.hpp"
 #include "ValueDescriptor.hpp"
 
-// Unsure about this the constructor
-// ListObject::ListObject(ListElementType initialType = ListElementType::unset) {}
+ListObject::ListObject(ListElementType initialType) {
+    initialType = ListElementType::unset;
+}
 
 ListObject::~ListObject() {
     for (ValueDescriptor *element : elements) {

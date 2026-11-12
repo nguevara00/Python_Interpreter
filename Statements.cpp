@@ -272,8 +272,40 @@ AppendStatement::~AppendStatement() {
     delete _second;
 }
 
+// void ListObject::append(ValueDescriptor *value) {
+//     ListElementType elementType;
+//     switch (value->type()) {
+//         case ValueDescriptor::Type::integer:
+//             elementType = ListElementType::numeric;
+//             break;
+//         case ValueDescriptor::Type::doubleValue:
+//             elementType = ListElementType::numeric;
+//             break;
+//         case ValueDescriptor::Type::boolean:
+//             elementType = ListElementType::boolean;
+//             break;
+//         case ValueDescriptor::Type::string:
+//             elementType = ListElementType::string;
+//             break;
+//         case ValueDescriptor::Type::list: break;
+//     }
+
 void AppendStatement::evaluate(SymbolTable &symbolTable) const {
-    //tbd
+    ValueDescriptor* first = _first->evaluate(symbolTable);
+    if (first->type() != ValueDescriptor::Type::list) {
+        std::string firstType = first->typeName();
+        delete first;
+        throw std::runtime_error("Append requires a list not a " + firstType);
+    }
+
+    ListObject *list = static_cast<ListValueDescriptor*>(first)->object();
+    ValueDescriptor* second = _second->evaluate(symbolTable);
+    std::string secondType = second->typeName();
+
+    list->append(second);
+
+    delete first;
+    delete second;
 }
 
 void AppendStatement::print() const {
