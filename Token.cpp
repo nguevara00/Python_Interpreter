@@ -81,10 +81,11 @@ void Token::print(std::ostream &output) const {
         output << " < ";
     else if (isLessThanOrEqualOperator())
         output << " <= ";
-    else if (isOpenBracket())
+    else if (isOpenBrace())
         output << " { ";
-    else if (isClosedBracket())
+    else if (isClosedBrace())
         output << " } ";
+    else if (isOpenBracket())
     else if (isColon())
         output << ':';
     else if (isComma())

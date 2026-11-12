@@ -405,7 +405,10 @@ ExprNode *Parser::arithAtom() {
         return literal();
     }
 
-    //handle list literal here
+    if (token.isOpenBracket()){
+        tokenizer.ungetToken();
+        return listLiteral();
+    } 
 
     //input
     if (token.isInputKeyword()){
@@ -482,6 +485,10 @@ ExprNode *Parser::literal(){
     }
 
     die("Parser::literal", "expected a literal", token);
+}
+
+ExprNode* Parser::listLiteral(){
+    //<list-literal> -> "[" [ <rel-expr> { "," <rel-expr> } ] "]"
 }
 
 ExprNode *Parser::stringConversion(){

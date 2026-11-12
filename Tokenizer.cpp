@@ -208,7 +208,7 @@ Token Tokenizer::getToken() {
             } else{
                 token.setIntegerValue(numberValue);
             }
-        } else if (character == '!' || character == '=' || character == '+' || character == '-' || character == '*' || character == '/' || character == '%' || character == ';' || character == ':' || character == '(' || character == ')' || character == '{' || character == '}' || character == '>' || character == '<' || character == ',') {
+        } else if (character == '!' || character == '=' || character == '+' || character == '-' || character == '*' || character == '/' || character == '%' || character == ';' || character == ':' || character == '(' || character == ')' || character == '{' || character == '}' || character == '[' || character == ']'|| character == '>' || character == '<' || character == ',') {
                     if (((character == '=' || character == '<' || character == '>' || character == '!') && inputStream.peek() == '=') || (character == '/' && inputStream.peek() == '/')){
                         multiCharString += character;
                         getCharacter(character);

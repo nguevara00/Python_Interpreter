@@ -69,8 +69,10 @@ public:
     [[nodiscard]] bool isGreaterThanOrEqualOperator() const { return _multiCharSymbol == ">="; }
     [[nodiscard]] bool isLessThanOperator() const { return _symbol == '<'; }
     [[nodiscard]] bool isLessThanOrEqualOperator() const { return _multiCharSymbol == "<="; }
-    [[nodiscard]] bool isOpenBracket() const { return _symbol == '{'; }
-    [[nodiscard]] bool isClosedBracket() const { return _symbol == '}'; }
+    [[nodiscard]] bool isOpenBrace() const { return _symbol == '{'; }
+    [[nodiscard]] bool isClosedBrace() const { return _symbol == '}'; }
+    [[nodiscard]] bool isOpenBracket() const { return _symbol == '['; }
+    [[nodiscard]] bool isClosedBracket() const { return _symbol == ']'; }
     
     [[nodiscard]] bool isColon() const { return _symbol == ':'; }
     [[nodiscard]] bool isComma() const { return _symbol == ','; }
