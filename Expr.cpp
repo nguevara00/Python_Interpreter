@@ -550,6 +550,33 @@ ValueDescriptor* InputExpression::evaluate(const SymbolTable &symbolTable) const
     return new StringValueDescriptor(string);
 }
 
+ListLiteral::~ListLiteral() {
+    for (ExprNode* expression : _expressions) {
+        delete expression;
+    }
+}
+
+void ListLiteral::print() const {
+    std::cout << "[";
+
+    for (ExprNode* element : _expressions) {
+        element->print();
+    }
+
+    std::cout << "]";
+}
+
+ValueDescriptor* ListLiteral::evaluate(const SymbolTable &symbolTable) const {
+    ListObject *list = new ListObject();
+
+    for (ExprNode* expression : _expressions) {
+        ValueDescriptor* listElement = expression->evaluate(symbolTable);
+        list->append(listElement);
+        delete listElement;
+    }
+
+    return new ListValueDescriptor(list);
+}
 
 /*
 //LenExpression

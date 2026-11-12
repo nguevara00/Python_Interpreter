@@ -494,7 +494,28 @@ ExprNode* Parser::listLiteral(){
         die("Parser::listLiteral", "expected a open bracket", openBracket);
     }
 
+    std::vector<ExprNode *> expressions;
 
+    Token closedBracket = tokenizer.getToken();
+    if (!closedBracket.isClosedBracket()) {
+        return new ListLiteral(std::move(openBracket), std::move(expressions));
+    }
+
+    expressions.push_back(relExpr());
+
+    Token commaToken = tokenizer.getToken();
+    while (commaToken.isComma()) {
+        expressions.push_back(relExpr());
+        commaToken = tokenizer.getToken();
+    }
+    tokenizer.ungetToken();
+
+    closedBracket = tokenizer.getToken();
+    if (!closedBracket.isClosedBracket()) {
+        die("Parser::listLiteral", "expected a closed bracket", closedBracket);
+    }
+
+    return new ListLiteral(std::move(openBracket), std::move(expressions));
 }
 
 ExprNode *Parser::stringConversion(){

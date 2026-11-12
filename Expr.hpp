@@ -75,8 +75,6 @@ public:
     [[nodiscard]] ValueDescriptor* evaluate(const SymbolTable &symbolTable) const override;
 };
 
-
-
 class Variable final : public ExprNode {
 public:
     explicit Variable(Token token);
@@ -126,6 +124,18 @@ public:
     void print() const override;
     [[nodiscard]] ValueDescriptor* evaluate(const SymbolTable &symbolTable) const override;
 private:
+};
+
+class ListLiteral final : public ExprNode {
+public:
+    // StringConversionExpression::StringConversionExpression(Token token, ExprNode* expression) : ExprNode{std::move(token)}, _expression{expression}{}
+    ListLiteral(Token token, std::vector<ExprNode*> expressions) : ExprNode{std::move(token)}, _expressions{std::move(expressions)}{}
+    ~ListLiteral() override;
+
+    void print() const override;
+    [[nodiscard]] ValueDescriptor* evaluate(const SymbolTable &symbolTable) const override;
+private:
+    std::vector<ExprNode*> _expressions;
 };
 
 /*
