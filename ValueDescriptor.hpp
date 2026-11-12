@@ -3,6 +3,7 @@
 
 #include <cstdint>
 #include <string>
+#include "ListObject.hpp"
 
 //The descriptors do not provide mutators. Once created, a descriptor continues to represent the same value. An assignment changes a variable by replacing the descriptor stored for that variable.
 
@@ -13,7 +14,8 @@ public:
         integer,
         doubleValue,
         boolean,
-        string
+        string,
+        list
     };
 
     //virtual destructor ensures that deleting a derived descriptor through a ValueDescriptor* invokes the appropriate destructor
@@ -86,6 +88,26 @@ public:
 
 private:
     std::string stringValue;
+};
+
+class ListValueDescriptor final : public ValueDescriptor {
+public:
+    explicit ListValueDescriptor(ListObject *object);
+    ~ListValueDescriptor() override;
+
+    ListValueDescriptor(const ListValueDescriptor &) = delete;
+    ListValueDescriptor &operator=(const ListValueDescriptor &) = delete;
+
+    [[nodiscard]] Type type() const override;
+    [[nodiscard]] std::string typeName() const override;
+    [[nodiscard]] std::string toString() const override;
+    [[nodiscard]] ValueDescriptor* clone() const override;
+
+    [[nodiscard]] ListObject* object();
+    [[nodiscard]] const ListObject* object() const;
+
+private:
+    ListObject* listObject;
 };
 
 #endif

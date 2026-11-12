@@ -489,6 +489,12 @@ ExprNode *Parser::literal(){
 
 ExprNode* Parser::listLiteral(){
     //<list-literal> -> "[" [ <rel-expr> { "," <rel-expr> } ] "]"
+    Token openBracket = tokenizer.getToken();
+    if (!openBracket.isOpenBracket()) {
+        die("Parser::listLiteral", "expected a open bracket", openBracket);
+    }
+
+
 }
 
 ExprNode *Parser::stringConversion(){
