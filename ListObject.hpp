@@ -1,7 +1,9 @@
 #ifndef LISTOBJECT_HPP
 #define LISTOBJECT_HPP
+
 #include <cstddef>
 #include <vector>
+#include <stdexcept>
 
 class ValueDescriptor;
 
