@@ -1,4 +1,4 @@
-CXX = c++
+CXX = g++
 CXXFLAGS = -g -std=c++20 -Wall -Wextra -Wpedantic
 TARGET = interpreter.x
 OBJECTS = Token.o Tokenizer.o Parser.o Expr.o SymbolTable.o Statements.o main.o ValueDescriptor.o ListObject.o

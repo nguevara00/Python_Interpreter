@@ -47,10 +47,18 @@ ValueDescriptor* ListObject::cloneElementAt(std::size_t index) const {
 void ListObject::setElement(std::size_t index, ValueDescriptor *value) {
     ListElementType elementType;
     switch (value->type()) {
-        case ValueDescriptor::Type::integer: elementType = ListElementType::numeric;
-        case ValueDescriptor::Type::doubleValue: elementType = ListElementType::numeric;
-        case ValueDescriptor::Type::boolean: elementType = ListElementType::boolean;
-        case ValueDescriptor::Type::string: elementType = ListElementType::string;
+        case ValueDescriptor::Type::integer:
+            elementType = ListElementType::numeric;
+            break;
+        case ValueDescriptor::Type::doubleValue:
+            elementType = ListElementType::numeric;
+            break;
+        case ValueDescriptor::Type::boolean:
+            elementType = ListElementType::boolean;
+            break;
+        case ValueDescriptor::Type::string:
+            elementType = ListElementType::string;
+            break;
         case ValueDescriptor::Type::list: break;
     }
 
@@ -74,10 +82,18 @@ void ListObject::setElement(std::size_t index, ValueDescriptor *value) {
 void ListObject::append(ValueDescriptor *value) {
     ListElementType elementType;
     switch (value->type()) {
-        case ValueDescriptor::Type::integer: elementType = ListElementType::numeric;
-        case ValueDescriptor::Type::doubleValue: elementType = ListElementType::numeric;
-        case ValueDescriptor::Type::boolean: elementType = ListElementType::boolean;
-        case ValueDescriptor::Type::string: elementType = ListElementType::string;
+        case ValueDescriptor::Type::integer:
+            elementType = ListElementType::numeric;
+            break;
+        case ValueDescriptor::Type::doubleValue:
+            elementType = ListElementType::numeric;
+            break;
+        case ValueDescriptor::Type::boolean:
+            elementType = ListElementType::boolean;
+            break;
+        case ValueDescriptor::Type::string:
+            elementType = ListElementType::string;
+            break;
         case ValueDescriptor::Type::list: break;
     }
 
