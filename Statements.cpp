@@ -285,16 +285,14 @@ void AppendStatement::evaluate(SymbolTable &symbolTable) const {
     std::string secondType = second->typeName();
 
     list->append(second);
-
-    delete first;
-    delete second;
 }
 
 void AppendStatement::print() const {
     std::cout << "append(";
     _first->print();
-    std::cout << ":\n";
+    std::cout << ", ";
     _second->print();
+    std::cout << ")" << std::endl;
 }
 
 WhileStatement::WhileStatement(ExprNode* whileCondition, Statements* whileSuite) : whileCondition_{whileCondition}, suite_{whileSuite}{}

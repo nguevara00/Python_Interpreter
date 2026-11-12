@@ -129,6 +129,7 @@ Statements *Parser::suite(){
 
 }
 
+// <assignment-statement> -> <assignment-target> = <rel-expr>
 AssignmentStatement *Parser::assignmentStatement() {
     // <assignment-statement> -> <id> = <rel-expr>
     // The caller consumes the context-dependent terminator: NEWLINE in a
@@ -142,6 +143,10 @@ AssignmentStatement *Parser::assignmentStatement() {
         die("Parser::assignmentStatement", "expected '='", assignmentOperator);
 
     return new AssignmentStatement(variable.identifier(), relExpr());
+}
+
+AssignmentTarget *Parser::assignmentTarget() {
+    // <assignment-target> -> <id> [ "[" <rel-expr> "]" ]
 }
 
 PrintStatement *Parser::printStatement() {
@@ -386,6 +391,7 @@ ExprNode *Parser::arithTerm() {
     return left;
 }
 
+// <arith-primary> -> [ <sign> ] <postfix-expression>
 ExprNode *Parser::arithPrimary() {
     // <arith-primary> -> [ <sign> ] <arith-atom>
     Token token = tokenizer.getToken();
@@ -396,8 +402,12 @@ ExprNode *Parser::arithPrimary() {
     return arithAtom();
 }
 
-ExprNode *Parser::arithAtom() {
+PostfixExpression* Parser::postfixExpression() {
+    // <postfix-expression> -> <atom> [ "[" <rel-expr> "]" ]
+}
 
+// <atom> -> <id> | <literal> | <list-literal> | <input-expression> | <one-arguement-call> | "(" <rel-expr> ")"
+ExprNode *Parser::arithAtom() {
     // <arith-atom> -> <id> | <literal> | <list-literal> | "input" "(" ")" | "int" "(" <rel-expr> ")" | "float" "(" <rel-expr> ")" 
     // | "str" "(" <rel-expr> ")" | "len" "(" <rel-expr> ")" | "split" "(" <rel-expr> ")" | "pop" "(" <rel-expr> ")" | "(" <rel-expr> ")""
     Token token = tokenizer.getToken();
@@ -492,7 +502,7 @@ ExprNode *Parser::literal(){
 }
 
 ExprNode* Parser::listLiteral(){
-    //<list-literal> -> "[" [ <rel-expr> { "," <rel-expr> } ] "]"
+    //<list-literal> -> [ "[" <rel-expr> { "," <rel-expr> } "]" ]
     Token openBracket = tokenizer.getToken();
     if (!openBracket.isOpenBracket()) {
         die("Parser::listLiteral", "expected a open bracket", openBracket);
@@ -588,7 +598,7 @@ ExprNode* Parser::floatConversion(){
 }
 
 ExprNode* Parser::input(){
-    //<input> -> "input" "(" ")"
+    //<input-expression> -> "input" "(" ")"
     Token inputToken = tokenizer.getToken();
         
     if (!inputToken.isInputKeyword()) {
@@ -649,7 +659,6 @@ ExprNode* Parser::split(){
 
 }
 
-
 ExprNode* Parser::pop(){
 //<pop> -> "pop" "(" <rel-expr> ")"
     Token popToken = tokenizer.getToken();
@@ -659,14 +668,20 @@ ExprNode* Parser::pop(){
     }
 
     Token openToken = tokenizer.getToken();
-    if (openToken.isOpenParen()) {
-        ExprNode *expression = relExpr();
-        Token closedParen = tokenizer.getToken();
-        if (!closedParen.isClosedParen())
-            die("Parser::pop", "expected ')'", closedParen);
-
-        return new PopExpression(popToken, expression);
+    if (!openToken.isOpenParen()) {
+        die("Parser::pop", "expected '('", openToken);
     }
-    tokenizer.ungetToken();
-    die("Parser::pop", "expected '('", openToken);
+
+    ExprNode* expression = relExpr();
+
+    Token closedParen = tokenizer.getToken();
+    if (!closedParen.isClosedParen()) {
+        die("Parser::pop", "expected ')'", closedParen);
+    }
+
+    return new PopExpression(popToken, expression);
 }
+
+// <one-arguement-call> -> <one-argument-name> "(" <rel-expr> ")"
+// <one-argument-name> -> "int" | "float" | "str" | "len" | "split" | "pop"
+//
