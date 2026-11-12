@@ -116,7 +116,7 @@ ListValueDescriptor::~ListValueDescriptor() {
     }
 }
 
-Type ListValueDescriptor::type() const {
+ValueDescriptor::Type ListValueDescriptor::type() const {
     return Type::list;
 }
 
@@ -131,10 +131,10 @@ std::string ListValueDescriptor::toString() const {
         ValueDescriptor* element = listObject->cloneElementAt(i);
 
         if (i != listObject->size() - 1) {
-            output += element;
+            output += element->toString();
             output += ", ";
         } else {
-            output += element;
+            output += element->toString();
         }
 
         delete element;

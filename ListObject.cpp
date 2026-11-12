@@ -1,4 +1,5 @@
 #include "ListObject.hpp"
+#include "ValueDescriptor.hpp"
 
 // Unsure about this the constructor
 // ListObject::ListObject(ListElementType initialType = ListElementType::unset) {}
@@ -37,9 +38,9 @@ ListElementType ListObject::elementType() const {
 // Returns a newly allocated descriptor owned by the caller.
 ValueDescriptor* ListObject::cloneElementAt(std::size_t index) const {
     if (index >= elements.size()) {
-        throw std::runtime_error("list index " + index + " out of range.");
+        throw std::runtime_error("list index " + std::to_string(index) + " out of range.");
     }
-    return element[index]->clone();
+    return elements[index]->clone();
 }
 
 // On success, each of these functions takes ownership of value.
@@ -50,14 +51,15 @@ void ListObject::setElement(std::size_t index, ValueDescriptor *value) {
         case ValueDescriptor::Type::doubleValue: elementType = ListElementType::numeric;
         case ValueDescriptor::Type::boolean: elementType = ListElementType::boolean;
         case ValueDescriptor::Type::string: elementType = ListElementType::string;
+        case ValueDescriptor::Type::list: break;
     }
 
     if (index >= elements.size()) {
-        throw std::runtime_error("list index " + index + " out of range.");
+        throw std::runtime_error("list index " + std::to_string(index) + " out of range.");
     }
 
     if (category != ListElementType::unset && elementType != category) {
-        throw std::runtime_error("cannot set element " + value->typeName() + " to a " + category + " list");
+        throw std::runtime_error("cannot set element");
     }
 
     delete elements[index];
@@ -76,10 +78,11 @@ void ListObject::append(ValueDescriptor *value) {
         case ValueDescriptor::Type::doubleValue: elementType = ListElementType::numeric;
         case ValueDescriptor::Type::boolean: elementType = ListElementType::boolean;
         case ValueDescriptor::Type::string: elementType = ListElementType::string;
+        case ValueDescriptor::Type::list: break;
     }
 
     if (category != ListElementType::unset && elementType != category) {
-        throw std::runtime_error("cannot append element " + value->typeName() + " to a " + category + " list");
+        throw std::runtime_error("cannot append element");
     }
 
     elements.push_back(value);

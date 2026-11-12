@@ -1,9 +1,9 @@
 #ifndef LISTOBJECT_HPP
 #define LISTOBJECT_HPP
-
-#include "ValueDescriptor.hpp"
 #include <cstddef>
 #include <vector>
+
+class ValueDescriptor;
 
 enum class ListElementType {
     unset,
