@@ -96,4 +96,71 @@ private:
     ExprNode* _expression;
 };
 
+class IntConversionExpression final : public ExprNode {
+public:
+    IntConversionExpression(Token token, ExprNode* expression);
+    ~IntConversionExpression() override;
+
+    void print() const override;
+    [[nodiscard]] ValueDescriptor* evaluate(const SymbolTable &symbolTable) const override;
+private:
+    ExprNode* _expression;
+};
+
+class FloatConversionExpression final : public ExprNode {
+public:
+    FloatConversionExpression(Token token, ExprNode* expression);
+    ~FloatConversionExpression() override;
+
+    void print() const override;
+    [[nodiscard]] ValueDescriptor* evaluate(const SymbolTable &symbolTable) const override;
+private:
+    ExprNode* _expression;
+};
+
+class InputExpression final : public ExprNode {
+public:
+    InputExpression(Token token);
+    ~InputExpression() override;
+
+    void print() const override;
+    [[nodiscard]] ValueDescriptor* evaluate(const SymbolTable &symbolTable) const override;
+private:
+};
+
+/*
+class LenExpression final : public ExprNode {
+public:
+    LenExpression(Token token, ExprNode* expression);
+    ~LenExpression() override;
+
+    void print() const override;
+    [[nodiscard]] ValueDescriptor* evaluate(const SymbolTable &symbolTable) const override;
+private:
+    ExprNode* _expression;
+};
+
+class SplitExpression final : public ExprNode {
+public:
+    SplitExpression(Token token, ExprNode* expression);
+    ~SplitExpression() override;
+
+    void print() const override;
+    [[nodiscard]] ValueDescriptor* evaluate(const SymbolTable &symbolTable) const override;
+private:
+    ExprNode* _expression;
+};
+
+class PopExpression final : public ExprNode {
+public:
+    PopExpression(Token token, ExprNode* expression);
+    ~PopExpression() override;
+
+    void print() const override;
+    [[nodiscard]] ValueDescriptor* evaluate(const SymbolTable &symbolTable) const override;
+private:
+    ExprNode* _expression;
+};
+*/
+
 #endif

@@ -1,0 +1,17 @@
+dbl0 = float("-1.1")
+print "dbl0 should contain -1.1"
+print dbl0
+
+dbl1 = float(-300.1)
+print "dbl1 should contain -300.1 as a float"
+print dbl1
+
+dbl2 = 300
+dbl3 = dbl2 + dbl1
+print "dbl3 should contain -.1"
+print dbl3
+
+print "dbl4 should throw a runtime error"
+dbl4 = float(True)
+print dbl4
+

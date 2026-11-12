@@ -38,11 +38,13 @@ public:
     ExprNode *stringConversion();
     ExprNode *intConversion();
     ExprNode *floatConversion();
+   
     ExprNode *input();
+    /*
     ExprNode *len();
     ExprNode *split();
     ExprNode *pop();
-
+    */
 private:
     Tokenizer &tokenizer;
 

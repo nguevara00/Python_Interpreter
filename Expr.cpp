@@ -363,8 +363,7 @@ ValueDescriptor* UnaryExprNode::evaluate(const SymbolTable &symbolTable) const {
             return new DoubleValueDescriptor(-dblNum);
         }
     }
-    throw std::runtime_error("unary operator cannot be applied to " + valueTypeName
-);
+    throw std::runtime_error("unary operator cannot be applied to " + valueTypeName);
 }
 
 void UnaryExprNode::print() const {
@@ -432,7 +431,6 @@ StringConversionExpression::~StringConversionExpression(){
     delete _expression;
 }
 
-//added back in formatting
 void StringConversionExpression::print() const {
     std::cout << "str(";
     _expression->print();
@@ -446,3 +444,173 @@ ValueDescriptor* StringConversionExpression::evaluate(const SymbolTable &symbolT
     delete value;
     return new StringValueDescriptor(result);
 }
+
+//intConversionExpression
+IntConversionExpression::IntConversionExpression(Token token, ExprNode* expression) : ExprNode{std::move(token)}, _expression{expression}{}
+
+IntConversionExpression::~IntConversionExpression(){
+    delete _expression;
+}
+
+void IntConversionExpression::print() const {
+    std::cout << "int(";
+    _expression->print();
+    std::cout << ")";
+}
+
+ValueDescriptor* IntConversionExpression::evaluate(const SymbolTable &symbolTable) const {
+    ValueDescriptor* value = _expression->evaluate(symbolTable);
+    //what if value int?
+    if (value->type() == ValueDescriptor::Type::integer){
+        
+        IntegerValueDescriptor* intValue = static_cast<IntegerValueDescriptor*>(value);
+        int result = intValue->value();
+        delete value;
+        return new IntegerValueDescriptor(result);
+    }
+
+    //what if valuetype is string?
+    if (value->type() == ValueDescriptor::Type::string){
+        StringValueDescriptor* stringValue = static_cast<StringValueDescriptor*>(value);
+        int64_t result = std::stoi(stringValue->value());
+        delete value;
+        return new IntegerValueDescriptor(result);
+    }
+    
+    std::string type = value->typeName();
+    delete value;
+    throw std::runtime_error("IntConversion cannot convert " + type + " to integer");
+}
+
+//FloatConversionExpression
+FloatConversionExpression::FloatConversionExpression(Token token, ExprNode* expression) : ExprNode{std::move(token)}, _expression{expression}{}
+
+FloatConversionExpression::~FloatConversionExpression(){
+    delete _expression;
+}
+
+void FloatConversionExpression::print() const {
+    std::cout << "float(";
+    _expression->print();
+    std::cout << ")";
+}
+
+ValueDescriptor* FloatConversionExpression::evaluate(const SymbolTable &symbolTable) const {
+    ValueDescriptor* value = _expression->evaluate(symbolTable);
+
+    //what if double?
+    if (value->type() == ValueDescriptor::Type::doubleValue){
+        
+        DoubleValueDescriptor* doubleValue = static_cast<DoubleValueDescriptor*>(value);
+        double result = doubleValue->value();
+        delete value;
+        return new DoubleValueDescriptor(result);
+    }
+
+    //what if value int?
+    if (value->type() == ValueDescriptor::Type::integer){
+        
+        DoubleValueDescriptor* doubleValue = static_cast<DoubleValueDescriptor*>(value);
+        double result = doubleValue->value();
+        delete value;
+        return new DoubleValueDescriptor(result);
+    }
+
+    //what if valuetype is string?
+    if (value->type() == ValueDescriptor::Type::string){
+        StringValueDescriptor* stringValue = static_cast<StringValueDescriptor*>(value);
+        double result = std::stof(stringValue->value());
+        delete value;
+        return new DoubleValueDescriptor(result);
+    }
+    
+    std::string type = value->typeName();
+    delete value;
+    throw std::runtime_error("DoubleConversion cannot convert " + type + " to integer");
+}
+
+//InputExpression
+InputExpression::InputExpression(Token token) : ExprNode {std::move(token)}{}
+
+InputExpression::~InputExpression(){
+}
+
+void InputExpression::print() const {
+    token().print(std::cout);
+}
+
+ValueDescriptor* InputExpression::evaluate(const SymbolTable &symbolTable) const {
+//idk
+
+    std::string string;
+    //if line is bad, runtime error
+    if (!std::getline(std::cin,string)){
+        throw std::runtime_error("Reached end of file while waiting for input on line number " + std::to_string(token().lineNumber()) + ", column number " + std::to_string(token().columnNumber()));
+    }
+    return new StringValueDescriptor(string);
+}
+
+
+/*
+//LenExpression
+StringConversionExpression::StringConversionExpression(Token token, ExprNode* expression) : ExprNode{std::move(token)}, _expression{expression}{}
+
+StringConversionExpression::~StringConversionExpression(){
+    delete _expression;
+}
+
+void StringConversionExpression::print() const {
+    std::cout << "str(";
+    _expression->print();
+    std::cout << ")";
+}
+
+ValueDescriptor* StringConversionExpression::evaluate(const SymbolTable &symbolTable) const {
+    ValueDescriptor* value = _expression->evaluate(symbolTable);
+    std::string result = value->toString();
+    
+    delete value;
+    return new StringValueDescriptor(result);
+}
+
+//SplitExpression
+StringConversionExpression::StringConversionExpression(Token token, ExprNode* expression) : ExprNode{std::move(token)}, _expression{expression}{}
+
+StringConversionExpression::~StringConversionExpression(){
+    delete _expression;
+}
+
+void StringConversionExpression::print() const {
+    std::cout << "str(";
+    _expression->print();
+    std::cout << ")";
+}
+
+ValueDescriptor* StringConversionExpression::evaluate(const SymbolTable &symbolTable) const {
+    ValueDescriptor* value = _expression->evaluate(symbolTable);
+    std::string result = value->toString();
+    
+    delete value;
+    return new StringValueDescriptor(result);
+}
+//popExpression
+StringConversionExpression::StringConversionExpression(Token token, ExprNode* expression) : ExprNode{std::move(token)}, _expression{expression}{}
+
+StringConversionExpression::~StringConversionExpression(){
+    delete _expression;
+}
+
+void StringConversionExpression::print() const {
+    std::cout << "str(";
+    _expression->print();
+    std::cout << ")";
+}
+
+ValueDescriptor* StringConversionExpression::evaluate(const SymbolTable &symbolTable) const {
+    ValueDescriptor* value = _expression->evaluate(symbolTable);
+    std::string result = value->toString();
+    
+    delete value;
+    return new StringValueDescriptor(result);
+}
+*/

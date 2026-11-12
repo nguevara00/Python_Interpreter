@@ -286,7 +286,13 @@ Token Tokenizer::getToken() {
             else if (identifier == "int")
                 token.setKeyword(Keyword::intKeyword);
             else if (identifier == "float")
-                token.setKeyword(Keyword::floatKeyword); 
+                token.setKeyword(Keyword::floatKeyword);
+            else if (identifier == "len")
+                token.setKeyword(Keyword::lenKeyword);
+            else if (identifier == "split")
+                token.setKeyword(Keyword::splitKeyword);
+            else if (identifier == "pop")
+                token.setKeyword(Keyword::popKeyword); 
             else if (identifier == "True")
                 token.setBooleanValue(bool(true));
             else if (identifier == "False")

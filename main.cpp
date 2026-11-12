@@ -24,6 +24,7 @@ int main(int argc, char *argv[]) {
     Statements *statements = parser.program();
 
     statements->print();
+    std::cout << "\n";
     std::cout.flush();
 
     SymbolTable symbolTable;

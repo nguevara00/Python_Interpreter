@@ -1,0 +1,13 @@
+
+integer1 = int("-300")
+print "integer1 should contain -300 as an integer"
+print integer1
+
+integer2 = 300
+integer3 = integer2 + integer1
+print "integer3 should contain zero"
+
+print "integer4 should throw a runtime error"
+integer4 = int(4.5)
+print integer4
+

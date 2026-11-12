@@ -1,0 +1,9 @@
+print "please enter 0: "
+variable1 = input()
+print variable1
+print "variable1 should contain 0"
+
+print "please enter 0: "
+variable2 = input()
+print variable2
+print "variable2 should have runtime error"
