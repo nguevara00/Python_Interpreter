@@ -558,11 +558,14 @@ ListLiteral::~ListLiteral() {
 
 void ListLiteral::print() const {
     std::cout << "[";
-
-    for (ExprNode* element : _expressions) {
-        element->print();
+    for (size_t i = 0; i < _expressions.size(); i++) {
+        if (i != _expressions.size() - 1) {
+            _expressions[i]->print();
+            std::cout << ", ";
+        } else {
+            _expressions[i]->print();
+        }
     }
-
     std::cout << "]";
 }
 
@@ -572,7 +575,6 @@ ValueDescriptor* ListLiteral::evaluate(const SymbolTable &symbolTable) const {
     for (ExprNode* expression : _expressions) {
         ValueDescriptor* listElement = expression->evaluate(symbolTable);
         list->append(listElement);
-        delete listElement;
     }
 
     return new ListValueDescriptor(list);

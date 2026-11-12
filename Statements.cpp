@@ -272,24 +272,6 @@ AppendStatement::~AppendStatement() {
     delete _second;
 }
 
-// void ListObject::append(ValueDescriptor *value) {
-//     ListElementType elementType;
-//     switch (value->type()) {
-//         case ValueDescriptor::Type::integer:
-//             elementType = ListElementType::numeric;
-//             break;
-//         case ValueDescriptor::Type::doubleValue:
-//             elementType = ListElementType::numeric;
-//             break;
-//         case ValueDescriptor::Type::boolean:
-//             elementType = ListElementType::boolean;
-//             break;
-//         case ValueDescriptor::Type::string:
-//             elementType = ListElementType::string;
-//             break;
-//         case ValueDescriptor::Type::list: break;
-//     }
-
 void AppendStatement::evaluate(SymbolTable &symbolTable) const {
     ValueDescriptor* first = _first->evaluate(symbolTable);
     if (first->type() != ValueDescriptor::Type::list) {
