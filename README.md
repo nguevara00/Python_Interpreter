@@ -26,7 +26,7 @@ Tues 10/27 9p-11p writing tests and fixing bugs (Nick)
 Phase 4:  
 Tues 11/3 10pm-1am implemented Feature 1 - Conditional Statements (Nick)  
 Tues 11/10 830pm-930pm implemented Feature 2 - While Loops (Nick)  
-Weds 11/11 4pm-12am implemented Feature 3,4,5
+Weds 11/11 4pm-12am implemented Feature 3,4,5  
 Thurs 12a-6a implemented new grammar and list equality (Nick)  
 
 Github Repository
