@@ -1,0 +1,24 @@
+a = 5
+b = 12
+
+if a > 0:
+    print("True: a > 0 outer if condition passed.")
+    if b > 10:
+        print("True: b > 10 second nested condition passed.")
+        if a + b == 17:
+            print("True: a + b == 17 third nested condition passed.")
+        else:
+            print("Error: third level else should not have passed.")
+    else:
+        print("Error: second level else should not have passed.")
+else:
+    print("Error: outer level else should not have passed.")
+
+if a < 0:
+    if b > 10:
+        print("Error: nested if should not have run.")
+else:
+    if b < 10:
+        print("Error: b < 10 should not have passed.")
+    elif b == 12:
+        print("True: b == 12 nested elif passed.")

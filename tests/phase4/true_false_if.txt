@@ -1,0 +1,23 @@
+x = 10
+
+if x > 5:
+    print ("x is greater than 5.")
+
+if x < 3:
+    print ("Error: this condition should not pass.")
+
+if x == 10:
+    print("x == 10 is true.")
+else:
+    print("Error: x == 10 and should return true.")
+
+if x != 10:
+    print ("Error: x == 10 and should return false.")
+else:
+    print("x != 10 is false.")
+
+if True:
+    print("literal True executes.")
+
+if False:
+    print("Error: literal False should not execute.")

@@ -1,0 +1,19 @@
+x = 7
+
+if x < 0:
+    print("Error: x is greater than zero.")
+elif x == 7:
+    print("True: x == 7 elif ran correctly.")
+else:
+    print("Error: if x < 0 should not have hit this condition.")
+
+y = 3
+
+if y > 3:
+    print("Error y > 3 should not be true.")
+elif y < 4:
+    print("True: y < 4 elif ran correctly.")
+elif y > 1:
+    print("Error: second elif should not execute.")
+else:
+    print("Error: else should not execute.")
