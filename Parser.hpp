@@ -18,6 +18,7 @@ public:
     Statement* simpleStatement();
     AssignmentStatement *assignmentStatement();
     PrintStatement *printStatement();
+    AssignmentTarget* assignmentTarget();
     AppendStatement* appendStatement();
     ForStatement* forStatement();
     IfStatement* ifStatement();
@@ -39,11 +40,14 @@ public:
     ExprNode *stringConversion();
     ExprNode *intConversion();
     ExprNode *floatConversion();
-   
+    ExprNode *postfixExpression();
     ExprNode *input();
     ExprNode *len();
     ExprNode *split();
     ExprNode *pop();
+    ExprNode* oneArgumentCall();
+
+    Token oneArgumentName();
 
 private:
     Tokenizer &tokenizer;

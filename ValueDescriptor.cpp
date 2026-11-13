@@ -124,15 +124,22 @@ std::string ListValueDescriptor::typeName() const {
     return "list";
 }
 
-// [0, 0, 0, ] []
+
+//added "quotes" to list elements, moved where comma is printed
+
 std::string ListValueDescriptor::toString() const {
     std::string output = "[";
     for (size_t i = 0; i < listObject->size(); i++) {
+        if (i > 0){
+            output += ", ";
+        }
+
         ValueDescriptor* element = listObject->cloneElementAt(i);
 
-        if (i != listObject->size() - 1) {
-            output += element->toString();
-            output += ", ";
+        if (element->type() == ValueDescriptor::Type::string) {
+            output += '"';
+            output += static_cast<StringValueDescriptor*>(element)->value();
+            output += '"';
         } else {
             output += element->toString();
         }

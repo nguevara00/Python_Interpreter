@@ -1,0 +1,12 @@
+
+string = "the quick brown fox"
+print "Printing String"
+print string
+list = split(string)
+print "Splitting string into list"
+print list
+popped = pop(list)
+print "popping list- the popped element was:"
+print popped
+print "the new list is:"
+print list

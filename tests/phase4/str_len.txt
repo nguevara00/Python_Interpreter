@@ -1,0 +1,8 @@
+santa = "santa"
+print santa
+print len(santa)
+list = ["hamster", "bananas", "vanilla"]
+print list
+print len(list)
+print pop(list)
+print list

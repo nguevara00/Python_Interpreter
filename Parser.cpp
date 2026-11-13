@@ -129,24 +129,43 @@ Statements *Parser::suite(){
 
 }
 
-// <assignment-statement> -> <assignment-target> = <rel-expr>
+
 AssignmentStatement *Parser::assignmentStatement() {
-    // <assignment-statement> -> <id> = <rel-expr>
-    // The caller consumes the context-dependent terminator: NEWLINE in a
-    // statement list or ';' in a future for-loop header.
-    Token variable = tokenizer.getToken();
-    if (!variable.isIdentifier())
-        die("Parser::assignmentStatement", "expected an identifier", variable);
+    // <assignment-statement> -> <assignment-target> = <rel-expr>
+    AssignmentTarget* target = assignmentTarget();
 
     Token assignmentOperator = tokenizer.getToken();
     if (!assignmentOperator.isAssignmentOperator())
         die("Parser::assignmentStatement", "expected '='", assignmentOperator);
+    
+    ExprNode* expression = relExpr();
 
-    return new AssignmentStatement(variable.identifier(), relExpr());
+    return new AssignmentStatement(target, expression);
 }
 
-AssignmentTarget *Parser::assignmentTarget() {
+AssignmentTarget* Parser::assignmentTarget() {
     // <assignment-target> -> <id> [ "[" <rel-expr> "]" ]
+    
+    Token variable = tokenizer.getToken();
+    if (!variable.isIdentifier()) {
+        die("Parser::assignmentTarget", "expected an identifier", variable);
+    }
+
+    ExprNode* expression = nullptr;
+    
+    Token openBracket = tokenizer.getToken();
+    if (openBracket.isOpenBracket()){
+        expression = relExpr();
+        
+        Token closedBracket = tokenizer.getToken();
+        if (!closedBracket.isClosedBracket()) {
+            die("Parser::assignmentTarget", "expected ']'", closedBracket);
+        }
+    } else {
+        tokenizer.ungetToken();
+    }
+    
+    return new AssignmentTarget(variable.identifier(), expression);
 }
 
 PrintStatement *Parser::printStatement() {
@@ -391,36 +410,55 @@ ExprNode *Parser::arithTerm() {
     return left;
 }
 
-// <arith-primary> -> [ <sign> ] <postfix-expression>
+
 ExprNode *Parser::arithPrimary() {
-    // <arith-primary> -> [ <sign> ] <arith-atom>
+    // <arith-primary> -> [ <sign> ] <postfix-expression>
+
     Token token = tokenizer.getToken();
-    if (token.isAdditionOperator() || token.isSubtractionOperator())
-        return new UnaryExprNode(token, arithAtom());
+    if (token.isAdditionOperator() || token.isSubtractionOperator()) {
+        return new UnaryExprNode(token, postfixExpression());
+    }
 
     tokenizer.ungetToken();
-    return arithAtom();
+    return postfixExpression();
 }
 
-PostfixExpression* Parser::postfixExpression() {
+ExprNode* Parser::postfixExpression() {
     // <postfix-expression> -> <atom> [ "[" <rel-expr> "]" ]
+    ExprNode* atom = arithAtom();
+
+    Token openBracket = tokenizer.getToken();
+    if (!openBracket.isOpenBracket()){
+        tokenizer.ungetToken();
+        return new PostfixExpression(atom->token(), atom, nullptr);
+    }
+
+    ExprNode* indexExpression = relExpr();
+
+    Token closedBracket = tokenizer.getToken();
+    if (!closedBracket.isClosedBracket()) {
+        die("Parser::postfixExpression", "expected ']'", closedBracket);
+    }
+
+    return new PostfixExpression(atom->token(), atom, indexExpression);
+
 }
 
-// <atom> -> <id> | <literal> | <list-literal> | <input-expression> | <one-arguement-call> | "(" <rel-expr> ")"
+// <atom> -> <id> | <literal> | <list-literal> | <input-expression> | <one-argument-call> | "(" <rel-expr> ")"
 ExprNode *Parser::arithAtom() {
-    // <arith-atom> -> <id> | <literal> | <list-literal> | "input" "(" ")" | "int" "(" <rel-expr> ")" | "float" "(" <rel-expr> ")" 
-    // | "str" "(" <rel-expr> ")" | "len" "(" <rel-expr> ")" | "split" "(" <rel-expr> ")" | "pop" "(" <rel-expr> ")" | "(" <rel-expr> ")""
     Token token = tokenizer.getToken();
     
     if (token.isIdentifier()) {
         return new Variable(token);
     }
 
+    //literals
     if (token.isInteger() || token.isDouble() || token.isString() || token.isBoolean()) {
         tokenizer.ungetToken();
         return literal();
     }
 
+    //list literals
     if (token.isOpenBracket()){
         tokenizer.ungetToken();
         return listLiteral();
@@ -432,39 +470,10 @@ ExprNode *Parser::arithAtom() {
         return input();
     } 
 
-    //int
-    if (token.isIntKeyword()){
+    //one argument calls
+    if (token.isIntKeyword() || token.isFloatKeyword() || token.isLenKeyword() || token.isSplitKeyword() || token.isPopKeyword() || token.isStrKeyword()) {
         tokenizer.ungetToken();
-        return intConversion();
-    }
-    
-    //float
-    if (token.isFloatKeyword()){
-        tokenizer.ungetToken();
-        return floatConversion();
-    }
-
-    //len
-    if (token.isLenKeyword()){
-        tokenizer.ungetToken();
-        return len();
-    }
-
-    //split
-    if (token.isSplitKeyword()){
-        tokenizer.ungetToken();
-        return split();
-    }
-
-    //pop
-    if (token.isPopKeyword()){
-        tokenizer.ungetToken();
-        return pop();
-    }
-
-    if (token.isStrKeyword()){
-        tokenizer.ungetToken();
-        return stringConversion();
+        return oneArgumentCall();
     }
     
     if (token.isOpenParen()) {
@@ -476,7 +485,7 @@ ExprNode *Parser::arithAtom() {
         return expression;
     }
 
-    die("Parser::arithAtom", "expected an identifier, literal, conversion, or '('", token);
+    die("Parser::arithAtom", "expected an identifier, literal, [, input, oneArgumentCall, or (", token);
 }
 
 ExprNode *Parser::literal(){
@@ -682,6 +691,52 @@ ExprNode* Parser::pop(){
     return new PopExpression(popToken, expression);
 }
 
-// <one-arguement-call> -> <one-argument-name> "(" <rel-expr> ")"
+
+
 // <one-argument-name> -> "int" | "float" | "str" | "len" | "split" | "pop"
-//
+Token Parser::oneArgumentName(){
+    Token name = tokenizer.getToken();
+
+    if (name.isIntKeyword() || name.isFloatKeyword() || name.isStrKeyword() || name.isLenKeyword() || name.isSplitKeyword() || name.isPopKeyword()) {
+        return name;
+    }
+
+    die("Parser::oneArgumentName", "expected a one-argument name", name);
+}
+
+// <one-argument-call> -> <one-argument-name> "(" <rel-expr> ")"
+ExprNode* Parser::oneArgumentCall(){
+    Token name = oneArgumentName();
+
+    Token openParen = tokenizer.getToken();
+    if (!openParen.isOpenParen()) {
+        die("Parser::oneArgumentCall", "expected '('", openParen);
+    }
+
+    ExprNode *expression = relExpr();
+
+    Token closedParen = tokenizer.getToken();
+    if (!closedParen.isClosedParen()) {
+        die("Parser::oneArgumentCall", "expected ')'", closedParen);
+    }
+
+    if (name.isIntKeyword())
+        return new IntConversionExpression(name, expression);
+
+    if (name.isFloatKeyword())
+        return new FloatConversionExpression(name, expression);
+
+    if (name.isStrKeyword())
+        return new StringConversionExpression(name, expression);
+
+    if (name.isLenKeyword())
+        return new LenExpression(name, expression);
+
+    if (name.isSplitKeyword())
+        return new SplitExpression(name, expression);
+
+    if (name.isPopKeyword())
+        return new PopExpression(name, expression);
+
+    die("Parser::oneArgumentCall", "invalid one-argument name", name);
+}

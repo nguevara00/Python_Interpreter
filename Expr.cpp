@@ -39,14 +39,106 @@ ValueDescriptor* BinaryExprNode::evaluate(const SymbolTable &symbolTable) const 
     const bool bothStrings = leftString && rightString;
     const bool bothDoubles = (leftDouble && rightDouble) || (leftInt && rightDouble) || (leftDouble && rightInt);
 
+    //added functionality for comparison for list equality
+    if (token().isEqualityOperator() || token().isNotEqualOperator()){
+        bool equal = false;
+
+        if (bothInts) {
+            equal = static_cast<const IntegerValueDescriptor*>(leftValue)->value() == static_cast<const IntegerValueDescriptor*>(rightValue)->value();
+        } else if (bothDoubles){
+            double leftNumber;
+            double rightNumber;
+
+            if (leftInt){
+                leftNumber = static_cast<double>(static_cast<const IntegerValueDescriptor*>(leftValue)->value());
+            } else{
+                leftNumber = static_cast<const DoubleValueDescriptor*>(leftValue)->value();
+            }
+
+            if (rightInt){
+                rightNumber = static_cast<double>(static_cast<const IntegerValueDescriptor*>(rightValue)->value());
+            } else{
+                rightNumber = static_cast<const DoubleValueDescriptor*>(rightValue)->value();
+            }
+
+            equal = leftNumber == rightNumber;
+        } else if (bothStrings){
+            equal = static_cast<const StringValueDescriptor *>(leftValue)->value() == static_cast<const StringValueDescriptor *>(rightValue)->value();
+        } else if (bothBooleans){
+            equal = static_cast<const BooleanValueDescriptor *>(leftValue)->value() == static_cast<const BooleanValueDescriptor *>(rightValue)->value();
+        } else if (leftValue->type() == ValueDescriptor::Type::list && rightValue->type() == ValueDescriptor::Type::list) {
+            const ListObject *leftList = static_cast<const ListValueDescriptor *>(leftValue)->object();
+            const ListObject *rightList = static_cast<const ListValueDescriptor *>(rightValue)->object();
+
+            if (leftList->size() == rightList->size()) {
+                if (leftList->size() == 0) {
+                    equal = true;
+                } else if (leftList->elementType() == rightList->elementType()) {
+                    equal = true;
+
+                    for (std::size_t i = 0; i < leftList->size(); ++i) {
+                        ValueDescriptor *leftElement = leftList->cloneElementAt(i);
+                        ValueDescriptor *rightElement = rightList->cloneElementAt(i);
+                        bool elementsEqual = false;
+
+                        bool leftElementInteger = leftElement->type() == ValueDescriptor::Type::integer;
+                        bool rightElementInteger = rightElement->type() == ValueDescriptor::Type::integer;
+                        bool leftElementDouble = leftElement->type() == ValueDescriptor::Type::doubleValue;
+                        bool rightElementDouble = rightElement->type() == ValueDescriptor::Type::doubleValue;
+
+                        if (leftElementInteger && rightElementInteger) {
+                            elementsEqual = static_cast<IntegerValueDescriptor *>(leftElement)->value() == static_cast<IntegerValueDescriptor *>(rightElement)->value();
+                        } else if ((leftElementInteger || leftElementDouble) && (rightElementInteger || rightElementDouble)) {
+                            double leftNumber;
+                            double rightNumber;
+
+                            if (leftElementInteger){
+                                leftNumber = static_cast<double>(static_cast<IntegerValueDescriptor *>(leftElement)->value());
+                            } else {
+                                leftNumber = static_cast<DoubleValueDescriptor *>(leftElement)->value();
+                            }
+
+                            if (rightElementInteger) {
+                                rightNumber = static_cast<double>(static_cast<IntegerValueDescriptor *>(rightElement)->value());
+                            } else {
+                            rightNumber = static_cast<DoubleValueDescriptor *>(rightElement)->value();
+                            }
+
+                            elementsEqual = leftNumber == rightNumber;
+
+                        } else if (leftElement->type() == ValueDescriptor::Type::string && rightElement->type() == ValueDescriptor::Type::string) {
+                            elementsEqual = static_cast<StringValueDescriptor *>(leftElement)->value() == static_cast<StringValueDescriptor *>(rightElement)->value();
+                        } else if (leftElement->type() == ValueDescriptor::Type::boolean && rightElement->type() == ValueDescriptor::Type::boolean) {
+                            elementsEqual = static_cast<BooleanValueDescriptor *>(leftElement)->value() == static_cast<BooleanValueDescriptor *>(rightElement)->value();
+                        }
+
+                        delete leftElement;
+                        delete rightElement;
+
+                        if (!elementsEqual) {
+                            equal = false;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        delete leftValue;
+        delete rightValue;
+
+        if (token().isNotEqualOperator()){
+            equal = !equal;
+        }
+
+        return new BooleanValueDescriptor(equal);
+    } 
+
     int64_t leftNum = 0;    
     int64_t rightNum = 0;
     double leftDoubleNum = 0;
     double rightDoubleNum = 0;
     std::string leftStringActual = "";
     std::string rightStringActual = "";
-    bool leftBoolValue = false;
-    bool rightBoolValue = false;
 
     const std::string leftTypeName = leftValue->typeName();
     const std::string rightTypeName = rightValue->typeName();
@@ -66,7 +158,6 @@ ValueDescriptor* BinaryExprNode::evaluate(const SymbolTable &symbolTable) const 
         rightDoubleNum = static_cast<const DoubleValueDescriptor*>(rightValue)->value();
     }
     
-    
     if (leftString){
         leftStringActual = static_cast<const StringValueDescriptor*>(leftValue)->toString();
     }
@@ -75,15 +166,6 @@ ValueDescriptor* BinaryExprNode::evaluate(const SymbolTable &symbolTable) const 
         rightStringActual = static_cast<const StringValueDescriptor*>(rightValue)->toString();
     }
 
-    if (leftBoolean){
-        leftBoolValue = static_cast<const BooleanValueDescriptor*>(leftValue)->value();
-    }
-
-    if (rightBoolean){
-        rightBoolValue = static_cast<const BooleanValueDescriptor*>(rightValue)->value();
-    }
-
-    //deletes here -leftValue and rightValue have all their values extracted and are no longer needed
     delete leftValue;
     delete rightValue;
 
@@ -140,7 +222,6 @@ ValueDescriptor* BinaryExprNode::evaluate(const SymbolTable &symbolTable) const 
         if (rightNum == 0){
             throw std::runtime_error("modulo by zero " + location);  
         }
-        //fixing modulo for python 
         int64_t remainder = leftNum % rightNum;
         if (remainder != 0 && ((leftNum < 0) != (rightNum < 0))){
             remainder += rightNum;
@@ -164,50 +245,6 @@ ValueDescriptor* BinaryExprNode::evaluate(const SymbolTable &symbolTable) const 
             --quotient;
         }
         return new IntegerValueDescriptor(quotient);
-    }
-
-    if (token().isEqualityOperator()) {
-        bool booleanResult = false;
-
-        if (bothInts) {
-            booleanResult = leftNum == rightNum;
-        }
-
-        else if (bothDoubles){
-            booleanResult = leftDoubleNum == rightDoubleNum;
-        }
-
-        else if (bothStrings) {
-            booleanResult = leftStringActual == rightStringActual;
-        }
-
-        else if (bothBooleans) {
-            booleanResult = leftBoolValue == rightBoolValue;
-        }
-
-        return new BooleanValueDescriptor(booleanResult);
-    }
-
-    if (token().isNotEqualOperator()) {
-        bool booleanResult = true;
-
-        if (bothInts) {
-            booleanResult = leftNum != rightNum;
-        }
-
-        else if (bothDoubles){
-            booleanResult = leftDoubleNum != rightDoubleNum;
-        }
-
-        else if (bothStrings) {
-            booleanResult = leftStringActual != rightStringActual;
-        }
-
-        else if (bothBooleans) {
-            booleanResult = leftBoolValue != rightBoolValue;
-        }
-
-        return new BooleanValueDescriptor(booleanResult);
     }
 
     if (token().isGreaterThanOperator()) {
@@ -539,7 +576,7 @@ void InputExpression::print() const {
     token().print(std::cout);
 }
 
-ValueDescriptor* InputExpression::evaluate(const SymbolTable &symbolTable) const {
+ValueDescriptor* InputExpression::evaluate(const SymbolTable &) const {
 //idk
 
     std::string string;
@@ -569,14 +606,38 @@ void ListLiteral::print() const {
     std::cout << "]";
 }
 
+//added error handling for lists
 ValueDescriptor* ListLiteral::evaluate(const SymbolTable &symbolTable) const {
     ListObject* list = new ListObject();
 
     for (ExprNode* expression : _expressions) {
         ValueDescriptor* listElement = expression->evaluate(symbolTable);
+        ListElementType elementType;
+
+        switch (listElement->type()) {
+            case ValueDescriptor::Type::integer:
+            case ValueDescriptor::Type::doubleValue:
+                elementType = ListElementType::numeric;
+                break;
+            case ValueDescriptor::Type::boolean:
+                elementType = ListElementType::boolean;
+                break;
+            case ValueDescriptor::Type::string:
+                elementType = ListElementType::string;
+                break;
+            case ValueDescriptor::Type::list:
+                delete listElement;
+                delete list;
+                throw std::runtime_error("lists cannot contain lists");
+        }
+        if (list->elementType() != ListElementType::unset && list->elementType() != elementType){
+            delete listElement;
+            delete list;
+            throw std::runtime_error("list elements must have compatible type");
+        }
+
         list->append(listElement);
     }
-
     return new ListValueDescriptor(list);
 }
 
@@ -599,10 +660,12 @@ ValueDescriptor* LenExpression::evaluate(const SymbolTable &symbolTable) const {
 
     if (value->type() == ValueDescriptor::Type::string) {
         result = static_cast<StringValueDescriptor*>(value)->value().size();
-    }
-
-    if (value->type() == ValueDescriptor::Type::list) {
+    } else if (value->type() == ValueDescriptor::Type::list) {
         result =  static_cast<std::int64_t>(static_cast<ListValueDescriptor*>(value)->object()->size());
+    } else {
+        std::string type = value->typeName();
+        delete value;
+        throw std::runtime_error("len() requires a string or a list, not a " + type);
     }
     
     delete value;
@@ -629,22 +692,25 @@ ValueDescriptor* SplitExpression::evaluate(const SymbolTable &symbolTable) const
         delete value;
         throw std::runtime_error("split requires a string not a " + valueType);
     }
+    std::string line = static_cast<StringValueDescriptor*>(value)->value();
+    delete value;
 
     ListObject* list = new ListObject(ListElementType::string);
-    std::string line = static_cast<StringValueDescriptor*>(value)->value();
     std::string word;
     // the deer     jumped  over the      moon
     for (char character : line) {
-        if (character == ' ') {
+        if (character == ' ' || character == '\t') {
             if (!word.empty()) {
                 list->append(new StringValueDescriptor(word));
                 word.clear();
-            } else {
-                continue;
             }
         } else {
             word += character;
         }
+    }
+
+    if (!word.empty()){
+        list->append(new StringValueDescriptor(word));
     }
 
     return new ListValueDescriptor(list);
@@ -682,4 +748,71 @@ ValueDescriptor* PopExpression::evaluate(const SymbolTable &symbolTable) const {
     delete value;
 
     return lastElement;
+}
+
+PostfixExpression::PostfixExpression(Token token, ExprNode* atom, ExprNode* expression) : ExprNode{std::move(token)}, atom_{atom}, expression_{expression} {}
+PostfixExpression::~PostfixExpression(){
+    delete atom_;
+    delete expression_;
+}
+
+void PostfixExpression::print() const {
+    atom_->print();
+    if (expression_ != nullptr){
+        std::cout << '[';
+        expression_->print();
+        std::cout << ']';
+    }
+}
+
+ValueDescriptor* PostfixExpression::evaluate(const SymbolTable &symbolTable) const {
+    ValueDescriptor* value = atom_->evaluate(symbolTable);
+
+    if (expression_ == nullptr){
+        return value;
+    }
+
+    ValueDescriptor* indexValue = expression_->evaluate(symbolTable);
+
+    if (indexValue->type() != ValueDescriptor::Type::integer){
+        std::string type = indexValue->typeName();
+        delete indexValue;
+        delete value;
+        throw std::runtime_error("subscript index must be an integer, got " + type);
+    }
+
+    std::int64_t index = static_cast<IntegerValueDescriptor*>(indexValue)->value();
+    delete indexValue;
+
+    if (value->type() == ValueDescriptor::Type::string) {
+        StringValueDescriptor* stringValue = static_cast<StringValueDescriptor*>(value);
+        const std::string &string = stringValue->value();
+
+        if (index < 0 || static_cast<std::size_t>(index) >= string.size()){
+            delete value;
+            throw std::runtime_error("string index out of range");
+        }
+
+        std::string character(1, string[static_cast<std::size_t>(index)]);
+        delete value;
+        return new StringValueDescriptor(character);
+    }
+
+    if (value->type() == ValueDescriptor::Type::list){
+        ListValueDescriptor* listValue = static_cast<ListValueDescriptor*>(value);
+        ListObject* list = listValue->object();
+
+        if (index < 0 || static_cast<std::size_t>(index) >= list->size()){
+            delete value;
+            throw std::runtime_error("list index out of range");
+        }
+
+        ValueDescriptor* element = list->cloneElementAt(static_cast<std::size_t>(index));
+        delete value;
+        return element;
+    }
+
+    std::string type = value->typeName();
+    delete value;
+    throw std::runtime_error("cannot subscript " + type);
 }

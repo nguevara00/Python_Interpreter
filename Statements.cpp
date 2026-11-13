@@ -25,19 +25,93 @@ void Statements::evaluate(SymbolTable &symbolTable) const {
         statement->evaluate(symbolTable);
 }
 
-AssignmentStatement::AssignmentStatement(std::string variableName, ExprNode *expression): variableName{std::move(variableName)}, expression{expression} {}
+AssignmentTarget::AssignmentTarget(std::string variableName, ExprNode* expression) : variableName_{variableName}, expression_{expression}{}
+AssignmentTarget::~AssignmentTarget(){
+    delete expression_;
+}
+const std::string &AssignmentTarget::variableName() const {
+    return variableName_;
+}
+ExprNode* AssignmentTarget::expression() const {
+    return expression_;
+}
+
+
+AssignmentStatement::AssignmentStatement(AssignmentTarget* target, ExprNode *expression): target_{target}, expression_{expression} {}
 
 AssignmentStatement::~AssignmentStatement() {
-    delete expression;
+    delete target_;
+    delete expression_;
 }
 
 void AssignmentStatement::evaluate(SymbolTable &symbolTable) const {
-    symbolTable.setValueFor(variableName, expression->evaluate(symbolTable));
+    if (target_->expression() == nullptr){
+        symbolTable.setValueFor(target_->variableName(), expression_->evaluate(symbolTable));
+        return;
+    }
+    
+    ValueDescriptor* targetValue = symbolTable.getValueFor(target_->variableName());
+    if (targetValue->type() != ValueDescriptor::Type::list){
+        throw std::runtime_error("assignment target is not a list");
+    }
+
+    ListValueDescriptor *listValue = static_cast<ListValueDescriptor*>(targetValue);
+    ListObject* list = listValue->object();
+
+    ValueDescriptor* value = target_->expression()->evaluate(symbolTable);
+
+    if (value->type() != ValueDescriptor::Type::integer){
+        delete value;
+        throw std::runtime_error("list index must be an integer");
+    }
+
+    std::int64_t index = static_cast<IntegerValueDescriptor*>(value)->value();
+    delete value;
+
+    if (index < 0 || static_cast<std::size_t>(index) >= list->size()){
+        throw std::runtime_error("list index is out of range");
+    }
+
+    ValueDescriptor* newValue = expression_->evaluate(symbolTable);
+    ListElementType valueType;
+
+    switch (newValue->type()){
+        case ValueDescriptor::Type::integer:
+            valueType = ListElementType::numeric;
+            break;
+        case ValueDescriptor::Type::doubleValue:
+            valueType = ListElementType::numeric;
+            break;
+        case ValueDescriptor::Type::boolean:
+            valueType = ListElementType::boolean;
+            break;
+        case ValueDescriptor::Type::string:
+            valueType = ListElementType::string;
+            break;
+        case ValueDescriptor::Type::list:
+            delete newValue;
+            throw std::runtime_error("lists cannot contain lists");
+    }
+
+    if (list->elementType() != ListElementType::unset && list->elementType() != valueType) {
+        delete newValue;
+        throw std::runtime_error("list element type mismatch");
+    }
+
+    list->setElement(static_cast<std::size_t>(index), newValue);
+
 }
 
 void AssignmentStatement::print() const {
-    std::cout << variableName << " = ";
-    expression->print();
+    std::cout << target_->variableName();
+
+    if (target_->expression() != nullptr){
+        std::cout << '[';
+        target_->expression()->print();
+        std::cout << ']';
+    }
+    std::cout << " = ";
+    expression_->print();
     std::cout << '\n';
 }
 
@@ -282,9 +356,40 @@ void AppendStatement::evaluate(SymbolTable &symbolTable) const {
 
     ListObject *list = static_cast<ListValueDescriptor*>(first)->object();
     ValueDescriptor* second = _second->evaluate(symbolTable);
-    std::string secondType = second->typeName();
+    if (second->type() == ValueDescriptor::Type::list) {
+        delete second;
+        delete first;
+        throw std::runtime_error("lists cannot contain lists");
+    }
+
+    ListElementType secondCategory;
+    switch (second->type()) {
+        case ValueDescriptor::Type::integer:
+            secondCategory = ListElementType::numeric;
+            break;
+        case ValueDescriptor::Type::doubleValue:
+            secondCategory = ListElementType::numeric;
+            break;
+        case ValueDescriptor::Type::boolean:
+            secondCategory = ListElementType::boolean;
+            break;
+        case ValueDescriptor::Type::string:
+            secondCategory = ListElementType::string;
+            break;
+        case ValueDescriptor::Type::list:
+            delete second;
+            delete first;
+            throw std::runtime_error("lists cannot contain lists");
+    }
+
+    if (list->elementType() != ListElementType::unset && list->elementType() != secondCategory){
+        delete second;
+        delete first;
+        throw std::runtime_error("list element type mismatch");
+    }
 
     list->append(second);
+    delete first;
 }
 
 void AppendStatement::print() const {

@@ -172,5 +172,17 @@ private:
     ExprNode* _expression;
 };
 
+class PostfixExpression final : public ExprNode {
+public:    
+    PostfixExpression(Token token, ExprNode* atom, ExprNode* expression);
+    ~PostfixExpression() override;
+
+    void print() const override;
+    [[nodiscard]] ValueDescriptor* evaluate(const SymbolTable &symbolTable) const override;
+
+private:
+    ExprNode* atom_;
+    ExprNode* expression_;
+};
 
 #endif

@@ -1,2 +1,8 @@
-string = "deer jumps"
-len(string)
+list = [1,2,3,4]
+print list
+print "appending 5"
+append(list, 5)
+print list
+print "popping list"
+print pop(list)
+print list

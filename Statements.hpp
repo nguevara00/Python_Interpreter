@@ -27,18 +27,30 @@ private:
     std::vector<Statement *> statements;
 };
 
+class AssignmentTarget {
+public:
+    AssignmentTarget(std::string variableName, ExprNode* expression);
+    ~AssignmentTarget();
+
+    const std::string &variableName() const;
+    ExprNode* expression() const;
+
+private:
+    std::string variableName_;
+    ExprNode* expression_;
+};
+
 class AssignmentStatement final : public Statement {
 public:
-    AssignmentStatement(std::string variableName,
-                        ExprNode *expression);
+    AssignmentStatement(AssignmentTarget* target, ExprNode *expression);
     ~AssignmentStatement() override;
 
     void evaluate(SymbolTable &symbolTable) const override;
     void print() const override;
 
 private:
-    std::string variableName;
-    ExprNode *expression;
+    AssignmentTarget* target_;
+    ExprNode* expression_;
 };
 
 class PrintStatement final : public Statement {

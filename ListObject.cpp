@@ -1,9 +1,9 @@
 #include "ListObject.hpp"
 #include "ValueDescriptor.hpp"
 
-ListObject::ListObject(ListElementType initialType) {
-    initialType = ListElementType::unset;
-}
+//added error handling for lists
+
+ListObject::ListObject(ListElementType initialType) : category{initialType} {}
 
 ListObject::~ListObject() {
     for (ValueDescriptor *element : elements) {
@@ -46,6 +46,10 @@ ValueDescriptor* ListObject::cloneElementAt(std::size_t index) const {
 
 // On success, each of these functions takes ownership of value.
 void ListObject::setElement(std::size_t index, ValueDescriptor *value) {
+    if (index >= elements.size()) {
+        throw std::runtime_error("list index " + std::to_string(index) + " out of range.");
+    }
+
     ListElementType elementType;
     switch (value->type()) {
         case ValueDescriptor::Type::integer:
@@ -60,12 +64,11 @@ void ListObject::setElement(std::size_t index, ValueDescriptor *value) {
         case ValueDescriptor::Type::string:
             elementType = ListElementType::string;
             break;
-        case ValueDescriptor::Type::list: break;
+        case ValueDescriptor::Type::list:
+            throw std::runtime_error("lists cannot contain lists");
     }
 
-    if (index >= elements.size()) {
-        throw std::runtime_error("list index " + std::to_string(index) + " out of range.");
-    }
+    
 
     if (category != ListElementType::unset && elementType != category) {
         throw std::runtime_error("cannot set element");
@@ -95,7 +98,8 @@ void ListObject::append(ValueDescriptor *value) {
         case ValueDescriptor::Type::string:
             elementType = ListElementType::string;
             break;
-        case ValueDescriptor::Type::list: break;
+        case ValueDescriptor::Type::list:
+            throw std::runtime_error("lists cannot contain lists");
     }
 
     if (category != ListElementType::unset && elementType != category) {
