@@ -1,0 +1,10 @@
+a = [1, 2]
+b = a
+b = [7, 8]
+print(a[0])
+print(b[0])
+b[0] = 70
+print(a)
+print(b)
+a = a
+print(a)

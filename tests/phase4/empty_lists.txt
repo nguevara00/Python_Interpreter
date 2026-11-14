@@ -1,0 +1,25 @@
+untyped = []
+print(untyped)
+print(len(untyped))
+
+nums = [5]
+x = pop(nums)
+flags = [True]
+y = pop(flags)
+words = ["hello"]
+z = pop(words)
+print(nums)
+print(flags)
+print(words)
+
+print(untyped == nums)
+print(nums == words)
+
+append(nums, 2.5)
+append(flags, False)
+append(words, "ok")
+append(untyped, "first")
+print(nums)
+print(flags)
+print(words)
+print(untyped)

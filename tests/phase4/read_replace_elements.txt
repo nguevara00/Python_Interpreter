@@ -1,0 +1,12 @@
+colors = ["red", "green", "blue"]
+print(colors[0])
+print(colors[2])
+colors[1] = "yellow"
+print(colors)
+first = colors[0]
+colors[0] = "purple"
+print(first)
+print(colors)
+i = 2
+colors[i] = colors[0]
+print(colors)

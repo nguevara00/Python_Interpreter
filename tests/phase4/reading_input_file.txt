@@ -1,0 +1,8 @@
+count = int(input())
+total = 0
+for i in range(count):
+    total = total + int(input())
+print("count: " + str(count))
+print("total: " + str(total))
+words = split(input())
+print(words)

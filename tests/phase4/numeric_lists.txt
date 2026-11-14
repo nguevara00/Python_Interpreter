@@ -1,0 +1,11 @@
+mixed = [1, 2.5, 3]
+print(mixed)
+print(len(mixed))
+print(mixed[0])
+print(mixed[1])
+print(mixed[0] + mixed[1])
+print(mixed[0] // 1)
+append(mixed, 4)
+append(mixed, 0.5)
+print(mixed)
+print(mixed == [1.0, 2.5, 3, 4, 0.5])

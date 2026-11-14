@@ -1,0 +1,20 @@
+empty = split("")
+print(empty)
+print(len(empty))
+
+spaces = split("     ")
+print(spaces)
+print(len(spaces))
+
+fields = split("The deer    jumps    over   the    moon")
+print(fields)
+print(len(fields))
+print (fields[0])
+print (fields[1])
+print (fields[2])
+print (fields[3])
+print (fields[4])
+print (fields[5])
+
+append(empty, "added")
+print(empty)
