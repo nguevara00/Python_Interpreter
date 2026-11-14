@@ -1,8 +1,8 @@
 aCounter = 0
 print(str("aCounter should update 10 times and print 10 times (aCounter should contain 10)"))
 while aCounter < 10:
-    counter = counter + 1
-    print(counter)
+    aCounter = aCounter + 1
+    print(aCounter)
 
 bCounter = 0
 print(str("bCounter should update 0 times and print 0 times (bCounter should contain 0)"))
