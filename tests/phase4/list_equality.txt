@@ -1,0 +1,19 @@
+list1 = [1,2,3]
+list2 = [1,2,3]
+
+print list1
+print list2
+print list1 == list2
+
+list3 = ["apple", "banana", "carrot"]
+list4 = ["apple", "banana", "carrot"]
+
+print list3 == list4
+print list1 != list4
+print list1 != list2
+
+list5 = [False,False,True]
+list6 = [True,True,True]
+
+print list5 == list6
+print list5 != list6

@@ -306,7 +306,7 @@ void IfStatement::evaluate(SymbolTable &symbolTable) const {
         if (value->type() != ValueDescriptor::Type::boolean){
             std::string type = value->typeName();
             delete value;
-            throw std::runtime_error("if condition must be boolean, is" + type);
+            throw std::runtime_error("if condition must be boolean, is " + type);
         }
 
         bool condition = static_cast<BooleanValueDescriptor*>(value)->value();

@@ -1,0 +1,6 @@
+emptyList = []
+print emptyList
+print "append to empty list"
+append (emptyList, 1)
+print "new list:"
+print emptyList

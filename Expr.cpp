@@ -434,7 +434,9 @@ ValueDescriptor* DoubleLiteral::evaluate(const SymbolTable &) const {
 StringLiteral::StringLiteral(Token token) : ExprNode{std::move(token)} {}
 
 void StringLiteral::print() const {
+    std::cout << '"';
     token().print(std::cout);
+    std::cout << '"';
 }
 
 ValueDescriptor* StringLiteral::evaluate(const SymbolTable &) const {

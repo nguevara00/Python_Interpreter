@@ -1,0 +1,16 @@
+list = ["first element"]
+print "list contains:"
+print list
+print "Popping list, popped: "
+poppedElement = pop(list)
+print poppedElement
+print "list is now: "
+print list
+
+
+
+print "Popping list, popped: "
+alsoPopped = pop(list)
+print alsoPopped
+print "list is now: "
+print list

@@ -1,0 +1,12 @@
+condition = True
+if condition:
+    print condition
+else:
+    print "false"
+
+
+condition = 20
+if condition:
+    print condition
+else:
+    print "false"

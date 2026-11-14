@@ -1,0 +1,11 @@
+list1 = ["string"]
+print list1
+print "popping list: "
+popped = pop(list1)
+print popped
+
+print "new list is "
+print list1
+
+print "appending 4.7"
+append (list1, 4.7)

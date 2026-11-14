@@ -1,0 +1,4 @@
+string = "string"
+print string
+print string[0]
+print string[6]
