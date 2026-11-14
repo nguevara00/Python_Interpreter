@@ -28,6 +28,8 @@ Tues 11/3 10pm-1am implemented Feature 1 - Conditional Statements (Nick)
 Tues 11/10 830pm-930pm implemented Feature 2 - While Loops (Nick)  
 Weds 11/11 4pm-12am implemented Feature 3,4,5  
 Thurs 11/12 12a-6a, 730p-9p implemented new grammar and list equality (Nick)  
+Fri 11/13 9pm-12am wrote tests and fixed bugs
+Sat 11/15 12pm - 1pm wrote tests and fixed bugs
 
 Github Repository
 =================
