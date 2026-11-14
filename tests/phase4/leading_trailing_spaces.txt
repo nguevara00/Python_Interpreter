@@ -1,0 +1,14 @@
+print("Input leading spaces: ")
+variable1 = input()
+print("[" + variable1 + "]")
+print(len(variable1))
+
+print("Input trailing spaces: ")
+variable2 = input()
+print("[" + variable2 + "]")
+print(len(variable2))
+
+print("Input both leading and trailing spaces")
+variable3 = input()
+print("[" + variable3 + "]")
+print(len(variable3))
