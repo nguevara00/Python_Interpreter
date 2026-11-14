@@ -576,10 +576,10 @@ InputExpression::~InputExpression(){
 
 void InputExpression::print() const {
     token().print(std::cout);
+    std::cout << "()";
 }
 
 ValueDescriptor* InputExpression::evaluate(const SymbolTable &) const {
-//idk
 
     std::string string;
     //if line is bad, runtime error
