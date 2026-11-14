@@ -1,0 +1,16 @@
+i = 0
+while i < 3:
+    j = 0
+    while j < 2:
+        j = j + 1
+    i = i + 1
+print("Passed: nested while loop, i = 3, j = 2")
+
+outer = 0
+while outer < 2:
+    inner = 5
+    while inner < 5:
+        print("ERROR: inner loop ran")
+        inner = inner + 1
+    outer = outer + 1
+print("Passed: outer while loop still ran.")
