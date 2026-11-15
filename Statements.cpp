@@ -127,7 +127,6 @@ void PrintStatement::evaluate(SymbolTable &symbolTable) const {
     delete value;
 }
 
-//restored print function
 void PrintStatement::print() const {
     std::cout << "print ";
     relExpr->print();
@@ -158,7 +157,6 @@ void ForStatement::evaluate(SymbolTable &symbolTable) const {
     }
 }
 
-//fixed forstatementprint to match other print statements
 void ForStatement::print() const {
     std::cout << "for " << variableName_ << " in ";
     range_->print(std::cout);

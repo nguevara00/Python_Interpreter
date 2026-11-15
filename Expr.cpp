@@ -39,7 +39,6 @@ ValueDescriptor* BinaryExprNode::evaluate(const SymbolTable &symbolTable) const 
     const bool bothStrings = leftString && rightString;
     const bool bothDoubles = (leftDouble && rightDouble) || (leftInt && rightDouble) || (leftDouble && rightInt);
 
-    //added functionality for comparison for list equality
     if (token().isEqualityOperator() || token().isNotEqualOperator()){
         bool equal = false;
 
@@ -238,7 +237,7 @@ ValueDescriptor* BinaryExprNode::evaluate(const SymbolTable &symbolTable) const 
         if (rightNum == 0){
             throw std::runtime_error("floor division by zero " + location);  
         }
-        //fixing python style floor division
+
         int64_t quotient = leftNum / rightNum;
         int64_t remainder = leftNum % rightNum;
         if (remainder != 0 && ((leftNum < 0) != (rightNum < 0))){
@@ -418,7 +417,6 @@ ValueDescriptor* IntegerLiteral::evaluate(const SymbolTable &) const {
     return new IntegerValueDescriptor(token().integerValue());
 }
 
-//double
 DoubleLiteral::DoubleLiteral(Token token) : ExprNode{std::move(token)} {}
 
 void DoubleLiteral::print() const {
@@ -430,7 +428,6 @@ ValueDescriptor* DoubleLiteral::evaluate(const SymbolTable &) const {
     return new DoubleValueDescriptor(token().doubleValue());
 }
 
-//string
 StringLiteral::StringLiteral(Token token) : ExprNode{std::move(token)} {}
 
 void StringLiteral::print() const {
@@ -443,7 +440,6 @@ ValueDescriptor* StringLiteral::evaluate(const SymbolTable &) const {
     return new StringValueDescriptor(token().stringValue());
 }
 
-//boolean
 BooleanLiteral::BooleanLiteral(Token token) : ExprNode{std::move(token)} {}
 
 void BooleanLiteral::print() const {
@@ -484,7 +480,6 @@ ValueDescriptor* StringConversionExpression::evaluate(const SymbolTable &symbolT
     return new StringValueDescriptor(result);
 }
 
-//intConversionExpression
 IntConversionExpression::IntConversionExpression(Token token, ExprNode* expression) : ExprNode{std::move(token)}, _expression{expression}{}
 
 IntConversionExpression::~IntConversionExpression(){
@@ -499,7 +494,7 @@ void IntConversionExpression::print() const {
 
 ValueDescriptor* IntConversionExpression::evaluate(const SymbolTable &symbolTable) const {
     ValueDescriptor* value = _expression->evaluate(symbolTable);
-    //what if value int?
+
     if (value->type() == ValueDescriptor::Type::integer){
         
         IntegerValueDescriptor* intValue = static_cast<IntegerValueDescriptor*>(value);
@@ -508,7 +503,7 @@ ValueDescriptor* IntConversionExpression::evaluate(const SymbolTable &symbolTabl
         return new IntegerValueDescriptor(result);
     }
 
-    //what if valuetype is string?
+
     if (value->type() == ValueDescriptor::Type::string){
         StringValueDescriptor* stringValue = static_cast<StringValueDescriptor*>(value);
         int64_t result = std::stoi(stringValue->value());
@@ -521,7 +516,7 @@ ValueDescriptor* IntConversionExpression::evaluate(const SymbolTable &symbolTabl
     throw std::runtime_error("IntConversion cannot convert " + type + " to integer");
 }
 
-//FloatConversionExpression
+
 FloatConversionExpression::FloatConversionExpression(Token token, ExprNode* expression) : ExprNode{std::move(token)}, _expression{expression}{}
 
 FloatConversionExpression::~FloatConversionExpression(){
@@ -537,7 +532,6 @@ void FloatConversionExpression::print() const {
 ValueDescriptor* FloatConversionExpression::evaluate(const SymbolTable &symbolTable) const {
     ValueDescriptor* value = _expression->evaluate(symbolTable);
 
-    //what if double?
     if (value->type() == ValueDescriptor::Type::doubleValue){
         
         DoubleValueDescriptor* doubleValue = static_cast<DoubleValueDescriptor*>(value);
@@ -546,7 +540,6 @@ ValueDescriptor* FloatConversionExpression::evaluate(const SymbolTable &symbolTa
         return new DoubleValueDescriptor(result);
     }
 
-    //what if value int?
     if (value->type() == ValueDescriptor::Type::integer){
         
         DoubleValueDescriptor* doubleValue = static_cast<DoubleValueDescriptor*>(value);
@@ -555,7 +548,6 @@ ValueDescriptor* FloatConversionExpression::evaluate(const SymbolTable &symbolTa
         return new DoubleValueDescriptor(result);
     }
 
-    //what if valuetype is string?
     if (value->type() == ValueDescriptor::Type::string){
         StringValueDescriptor* stringValue = static_cast<StringValueDescriptor*>(value);
         double result = std::stof(stringValue->value());
@@ -568,7 +560,6 @@ ValueDescriptor* FloatConversionExpression::evaluate(const SymbolTable &symbolTa
     throw std::runtime_error("DoubleConversion cannot convert " + type + " to integer");
 }
 
-//InputExpression
 InputExpression::InputExpression(Token token) : ExprNode {std::move(token)}{}
 
 InputExpression::~InputExpression(){
@@ -582,7 +573,6 @@ void InputExpression::print() const {
 ValueDescriptor* InputExpression::evaluate(const SymbolTable &) const {
 
     std::string string;
-    //if line is bad, runtime error
     if (!std::getline(std::cin,string)){
         throw std::runtime_error("Reached end of file while waiting for input on line number " + std::to_string(token().lineNumber()) + ", column number " + std::to_string(token().columnNumber()));
     }
@@ -608,7 +598,6 @@ void ListLiteral::print() const {
     std::cout << "]";
 }
 
-//added error handling for lists
 ValueDescriptor* ListLiteral::evaluate(const SymbolTable &symbolTable) const {
     ListObject* list = new ListObject();
 
@@ -643,7 +632,6 @@ ValueDescriptor* ListLiteral::evaluate(const SymbolTable &symbolTable) const {
     return new ListValueDescriptor(list);
 }
 
-//LenExpression
 LenExpression::LenExpression(Token token, ExprNode* expression) : ExprNode{std::move(token)}, _expression{expression}{}
 
 LenExpression::~LenExpression(){
@@ -674,7 +662,6 @@ ValueDescriptor* LenExpression::evaluate(const SymbolTable &symbolTable) const {
     return new IntegerValueDescriptor(result);
 }
 
-//SplitExpression
 SplitExpression::SplitExpression(Token token, ExprNode* expression) : ExprNode{std::move(token)}, _expression{expression}{}
 
 SplitExpression::~SplitExpression(){
@@ -699,7 +686,6 @@ ValueDescriptor* SplitExpression::evaluate(const SymbolTable &symbolTable) const
 
     ListObject* list = new ListObject(ListElementType::string);
     std::string word;
-    // the deer     jumped  over the      moon
     for (char character : line) {
         if (character == ' ' || character == '\t') {
             if (!word.empty()) {
@@ -717,7 +703,7 @@ ValueDescriptor* SplitExpression::evaluate(const SymbolTable &symbolTable) const
 
     return new ListValueDescriptor(list);
 }
-//popExpression
+
 PopExpression::PopExpression(Token token, ExprNode* expression) : ExprNode{std::move(token)}, _expression{expression}{}
 
 PopExpression::~PopExpression(){

@@ -1,12 +1,4 @@
-emptyList = []
-intList = [1,2,3]
-print emptyList
-print intList
-popped = pop(intList)
-popped = pop(intList)
-popped = pop(intList)
-print "intList popped 3 times. intlist is now: "
-print intList
-print "is emptyList and intList equal?:
-
-print emptyList == intList
+list = [1,2,3]
+print list
+print "list[3] = 4"
+list[3] = 4

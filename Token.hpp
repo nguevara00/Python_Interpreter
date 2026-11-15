@@ -158,7 +158,6 @@ private:
     char _symbol{'\0'};
     std::string _multiCharSymbol{};
 
-    //types
     std::int64_t _integerValue{0};
     std::string _stringValue{};
     double _doubleValue{0};

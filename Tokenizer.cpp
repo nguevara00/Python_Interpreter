@@ -81,7 +81,6 @@ Token Tokenizer::getToken() {
         if (lineStart) { 
             int spaces = 0;
 
-            //leading whitespace detection will now also detect tab characters in addition to spaces.
             while (inputStream.peek() == ' ' || inputStream.peek() == '\t') {
                 if (inputStream.peek() == '\t') {
                     std::cerr << "Indentation error at line " << lineNumber << ": tab found in leading indentation\n";
@@ -91,7 +90,6 @@ Token Tokenizer::getToken() {
                 ++spaces;
             }
 
-            //this was added to fix a bug. if a line had blank spaces and nothing else, the program was treating it as an indentation level
             if (inputStream.peek() == '\n' || inputStream.peek() == std::char_traits<char>::eof())  {
                 lineStart = false;
                 continue;
@@ -151,10 +149,8 @@ Token Tokenizer::getToken() {
                 tokens.push_back(token);
                 return lastToken = token;
             }
-
             continue;
         }
-
         break;
     }
 
@@ -221,7 +217,6 @@ Token Tokenizer::getToken() {
             std::string double_quoted_string;
             while (inputStream.peek() != std::char_traits<char>::eof() && inputStream.peek() != '\"') {
                 
-                //checks for invalid characters in strings
                 int nextValue = inputStream.peek();
                 if (nextValue <32 || nextValue > 126 || nextValue == '\\'){
                     std::cerr << "Invalid character in string at line " << lineNumber << ", column " << columnNumber << ".\n";
@@ -242,7 +237,6 @@ Token Tokenizer::getToken() {
         } else if (character == '\''){
             std::string single_quoted_string;
             while (inputStream.peek() != std::char_traits<char>::eof() && inputStream.peek() != '\'') {
-                //checks for invalid characters in strings
                 int nextValue = inputStream.peek();
                 if (nextValue <32 || nextValue > 126 || nextValue == '\\'){
                     std::cerr << "Invalid character in string at line " << lineNumber << ", column " << columnNumber << ".\n";

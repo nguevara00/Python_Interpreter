@@ -124,9 +124,6 @@ std::string ListValueDescriptor::typeName() const {
     return "list";
 }
 
-
-//added "quotes" to list elements, moved where comma is printed
-
 std::string ListValueDescriptor::toString() const {
     std::string output = "[";
     for (size_t i = 0; i < listObject->size(); i++) {

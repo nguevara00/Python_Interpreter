@@ -128,7 +128,7 @@ private:
 
 class ListLiteral final : public ExprNode {
 public:
-    // StringConversionExpression::StringConversionExpression(Token token, ExprNode* expression) : ExprNode{std::move(token)}, _expression{expression}{}
+
     ListLiteral(Token token, std::vector<ExprNode*> expressions) : ExprNode{std::move(token)}, _expressions{std::move(expressions)}{}
     ~ListLiteral() override;
 

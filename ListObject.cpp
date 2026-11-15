@@ -82,7 +82,6 @@ void ListObject::setElement(std::size_t index, ValueDescriptor *value) {
     }
 }
 
-//ListElementType category{ListElementType::unset};
 void ListObject::append(ValueDescriptor *value) {
     ListElementType elementType;
     switch (value->type()) {
