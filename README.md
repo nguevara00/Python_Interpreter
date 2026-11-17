@@ -31,6 +31,10 @@ Thurs 11/12 12a-6a, 730p-9p implemented new grammar and list equality (Nick)
 Fri 11/13 9pm-12am wrote tests and fixed bugs  
 Sat 11/15 12pm - 1pm wrote tests and fixed bugs  
 
+Phase 5: Implementing Functions, non-local control flow, recursion (OPTIONAL PHASE)  
+
+
+
 Github Repository
 =================
 https://github.com/nguevara00/Python_Interpreter
